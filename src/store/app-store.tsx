@@ -77,6 +77,7 @@ type Store = {
   updateUser: (patch: Partial<User>) => Promise<void>;
   /** Pass a function when the patch depends on the latest journey (e.g. concurrent uploads). */
   updateJourney: (patch: Partial<Journey> | ((prev: Journey) => Partial<Journey>)) => Promise<void>;
+  resetJourney: () => Promise<void>;
 };
 
 const KEY = 'fundenflo:store:v1';
@@ -124,6 +125,7 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
     },
     updateUser: patch => commit(prev => (prev.session ? { ...prev, session: { ...prev.session, user: { ...prev.session.user, ...patch } } } : prev)),
     updateJourney: patch => commit(prev => ({ ...prev, journey: { ...prev.journey, ...(typeof patch === 'function' ? patch(prev.journey) : patch) } })),
+    resetJourney: () => commit(prev => ({ ...prev, journey: {} })),
   }), [ready, state, commit]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

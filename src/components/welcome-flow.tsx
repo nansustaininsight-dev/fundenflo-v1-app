@@ -33,7 +33,7 @@ function Illustration({ page }: { page: number }) {
 
 export default function WelcomeFlow() {
   const [stage, setStage] = useState<'splash' | 'slides'>('splash');
-  const { session } = useAppStore();
+  const { session, journey } = useAppStore();
   const [page, setPage] = useState(0);
   const [reduceMotion, setReduceMotion] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -55,8 +55,8 @@ export default function WelcomeFlow() {
     animation.start();
     return () => animation.stop();
   }, [page, stage, fade, reduceMotion]);
-  // Returning users skip straight past the intro: signed in → journey, otherwise → mobile login.
-  function leave() { router.replace(session ? '/entity-type' : '/login'); }
+  // Returning users skip the intro: an application opens home, otherwise the journey, or login.
+  function leave() { router.replace(!session ? '/login' : journey.application ? '/home' : '/entity-type'); }
   async function finish() {
     if (saving) return;
     setSaving(true);

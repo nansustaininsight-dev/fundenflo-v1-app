@@ -2,7 +2,7 @@
 
 > Ye file har phase ke baad update hoti hai. Agla kaam shuru karne se pehle ye file AI/dev ko de do — isse pata chal jayega kya ho chuka hai aur aage kya karna hai.
 >
-> Last update: 5 Oct 2026 · Phase 7 complete
+> Last update: 5 Oct 2026 · Phase 8 complete
 
 ---
 
@@ -39,7 +39,7 @@
 | 5 | Identity | Verify Your Details (Full Name, PAN, DOB) — design me nahi hai | ✅ Done |
 | 6 | Assessment | Financial Health Score (Step 6), Improvement Plan | ✅ Done |
 | 7 | Matching + Apply | Matched lenders, apply, application status | ✅ Done |
-| 8 | Post-apply | Home dashboard (`Namaste, {firstName} 👋`) | ⏳ Next |
+| 8 | Post-apply | Home dashboard (`Namaste, {firstName} 👋`) | ✅ Done |
 
 ## 4. Phase 1 me kya bana (detail)
 
@@ -197,11 +197,22 @@ Stitch: `matched_lenders/` and `application/`. “Step 10 of 12” copy nahi kiy
 - Fake claims nahi: version number, Priority SLA, RBI encryption line, “digital verification sealed”.
 - Real API: `POST /lenders { analysisId }` → `{ lenders }`, `POST /applications { lenderId }`, `GET /applications/:id`.
 
-## 11. Baaki phases ke notes
-- **Dashboard** (Phase 8): `Namaste, {firstName(session.user)} 👋` — name kabhi hardcode nahi. Name missing ho toh sirf `Namaste 👋`. Design: `home/`. Track card `/application` pe jaayegi. Applications, Documents, Profile, notifications aur advisor ke alag designs nahi hain.
+## 11. Phase 8 me kya bana — Home
+
+Design: `home/`. Route `/home`.
+
+- Greeting `Namaste, {firstName} 👋`. Name missing ho toh `Namaste 👋`. “Rohit” hardcode nahi.
+- Active application card tabhi jab application ho: product, lender, amount, ref, status, Track → `/application`.
+- Score card tabhi jab score ho. Open → `/score`. Reassess → `/documents`.
+- Pending task tabhi jab application `pendingDocument` ho → `/documents`.
+- “Start a new application” confirms, clears the journey (`resetJourney`), login rehta hai, `/entity-type`.
+- Apply ke baad `/home`. Dobara app kholo aur application ho toh splash ke baad `/home`, warna `/entity-type`.
+- Bell, profile, advisor, aur bottom tabs (Applications / Documents / Profile) design me hain par unke screens nahi. Woh nahi banaye.
+
+## 12. Baaki
 - Partner portal / case queue / commissions designs CA/DSA app ke liye hain — borrower journey ka part nahi.
 
-## 12. Run / Test commands
+## 13. Run / Test commands
 
 ```bash
 npm start                 # dev server (Expo Go / dev build me scan karo)

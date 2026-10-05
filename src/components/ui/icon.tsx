@@ -46,6 +46,7 @@ const ICONS = {
   payments: { ios: 'banknote', android: 'payments' },
   quote: { ios: 'doc.plaintext', android: 'request_quote' },
   copy: { ios: 'doc.on.doc', android: 'content_copy' },
+  add: { ios: 'plus.circle', android: 'add_circle' },
 } as const;
 
 export type IconName = keyof typeof ICONS;
