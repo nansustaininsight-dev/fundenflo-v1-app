@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
-import * as ClipboardModule from 'react-native/Libraries/Components/Clipboard/Clipboard';
+import { useCallback, useState } from 'react';
+import { BackHandler, Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
-import { Redirect, router } from 'expo-router';
+import { Redirect, router, useFocusEffect } from 'expo-router';
 
+import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import { Screen } from '@/components/ui/screen';
 import { StepHeader } from '@/components/ui/step-header';
@@ -12,6 +12,7 @@ import { C, F, R, S, shadow } from '@/constants/brand';
 import { formatINR } from '@/constants/loan';
 import { ApiError } from '@/services/api';
 import { requestApplicationUpdates } from '@/services/application';
+import { copyText } from '@/services/clipboard';
 import { formatMobile } from '@/services/auth';
 import { useAppStore } from '@/store/app-store';
 
@@ -23,10 +24,23 @@ export default function ApplicationScreen() {
   const [updating, setUpdating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const goHome = useCallback(() => {
+    router.dismissTo('/home');
+  }, []);
+
+  useFocusEffect(useCallback(() => {
+    if (!application) return;
+    const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+      goHome();
+      return true;
+    });
+    return () => sub.remove();
+  }, [application, goHome]));
+
   if (!application) return <Redirect href="/lenders" />;
 
   async function copyId() {
-    const ok = await writeClipboard(application!.id);
+    const ok = await copyText(application!.id);
     if (!ok) return;
     setCopied(true);
     setTimeout(() => setCopied(false), 1600);
@@ -55,7 +69,9 @@ export default function ApplicationScreen() {
   const mobile = session?.user.mobile ? `+91 ${formatMobile(session.user.mobile)}` : 'your mobile number';
 
   return (
-    <Screen header={<StepHeader title="Application Status" />}>
+    <Screen
+      header={<StepHeader title="Application Status" onBack={goHome} />}
+      footer={<Button label="Go to home" onPress={goHome} />}>
       <Animated.View entering={FadeInDown.duration(400)} style={s.summary}>
         <Text style={s.kicker}>Facility</Text>
         <Text style={s.facility}>{application.product} · {application.lenderName}</Text>
@@ -117,21 +133,6 @@ export default function ApplicationScreen() {
       {error && <Text style={s.error} accessibilityLiveRegion="polite">{error}</Text>}
     </Screen>
   );
-}
-
-async function writeClipboard(value: string) {
-  try {
-    if (Platform.OS === 'web' && typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
-      await navigator.clipboard.writeText(value);
-      return true;
-    }
-    const native = ClipboardModule as { default?: { setString: (text: string) => void } };
-    if (!native.default) return false;
-    native.default.setString(value);
-    return true;
-  } catch {
-    return false;
-  }
 }
 
 const s = StyleSheet.create({

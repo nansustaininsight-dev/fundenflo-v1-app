@@ -206,7 +206,8 @@ Design: `home/`. Route `/home`.
 - Score card tabhi jab score ho. Open → `/score`. Reassess → `/documents`.
 - Pending task tabhi jab application `pendingDocument` ho → `/documents`.
 - “Start a new application” confirms, clears the journey (`resetJourney`), login rehta hai, `/entity-type`.
-- Apply ke baad `/home`. Dobara app kholo aur application ho toh splash ke baad `/home`, warna `/entity-type`.
+- Apply ke baad `/home`. Application Status ka back aur “Go to home” bhi `/home` pe laate hain. Home khulte hi purana form stack hat jata hai, isliye Android back form pe nahi lautata.
+- Dobara app kholo aur application ho toh splash ke baad `/home`, warna `/entity-type`.
 - Bell, profile, advisor, aur bottom tabs (Applications / Documents / Profile) design me hain par unke screens nahi. Woh nahi banaye.
 
 ## 12. Baaki

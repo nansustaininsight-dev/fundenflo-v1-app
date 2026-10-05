@@ -1,6 +1,7 @@
+import { useCallback, useRef } from 'react';
 import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
-import { router } from 'expo-router';
+import { router, useFocusEffect, useNavigation } from 'expo-router';
 
 import { Icon } from '@/components/ui/icon';
 import { ProgressRing } from '@/components/ui/progress-ring';
@@ -11,8 +12,21 @@ import { assessedLabel } from '@/services/score';
 import { firstName, useAppStore } from '@/store/app-store';
 
 export default function HomeScreen() {
+  const navigation = useNavigation();
+  const clearedStack = useRef(false);
   const { session, journey, resetJourney } = useAppStore();
   const name = firstName(session?.user);
+
+  useFocusEffect(useCallback(() => {
+    if (clearedStack.current) return;
+    const state = navigation.getState();
+    if (!state || state.index === 0 || state.routes[state.index]?.name !== 'home') return;
+    clearedStack.current = true;
+    (navigation as unknown as { reset: (state: { index: number; routes: { name: string }[] }) => void }).reset({
+      index: 0,
+      routes: [{ name: 'home' }],
+    });
+  }, [navigation]));
   const application = journey.application;
   const score = journey.score;
   const pending = application?.pendingDocument;
