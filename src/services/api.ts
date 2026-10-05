@@ -16,6 +16,7 @@ let authToken: string | null = null;
 export function setAuthToken(token: string | null) {
   authToken = token;
 }
+export const authHeaders = (): Record<string, string> => (authToken ? { Authorization: `Bearer ${authToken}` } : {});
 
 export async function api<T>(path: string, init: { method?: string; body?: unknown } = {}): Promise<T> {
   let res: Response;
@@ -24,7 +25,7 @@ export async function api<T>(path: string, init: { method?: string; body?: unkno
       method: init.method ?? (init.body ? 'POST' : 'GET'),
       headers: {
         'Content-Type': 'application/json',
-        ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
+        ...authHeaders(),
       },
       body: init.body ? JSON.stringify(init.body) : undefined,
     });

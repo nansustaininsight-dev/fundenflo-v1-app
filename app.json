@@ -32,6 +32,13 @@
           "image": "./assets/brand/logo-white.png",
           "imageWidth": 280
         }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "FundenFlo uses the camera to scan your documents (PAN, bank statement, ITR/GST) so they can be read for your Financial Health Score.",
+          "microphonePermission": false
+        }
       ]
     ],
     "experiments": {

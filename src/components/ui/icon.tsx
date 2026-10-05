@@ -35,6 +35,15 @@ const ICONS = {
   close: { ios: 'xmark', android: 'close' },
   refresh: { ios: 'arrow.clockwise', android: 'refresh' },
   edit: { ios: 'pencil', android: 'edit' },
+  'id-card': { ios: 'person.text.rectangle', android: 'badge' },
+  bank: { ios: 'building.columns', android: 'account_balance' },
+  upload: { ios: 'doc.badge.plus', android: 'upload_file' },
+  scan: { ios: 'doc.viewfinder', android: 'document_scanner' },
+  document: { ios: 'doc.text.fill', android: 'description' },
+  chat: { ios: 'message', android: 'chat' },
+  delete: { ios: 'trash', android: 'delete' },
+  payments: { ios: 'banknote', android: 'payments' },
+  quote: { ios: 'doc.plaintext', android: 'request_quote' },
 } as const;
 
 export type IconName = keyof typeof ICONS;

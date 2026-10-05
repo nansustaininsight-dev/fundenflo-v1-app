@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import type { ConsentId } from '@/constants/consent';
+import type { DocumentId } from '@/constants/documents';
 import type { LoanCategoryId } from '@/constants/loan';
 import { setAuthToken } from '@/services/api';
 import type { Session, User } from '@/services/auth';
@@ -21,6 +22,25 @@ export type ConsentRecord = {
   items: Record<ConsentId, { granted: boolean; at: string }>;
 };
 
+/** A document the backend has accepted and read. Files themselves are never stored on the device. */
+export type UploadedDocument = {
+  id: string;
+  fileName: string;
+  size: number;
+  uploadedAt: string;
+  /** Masked value the backend read from it (e.g. PAN `ABCDE••••F`), when it returns one. */
+  summary?: string;
+};
+
+/** Document analysis job; `fingerprint` = the document ids it ran on (re-uploading starts a new one). */
+export type Analysis = {
+  id: string;
+  fingerprint: string;
+  startedAt: string;
+  status: 'running' | 'done' | 'failed';
+  notifyWhatsApp?: boolean;
+};
+
 export type Journey = {
   entityType?: EntityType;
   loanCategory?: LoanCategoryId;
@@ -34,7 +54,10 @@ export type Journey = {
   consent?: ConsentRecord;
   /** Unsubmitted toggle positions on the consent screen — not consent until submitted. */
   consentDraft?: Partial<Record<ConsentId, boolean>>;
-  // Later phases add: documents, ...
+  /** Only verified documents are kept (keyed by checklist item). */
+  documents?: Partial<Record<DocumentId, UploadedDocument>>;
+  analysis?: Analysis;
+  // Later phases add: assessment, ...
 };
 
 type Store = {
@@ -44,7 +67,8 @@ type Store = {
   signIn: (session: Session) => Promise<void>;
   signOut: () => Promise<void>;
   updateUser: (patch: Partial<User>) => Promise<void>;
-  updateJourney: (patch: Partial<Journey>) => Promise<void>;
+  /** Pass a function when the patch depends on the latest journey (e.g. concurrent uploads). */
+  updateJourney: (patch: Partial<Journey> | ((prev: Journey) => Partial<Journey>)) => Promise<void>;
 };
 
 const KEY = 'fundenflo:store:v1';
@@ -91,7 +115,7 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
       await commit(() => ({ session: null, journey: {} }));
     },
     updateUser: patch => commit(prev => (prev.session ? { ...prev, session: { ...prev.session, user: { ...prev.session.user, ...patch } } } : prev)),
-    updateJourney: patch => commit(prev => ({ ...prev, journey: { ...prev.journey, ...patch } })),
+    updateJourney: patch => commit(prev => ({ ...prev, journey: { ...prev.journey, ...(typeof patch === 'function' ? patch(prev.journey) : patch) } })),
   }), [ready, state, commit]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
