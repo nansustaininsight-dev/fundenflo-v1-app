@@ -10,7 +10,7 @@ The planned Financial Health Score uses a transparent 0–100 scale, distinct fr
 
 Releases: v0.1 internal foundation/intake; v1.0 complete borrower journey and basic CA/DSA operations; v1.1 automation; v2.0 outcome intelligence and retention; v3.0 commercial expansion. Security, consent, private documents, access controls and audit logs belong in the foundation.
 
-Current implementation scope: branded splash, three introduction slides, mobile + OTP login (mock backend unless EXPO_PUBLIC_API_URL is set), journey Step 1 (Individual/MSME), Step 2 loan requirement (category, amount & tenure, purpose) Step 3 quick pre-check and Step 4 consent (versioned, per-purpose, recorded with timestamps). Documents (Step 5) is a placeholder. See docs/PROGRESS.md for phase-by-phase status. No financial assessment exists yet.
+Current implementation scope: branded splash, three introduction slides, mobile + OTP login (mock backend unless EXPO_PUBLIC_API_URL is set), journey Step 1 (Individual/MSME), Step 2 loan requirement (category, amount & tenure, purpose), Step 3 quick pre-check, Step 4 consent (versioned, per-purpose, recorded with timestamps), Step 5 documents plus document verification, Verify Your Details (name, PAN, date of birth, 18+), and the Financial Health Score with an improvement plan when the assessment returns one. See docs/PROGRESS.md for phase-by-phase status. Matched lenders and application status are in place. The home dashboard is not built yet.
 
 Design: navy #082C4B, gold #F5BE35, ivory #F8F7F3. Poppins headings and Inter body text, bundled locally. Uses supplied updated transparent logos. Illustrations are product previews rather than real borrower records.
 

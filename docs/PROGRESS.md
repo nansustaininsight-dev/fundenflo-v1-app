@@ -2,7 +2,7 @@
 
 > Ye file har phase ke baad update hoti hai. Agla kaam shuru karne se pehle ye file AI/dev ko de do — isse pata chal jayega kya ho chuka hai aur aage kya karna hai.
 >
-> Last update: 5 Oct 2026 · Phase 3 complete
+> Last update: 5 Oct 2026 · Phase 7 complete
 
 ---
 
@@ -35,11 +35,11 @@
 | 1 | Auth + Foundation | Mobile login, OTP, Step 1 (Individual/MSME) | ✅ Done |
 | 2 | Loan requirement + Pre-check | Loan Category, Loan Amount & Tenure, Loan Purpose, Pre-Eligibility (Step 3) | ✅ Done |
 | 3 | Consent | Consent (Step 4) | ✅ Done |
-| 4 | Documents | Documents checklist, Upload (Step 5), Document Verification (analysing) — `/documents` abhi placeholder hai | ⏳ Next |
-| 5 | Identity | **Verify Your Details** (Full Name, PAN, DOB, Confirm & Continue) — NEW screen, design me nahi hai | ⬜ |
-| 6 | Assessment | Financial Assessment, Financial Health Score (Step 6), Improvement Plan | ⬜ |
-| 7 | Matching + Apply | Lender Matching, Application, Borrower consent | ⬜ |
-| 8 | Post-apply | Application Tracking, Dashboard (`Namaste, {firstName} 👋`) | ⬜ |
+| 4 | Documents | Documents checklist, Upload (Step 5), Document Verification (analysing) | ✅ Done |
+| 5 | Identity | Verify Your Details (Full Name, PAN, DOB) — design me nahi hai | ✅ Done |
+| 6 | Assessment | Financial Health Score (Step 6), Improvement Plan | ✅ Done |
+| 7 | Matching + Apply | Matched lenders, apply, application status | ✅ Done |
+| 8 | Post-apply | Home dashboard (`Namaste, {firstName} 👋`) | ⏳ Next |
 
 ## 4. Phase 1 me kya bana (detail)
 
@@ -155,20 +155,53 @@ Design: `your_consent_step_4_of_6/`. Flow: Pre-check → **Consent** → `/docum
 - Phase 2 regression suite dobara chalayi — sab pass.
 - ❗ Abhi **nahi** hua: physical Android/iPhone (toggle animation, Modal sheet), real backend, privacy policy URL (abhi koi URL nahi hai).
 
-## 7. Phase 4 me kya karna hai (NEXT)
+## 7. Phase 4 — Documents + verification (verified complete)
 
-- Design: `upload_3_documents_step_5_of_6/` (+ `analysing_your_documents/` verification screen).
-- `src/app/(borrower)/documents.tsx` placeholder ko real checklist + upload se replace karo (Step 5 of 6, `JourneyFooter` reuse).
-- Documents list `entityType` + `loanCategory` ke hisaab se (MSME: bank statement, GST, ITR …; Individual: salary slips, bank statement …).
-- **Consent check:** AI processing tabhi chalao jab `journey.consent.items.aiDocuments.granted` true ho (route guard already hai).
-- File picking ke liye pehle check karo `expo-document-picker` / `expo-image-picker` chahiye ya nahi — ye nayi dependency hogi, `npx expo install` se hi add karna.
+Design: `upload_3_documents_step_5_of_6/` and `analysing_your_documents/`.
 
-## 8. Baaki phases ke notes
-- **Verify Your Details** (Phase 5): Document Verification ke baad. Fields: Full Name, PAN (format `ABCDE1234F`, auto-uppercase), DOB (18+ check, DD/MM/YYYY). Confirm & Continue → `updateUser({ fullName, pan, dob })`.
-- **Dashboard** (Phase 8): `Namaste, {firstName(session.user)} 👋` — name kabhi hardcode nahi. Name missing ho toh sirf `Namaste 👋`. Design: `home/`.
+- `/documents` — checklist from `documentsFor(entityType, loanCategory, preCheck)`. Required: PAN, bank statement, and ITR/GST (MSME) or salary slips / ITR (individual). Optional property, vehicle, or machinery file when the category needs it.
+- Upload PDF and camera scan work (`expo-document-picker`, `expo-image-picker`, already installed). DigiLocker stays disabled with “Soon”.
+- AI read only when `journey.consent.items.aiDocuments.granted` is true. Otherwise redirect to `/consent`.
+- Card states: pending, uploading %, reading, verified, failed, cancel, remove.
+- `/analysing` polls the job, shows three steps, WhatsApp notify, offline retry, and failure with “Try again”. Success continues to `/verify-details`.
+- Footer does not claim “encrypted storage”. The third analysis step says the score is being calculated.
+
+## 8. Phase 5 me kya bana — Verify Your Details
+
+Stitch folder me is screen ka design nahi hai. Flow: analysing (done) → `/verify-details`. Analysis `done` na ho toh `/analysing` ya `/documents`.
+
+- Fields: Full name (letters, as on PAN), PAN (`ABCDE1234F`, auto-uppercase), DOB (`DD/MM/YYYY`, real date, 18 or older, not in the future).
+- Continue disabled until all three are valid. Field errors show after blur. Green tick when a field is valid.
+- Draft (`journey.profileDraft`) survives back/forward. It is not the profile until confirmed.
+- “Confirm & Continue” → `saveProfile()` then `updateUser({ fullName, pan, dob })`, then `/score`. Mock, or `PATCH /auth/profile` when `EXPO_PUBLIC_API_URL` is set. Unchanged details skip the request.
+
+## 9. Phase 6 me kya bana — Score + Improvement Plan
+
+Stitch: `your_financial_health_score_step_6_of_6/` and `improvement_plan/`. Alag financial-assessment form design me nahi hai.
+
+- `/score` — Step 6 of 6. Navy card, gold ring, band label, “Not a CIBIL or bureau score”, assessed date. Factor rows from the API. “Needs attention” (gold bar + chip) opens `/improvement` when the API returned an action.
+- `/improvement` — one card per action (found / why / what you can do / evidence). “Upload new statement” goes back to `/documents`. A new bank statement starts a new analysis, so the next score load is a new result.
+- `GET` is not used. `POST /score { analysisId }` returns `{ score, improvement }`. Mock mode builds the breakdown from entity type, bureau consent, and the EMI answer. Numbers are not hardcoded in the screen.
+- Confirm on Verify Details now opens `/score`.
+- “See matching lenders” and “Continue with matched lenders” open `/lenders`.
+- Jaan-boojh ke design se alag: fake “48% of inflow” nahi dikhaya. Credit-history row tabhi hai jab bureau consent on ho. Chevron sirf us row pe hai jo improvement plan kholta hai.
+
+## 10. Phase 7 me kya bana — Lenders + application
+
+Stitch: `matched_lenders/` and `application/`. “Step 10 of 12” copy nahi kiya. Partner “file application” screen borrower flow ka hissa nahi hai.
+
+- `/lenders` — verified lenders only. Score aur improvement dono yahi kholte hain. Card select → “Apply with {name}”. Interest “As per lender policy”. Indicative amount aur extra-document count tabhi dikhte hain jab API bheje.
+- Sharing consent off ho toh button “Share and apply with {name}” hai. Confirm pe `lenderSharing` record update hota hai, phir application banti hai.
+- Koi verified match na ho toh empty state + improvement plan ka link. Lender A/B/C sirf mock mode me hain, real empty response pe nahi.
+- `/application` — requested amount, app id (copy), timeline: documents complete → sent → under review → sanctioned → disbursed. Extra document alert tabhi jab API `pendingDocument` bheje. WhatsApp toggle `POST /notifications/whatsapp`.
+- Fake claims nahi: version number, Priority SLA, RBI encryption line, “digital verification sealed”.
+- Real API: `POST /lenders { analysisId }` → `{ lenders }`, `POST /applications { lenderId }`, `GET /applications/:id`.
+
+## 11. Baaki phases ke notes
+- **Dashboard** (Phase 8): `Namaste, {firstName(session.user)} 👋` — name kabhi hardcode nahi. Name missing ho toh sirf `Namaste 👋`. Design: `home/`. Track card `/application` pe jaayegi. Applications, Documents, Profile, notifications aur advisor ke alag designs nahi hain.
 - Partner portal / case queue / commissions designs CA/DSA app ke liye hain — borrower journey ka part nahi.
 
-## 9. Run / Test commands
+## 12. Run / Test commands
 
 ```bash
 npm start                 # dev server (Expo Go / dev build me scan karo)
@@ -178,7 +211,7 @@ npx expo lint             # lint
 ```
 
 - Mock OTP: **123456**
-- Real backend: `.env` me `EXPO_PUBLIC_API_URL=https://...` → endpoints `POST /auth/otp/request {mobile,countryCode,referralCode}`, `POST /auth/otp/verify {mobile,otp}` → `{ token, user }`, `GET /loan/categories?entityType=` → `{ categories: [{ id, available, reason? }] }`, `POST /loan/requirement`, `POST /loan/pre-check`, `POST /consent` (`ConsentRecord`).
+- Real backend: `.env` me `EXPO_PUBLIC_API_URL=https://...` → endpoints `POST /auth/otp/request {mobile,countryCode,referralCode}`, `POST /auth/otp/verify {mobile,otp}` → `{ token, user }`, `PATCH /auth/profile {fullName,pan,dob}`, `POST /score {analysisId}` → `{ score, improvement }`, `POST /lenders {analysisId}` → `{ lenders }`, `POST /applications {lenderId}`, `GET /applications/:id`, `GET /loan/categories?entityType=` → `{ categories: [{ id, available, reason? }] }`, `POST /loan/requirement`, `POST /loan/pre-check`, `POST /consent` (`ConsentRecord`).
 - Privacy policy link: `.env` me `EXPO_PUBLIC_PRIVACY_POLICY_URL=https://...`.
 - Mock me Invoice Finance "Unavailable" dikhta hai (`MOCK_UNAVAILABLE` in `services/loan.ts`).
 - Onboarding dobara dekhna ho: app data clear karo (web pe localStorage clear).

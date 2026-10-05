@@ -11,6 +11,7 @@ const ICONS = {
   'arrow-forward': { ios: 'arrow.right', android: 'arrow_forward' },
   'arrow-back': { ios: 'arrow.left', android: 'arrow_back' },
   'chevron-left': { ios: 'chevron.left', android: 'chevron_left' },
+  'chevron-right': { ios: 'chevron.right', android: 'chevron_right' },
   'expand-more': { ios: 'chevron.down', android: 'expand_more' },
   'check-circle': { ios: 'checkmark.circle.fill', android: 'check_circle' },
   check: { ios: 'checkmark', android: 'check' },
@@ -44,6 +45,7 @@ const ICONS = {
   delete: { ios: 'trash', android: 'delete' },
   payments: { ios: 'banknote', android: 'payments' },
   quote: { ios: 'doc.plaintext', android: 'request_quote' },
+  copy: { ios: 'doc.on.doc', android: 'content_copy' },
 } as const;
 
 export type IconName = keyof typeof ICONS;

@@ -6,6 +6,9 @@ import type { DocumentId } from '@/constants/documents';
 import type { LoanCategoryId } from '@/constants/loan';
 import { setAuthToken } from '@/services/api';
 import type { Session, User } from '@/services/auth';
+import type { LoanApplication } from '@/services/application';
+import type { LenderMatch } from '@/services/lenders';
+import type { HealthScore, ImprovementItem } from '@/services/score';
 
 /**
  * App-wide state (session + borrower journey), persisted to AsyncStorage.
@@ -57,7 +60,12 @@ export type Journey = {
   /** Only verified documents are kept (keyed by checklist item). */
   documents?: Partial<Record<DocumentId, UploadedDocument>>;
   analysis?: Analysis;
-  // Later phases add: assessment, ...
+  profileDraft?: { fullName?: string; pan?: string; dob?: string };
+  score?: HealthScore;
+  improvement?: ImprovementItem[];
+  lenderMatch?: LenderMatch;
+  selectedLenderId?: string;
+  application?: LoanApplication;
 };
 
 type Store = {

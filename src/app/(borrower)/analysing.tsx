@@ -20,6 +20,12 @@ export default function AnalysingScreen() {
   const entityType = journey.entityType;
   const [status, setStatus] = useState<AnalysisStatus | null>(null);
   const [offline, setOffline] = useState(false);
+  const [polledId, setPolledId] = useState(analysis?.id);
+  if (polledId !== analysis?.id) {
+    setPolledId(analysis?.id);
+    setStatus(null);
+    setOffline(false);
+  }
   const [notifying, setNotifying] = useState(false);
   const [notifyError, setNotifyError] = useState<string | null>(null);
   const [retrying, setRetrying] = useState(false);
@@ -30,7 +36,6 @@ export default function AnalysingScreen() {
     let cancelled = false;
     let timer: ReturnType<typeof setTimeout> | undefined;
     let failures = 0;
-    setStatus(null);
     const tick = async () => {
       try {
         const res = await getAnalysis(analysisId, entityType);
