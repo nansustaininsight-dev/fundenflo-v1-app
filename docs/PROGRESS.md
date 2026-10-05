@@ -2,7 +2,7 @@
 
 > Ye file har phase ke baad update hoti hai. Agla kaam shuru karne se pehle ye file AI/dev ko de do — isse pata chal jayega kya ho chuka hai aur aage kya karna hai.
 >
-> Last update: 5 Oct 2026 · Phase 1 complete
+> Last update: 5 Oct 2026 · Phase 2 complete
 
 ---
 
@@ -33,8 +33,8 @@
 |---|-------|---------|--------|
 | 0 | Splash + Onboarding | Splash, 3 intro slides | ✅ (user ne pehle banaya tha) |
 | 1 | Auth + Foundation | Mobile login, OTP, Step 1 (Individual/MSME) | ✅ Done |
-| 2 | Loan requirement | Loan Category, Loan Amount & Tenure, Loan Purpose | ⏳ Next |
-| 3 | Pre-check + Consent | Pre-Eligibility (Step 3), Consent (Step 4) | ⬜ |
+| 2 | Loan requirement + Pre-check | Loan Category, Loan Amount & Tenure, Loan Purpose, Pre-Eligibility (Step 3) | ✅ Done |
+| 3 | Consent | Consent (Step 4) — abhi placeholder hai | ⏳ Next |
 | 4 | Documents | Documents checklist, Upload (Step 5), Document Verification (analysing) | ⬜ |
 | 5 | Identity | **Verify Your Details** (Full Name, PAN, DOB, Confirm & Continue) — NEW screen, design me nahi hai | ⬜ |
 | 6 | Assessment | Financial Assessment, Financial Health Score (Step 6), Improvement Plan | ⬜ |
@@ -65,26 +65,68 @@
 - Flow: Splash → Onboarding → Login → OTP → Step 1. Dobara app khole: Splash → (logged in ? Step 1 : Login).
 
 ### Known limitation (Phase 1)
-- Step 1 ka **Continue** abhi choice save karke "next build" message dikhata hai — Phase 2 me `router.push('/loan-category')` lagana hai (`entity-type.tsx` ka `next()` function).
 - Hindi translation nahi hai (sirf toggle UI).
 - Real backend nahi — mock OTP `123456`.
 
-## 5. Phase 2 me kya karna hai (NEXT)
+## 5. Phase 2 me kya bana (detail)
 
-Design files: `what_do_you_need_funding_for_step_2/` (category grid + amount slider + tenure chips + location + indicative EMI card).
-1. `src/app/(borrower)/loan-category.tsx` — category grid (2 columns), "Unavailable" disabled state, MSME vs Individual ke hisaab se categories filter.
-2. Loan Amount & Tenure — amount (₹ lakh/crore format, slider ya input), tenure chips 1/2/3/5 yr.
-3. Loan Purpose screen.
-4. `Journey` type (`app-store.tsx`) me `loanCategory`, `amount`, `tenureYears`, `purpose` add karo.
-5. Step 1 Continue → `/loan-category` connect karo.
-- ⚠️ PRODUCT_BRIEF rule: fake lender offers / rates / approval probability mat dikhao. "Indicative EMI" sirf clearly labelled estimate ho.
+> User ke kehne pe **Pre-Eligibility (Quick pre-check) Phase 2 me hi bana diya** — isliye Phase 3 me ab sirf Consent bacha hai.
 
-## 6. Baaki phases ke notes
+### Screens (flow: Step 1 → Category → Amount → Purpose → Pre-check → Consent)
+| Route | File | Header | Kya hai |
+|---|---|---|---|
+| `/loan-category` | `src/app/(borrower)/loan-category.tsx` | Step 2 of 6 · "Loan requirement • 1 of 3" | Design jaisa 2-column tile grid. MSME ko 8 categories, Individual ko 4 (Personal, Home, Vehicle, LAP). Selected = navy icon + gold check. **Unavailable** tile (Invoice Finance, "Not yet available in your area") disabled + greyed. API se availability load hoti hai → loading skeleton (pulse), error card + "Try again". |
+| `/loan-amount` | `src/app/(borrower)/loan-amount.tsx` | Step 2 of 6 · "2 of 3" | "How much?" card: bada ₹ amount **editable** (number-pad, Indian commas `25,00,000` live), custom **slider** (category ke min/max/step), ₹5 Lakh — Max sanction pool — ₹2 Crore labels, tenure pills (category-wise), location picker (bottom sheet + search + "Use ‹typed town›"), **Illustrative EMI** card. Upar "Working Capital · Change" chip. |
+| `/loan-purpose` | `src/app/(borrower)/loan-purpose.tsx` | Step 2 of 6 · "3 of 3" | Summary card (category · amount · tenure · city + Edit), category-wise purpose list (radio rows), notes textarea (optional; "Something else" pe **required, min 10 chars**, max 250 + counter). Continue → `submitLoanRequirement` (loading + error banner). |
+| `/pre-check` | `src/app/(borrower)/pre-check.tsx` | Step 3 of 6 · "Assessment • Step 3 of 6" | Design jaisa: 4 question cards ("1 of 4"), 2-column chips, selected = navy + gold tick, shield note. MSME: business age / turnover / EMIs / GST. Individual: income type / monthly income / work years / EMIs. Continue → `submitPreCheck` (loading + error). |
+| `/consent` | `src/app/(borrower)/consent.tsx` | Step 4 of 6 | **Sirf placeholder** (typed routes ke liye route exist karna zaroori tha). Saved summary dikhata hai. Phase 3 me isi file ko design `your_consent_step_4_of_6/` se replace karna hai. |
+
+### Naye reusable pieces
+- `src/constants/loan.ts` — **loan catalog**: har category ka title/icon, `minAmount/maxAmount/step/defaultAmount`, `tenures`, `purposes`, `assumedRate` (sirf illustration). `CATEGORIES_FOR` (MSME vs Individual), `PRE_CHECK_QUESTIONS`, `CITIES`, helpers `formatINR` (Indian grouping, Intl pe depend nahi), `formatShortINR` (₹5 Lakh / ₹2 Crore), `formatTenure`, `estimateEmi`, `clamp`.
+- `src/services/loan.ts` — `getLoanCategories(entityType)`, `submitLoanRequirement(req)`, `submitPreCheck(entityType, answers)`. Mock mode me delay + data; real me `GET /loan/categories?entityType=`, `POST /loan/requirement`, `POST /loan/pre-check`.
+- `src/components/ui/slider.tsx` — RN core touch responder pe bana slider (koi library nahi). Drag + tap-to-jump, ScrollView drag nahi churata, accessibility `adjustable` (increment/decrement).
+- `src/components/journey/choice-chip.tsx` — radio chip (`card` = pre-check style, `pill` = tenure style).
+- `src/components/journey/journey-footer.tsx` — Continue + hint ("kya missing hai") + red error + "256-Bit…" line. Aage ke journey screens me yahi use karo.
+- `src/components/journey/city-picker.tsx` — bottom-sheet Modal, search, safe-area insets, keyboard avoiding.
+- `src/components/journey/eyebrow.tsx` — gold dot + uppercase label.
+
+### Phase 1 files me chhote changes (sirf integration)
+- `entity-type.tsx` — Continue ab `router.push('/loan-category')` karta hai; "next build" saved-note hata diya.
+- `app-store.tsx` — `Journey` me `loanCategory, amount, tenureYears, location, purpose, purposeNote, preCheck { entityType, answers }` add.
+- `icon.tsx` — naye icons: store, sync-alt, machinery, receipt, wallet, home, car, location, verified, shield-person, search, close, refresh, edit.
+
+### Validation / states
+- Har screen pe Continue **disabled** jab tak valid na ho, aur footer me bataata hai kya missing hai (e.g. "Select your preferred tenure.", "Answer the remaining 1 question…").
+- Amount: range ke bahar → red border + "Enter an amount between ₹5 Lakh and ₹2 Crore." (max cross karte hi turant, min wala blur pe). Slider clamp rehta hai. Bahut lamba number → font chhota.
+- Category change → amount clamp ho jata hai naye range me; purana tenure/purpose agar naye category me valid nahi toh select nahi rehta.
+- Entity type change (MSME ↔ Individual) → purane pre-check answers ignore (questions alag hain).
+- Guards: prerequisite missing ho (deep link) toh pichle step pe `<Redirect>`.
+- **Data persist**: har selection turant journey (AsyncStorage) me save hota hai → back/forward aur app reload pe sab wapas aata hai.
+- ⚠️ PRODUCT_BRIEF rule follow kiya: koi fake lender offer / approval chance nahi. EMI card clearly "Illustrative … assumes X% p.a. … Not a lender offer — lenders set the final rate." Design ka "APR ~ 11.25%" jaan-boojh ke nahi dikhaya.
+
+### Design se jaan-boojh ke differences
+- Design me category + amount ek hi screen pe hai; requirement ke hisaab se 3 screens me split kiya (same visual style).
+- Design me location "Gurugram" pre-filled tha — humne empty rakha (user khud choose kare). Tenure bhi pre-selected nahi.
+- Headings Poppins me (Phase 1 jaisa), design ka Space Grotesk nahi.
+
+### Testing (Phase 2)
+- `npx tsc --noEmit` ✅ · `npx expo lint` ✅ · `npx expo export -p web` ✅ (saare naye routes build hue).
+- Headless Chrome (CDP script) se **pura MSME flow** 390px aur 320px dono pe chalaya — 23/23 checks pass: disabled states, unavailable tile, slider drag, out-of-range error, Indian comma formatting, tenure/location hints, city search, EMI, "Something else" required note, **back → forward data preserved**, submit loading, pre-check partial hint, consent navigation, **reload ke baad answers restore**.
+- ❗ Abhi tak **nahi** hua: physical Android/iPhone test (keyboard, Modal, slider touch real device pe check karna), Individual flow ka e2e run (sirf typecheck), real backend API.
+
+## 6. Phase 3 me kya karna hai (NEXT)
+
+- `src/app/(borrower)/consent.tsx` placeholder ko design `your_consent_step_4_of_6/` se replace karo (Step 4 of 6, `JourneyFooter` reuse).
+- `Journey` me consent fields add karo (kis cheez ka consent, timestamp) + `services/` me consent API (mock + real) — consent audit ke liye zaroori.
+- Pre-check (`pre-check.tsx`) already `router.push('/consent')` karta hai — kuch change nahi chahiye.
+- Consent ke baad Phase 4 (Documents) ka route connect karna.
+
+## 7. Baaki phases ke notes
 - **Verify Your Details** (Phase 5): Document Verification ke baad. Fields: Full Name, PAN (format `ABCDE1234F`, auto-uppercase), DOB (18+ check, DD/MM/YYYY). Confirm & Continue → `updateUser({ fullName, pan, dob })`.
 - **Dashboard** (Phase 8): `Namaste, {firstName(session.user)} 👋` — name kabhi hardcode nahi. Name missing ho toh sirf `Namaste 👋`. Design: `home/`.
 - Partner portal / case queue / commissions designs CA/DSA app ke liye hain — borrower journey ka part nahi.
 
-## 7. Run / Test commands
+## 8. Run / Test commands
 
 ```bash
 npm start                 # dev server (Expo Go / dev build me scan karo)
@@ -94,6 +136,7 @@ npx expo lint             # lint
 ```
 
 - Mock OTP: **123456**
-- Real backend: `.env` me `EXPO_PUBLIC_API_URL=https://...` → endpoints `POST /auth/otp/request {mobile,countryCode,referralCode}`, `POST /auth/otp/verify {mobile,otp}` → `{ token, user }`.
+- Real backend: `.env` me `EXPO_PUBLIC_API_URL=https://...` → endpoints `POST /auth/otp/request {mobile,countryCode,referralCode}`, `POST /auth/otp/verify {mobile,otp}` → `{ token, user }`, `GET /loan/categories?entityType=` → `{ categories: [{ id, available, reason? }] }`, `POST /loan/requirement`, `POST /loan/pre-check`.
+- Mock me Invoice Finance "Unavailable" dikhta hai (`MOCK_UNAVAILABLE` in `services/loan.ts`).
 - Onboarding dobara dekhna ho: app data clear karo (web pe localStorage clear).
 - Phase 1 test kiya: `tsc` ✅, `expo lint` ✅, web export ✅, headless Chrome screenshots (390px + 320px) login/OTP/Step 1 ✅. Physical Android/iPhone pe abhi test nahi hua.

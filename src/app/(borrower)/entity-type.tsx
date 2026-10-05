@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import Animated, { FadeIn, FadeInDown, ZoomIn } from 'react-native-reanimated';
+import Animated, { FadeInDown, ZoomIn } from 'react-native-reanimated';
 import { router } from 'expo-router';
 
 import { Button } from '@/components/ui/button';
@@ -18,13 +18,11 @@ const OPTIONS: { id: EntityType; title: string; sub: string; icon: IconName }[] 
 export default function EntityTypeScreen() {
   const { journey, updateJourney, signOut } = useAppStore();
   const [selected, setSelected] = useState<EntityType | undefined>(journey.entityType);
-  const [saved, setSaved] = useState(false);
 
   async function next() {
     if (!selected) return;
     await updateJourney({ entityType: selected });
-    // Phase 2 (Loan Category → Amount & Tenure → Purpose) will route onward from here.
-    setSaved(true);
+    router.push('/loan-category');
   }
 
   async function logout() {
@@ -36,12 +34,6 @@ export default function EntityTypeScreen() {
     <Screen
       header={<StepHeader step={1} hideBack />}
       footer={<>
-        {saved && (
-          <Animated.View entering={FadeIn} style={s.saved}>
-            <Icon name="check-circle" size={15} color={C.success} />
-            <Text style={s.savedText}>Saved. Loan category selection arrives in the next build.</Text>
-          </Animated.View>
-        )}
         <Button label="Continue" icon="arrow-forward" onPress={() => void next()} disabled={!selected} />
         <View style={s.secure}>
           <Icon name="lock" size={13} color={C.muted} />
@@ -62,7 +54,7 @@ export default function EntityTypeScreen() {
                 accessibilityRole="radio"
                 accessibilityState={{ checked: on }}
                 accessibilityLabel={`${o.title}. ${o.sub}`}
-                onPress={() => { setSelected(o.id); setSaved(false); }}
+                onPress={() => setSelected(o.id)}
                 style={({ pressed }) => [s.card, on && s.cardOn, pressed && { transform: [{ scale: 0.99 }] }]}>
                 <View style={[s.iconTile, on && s.iconTileOn]}>
                   <Icon name={o.icon} size={22} color={C.navy} />
@@ -111,8 +103,6 @@ const s = StyleSheet.create({
   grow: { flexGrow: 1, minHeight: S.lg },
   logout: { alignSelf: 'center', minHeight: 40, justifyContent: 'center' },
   logoutText: { fontFamily: F.body, fontSize: 12, color: C.muted, textDecorationLine: 'underline' },
-  saved: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 10, padding: 10, borderRadius: R.chip, backgroundColor: C.successSoft },
-  savedText: { fontFamily: F.body, fontSize: 12, color: C.success, flexShrink: 1 },
   secure: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 12 },
   secureText: { fontFamily: F.body, fontSize: 11, fontWeight: '600', color: C.muted },
 });

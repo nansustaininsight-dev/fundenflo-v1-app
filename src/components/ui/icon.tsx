@@ -21,6 +21,20 @@ const ICONS = {
   shield: { ios: 'checkmark.shield', android: 'verified_user' },
   error: { ios: 'exclamationmark.circle', android: 'error' },
   sms: { ios: 'message', android: 'sms' },
+  store: { ios: 'storefront', android: 'store' },
+  'sync-alt': { ios: 'arrow.left.arrow.right', android: 'sync_alt' },
+  machinery: { ios: 'gearshape.2', android: 'precision_manufacturing' },
+  receipt: { ios: 'doc.text', android: 'receipt_long' },
+  wallet: { ios: 'creditcard', android: 'account_balance_wallet' },
+  home: { ios: 'house', android: 'cottage' },
+  car: { ios: 'car', android: 'directions_car' },
+  location: { ios: 'mappin.and.ellipse', android: 'location_on' },
+  verified: { ios: 'checkmark.seal', android: 'verified' },
+  'shield-person': { ios: 'lock.shield', android: 'shield_person' },
+  search: { ios: 'magnifyingglass', android: 'search' },
+  close: { ios: 'xmark', android: 'close' },
+  refresh: { ios: 'arrow.clockwise', android: 'refresh' },
+  edit: { ios: 'pencil', android: 'edit' },
 } as const;
 
 export type IconName = keyof typeof ICONS;
