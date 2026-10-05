@@ -3,6 +3,9 @@ import { AccessibilityInfo, Animated, Image, Pressable, ScrollView, StyleSheet, 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StatusBar } from 'expo-status-bar';
+import { router } from 'expo-router';
+
+import { useAppStore } from '@/store/app-store';
 
 const navy = '#082C4B', gold = '#F5BE35', muted = '#687786';
 const KEY = 'fundenflo:onboarding:v1';
@@ -29,11 +32,11 @@ function Illustration({ page }: { page: number }) {
 }
 
 export default function WelcomeFlow() {
-  const [stage, setStage] = useState<'splash' | 'slides' | 'ready'>('splash');
+  const [stage, setStage] = useState<'splash' | 'slides'>('splash');
+  const { session } = useAppStore();
   const [page, setPage] = useState(0);
   const [reduceMotion, setReduceMotion] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [storageError, setStorageError] = useState(false);
   const [fade] = useState(() => new Animated.Value(0));
   const { width } = useWindowDimensions();
   const swipeX = useRef<number | null>(null);
@@ -42,8 +45,9 @@ export default function WelcomeFlow() {
     const subscription = AccessibilityInfo.addEventListener('reduceMotionChanged', setReduceMotion);
     void AccessibilityInfo.isReduceMotionEnabled().then(v => { if (active) setReduceMotion(v); });
     const timer = new Promise(resolve => setTimeout(resolve, 1600));
-    void Promise.all([AsyncStorage.getItem(KEY).catch(() => null), timer]).then(([seen]) => { if (active) setStage(seen === 'done' ? 'ready' : 'slides'); });
+    void Promise.all([AsyncStorage.getItem(KEY).catch(() => null), timer]).then(([seen]) => { if (!active) return; if (seen === 'done') leave(); else setStage('slides'); });
     return () => { active = false; subscription.remove(); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- runs once on launch
   }, []);
   useEffect(() => {
     fade.setValue(0);
@@ -51,24 +55,28 @@ export default function WelcomeFlow() {
     animation.start();
     return () => animation.stop();
   }, [page, stage, fade, reduceMotion]);
+  // Returning users skip straight past the intro: signed in → journey, otherwise → mobile login.
+  function leave() { router.replace(session ? '/entity-type' : '/login'); }
   async function finish() {
     if (saving) return;
     setSaving(true);
-    try { await AsyncStorage.setItem(KEY, 'done'); setStorageError(false); } catch { setStorageError(true); }
-    setStage('ready'); setSaving(false);
+    // A storage failure only means the intro shows again next launch.
+    await AsyncStorage.setItem(KEY, 'done').catch(() => undefined);
+    setSaving(false);
+    leave();
   }
   if (stage === 'splash') return <SafeAreaView style={s.splash}><StatusBar style="light" /><View style={s.splashRing} /><Animated.View style={[s.splashCenter, { opacity: fade }]}><Image source={require('../../assets/brand/logo-white.png')} style={s.splashLogo} resizeMode="contain" /><View style={s.goldLine} /><Text style={s.splashMessage}>A clearer path to capital.</Text></Animated.View><Text style={s.splashFooter}>YOUR AMBITION. OUR DIRECTION.</Text></SafeAreaView>;
   const current = slides[page];
   return <SafeAreaView style={s.root}><StatusBar style="dark" /><View style={[s.shell, width > 650 && s.desktop]}>
-    <View style={s.header}><Image source={require('../../assets/brand/logo.png')} style={s.logo} resizeMode="contain" />{stage === 'slides' && <Pressable accessibilityRole="button" onPress={() => void finish()} hitSlop={12} style={s.skip}><Text style={s.skipText}>Skip intro ↗</Text></Pressable>}</View>
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll} onTouchStart={e => { swipeX.current = e.nativeEvent.pageX; }} onTouchEnd={e => { if (stage !== 'slides' || swipeX.current === null) return; const dx = e.nativeEvent.pageX - swipeX.current; if (Math.abs(dx) > 65) setPage(p => Math.max(0, Math.min(2, p + (dx < 0 ? 1 : -1)))); swipeX.current = null; }}>
+    <View style={s.header}><Image source={require('../../assets/brand/logo.png')} style={s.logo} resizeMode="contain" /><Pressable accessibilityRole="button" onPress={() => void finish()} hitSlop={12} style={s.skip}><Text style={s.skipText}>Skip intro ↗</Text></Pressable></View>
+    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll} onTouchStart={e => { swipeX.current = e.nativeEvent.pageX; }} onTouchEnd={e => { if (swipeX.current === null) return; const dx = e.nativeEvent.pageX - swipeX.current; if (Math.abs(dx) > 65) setPage(p => Math.max(0, Math.min(2, p + (dx < 0 ? 1 : -1)))); swipeX.current = null; }}>
       <Animated.View style={{ opacity: fade, transform: [{ translateY: fade.interpolate({ inputRange: [0, 1], outputRange: [reduceMotion ? 0 : 12, 0] }) }] }}>
-        <View style={s.eyebrow}><View style={s.tinyDot} /><Text style={s.eyebrowText}>{stage === 'ready' ? 'YOUR JOURNEY STARTS HERE' : current.tag}</Text></View>
-        <Illustration page={stage === 'ready' ? 2 : page} />
-        <View style={s.copy}><Text accessibilityRole="header" style={s.title}>{stage === 'ready' ? 'Ready for your\nnext chapter?' : current.title}</Text><Text style={s.accent}>{stage === 'ready' ? 'Let’s move forward, together.' : current.accent}</Text><Text style={s.body}>{stage === 'ready' ? 'You’ve explored the FundenFlo journey. Account creation is the next part of the app we’ll build.' : current.body}</Text></View>
+        <View style={s.eyebrow}><View style={s.tinyDot} /><Text style={s.eyebrowText}>{current.tag}</Text></View>
+        <Illustration page={page} />
+        <View style={s.copy}><Text accessibilityRole="header" style={s.title}>{current.title}</Text><Text style={s.accent}>{current.accent}</Text><Text style={s.body}>{current.body}</Text></View>
       </Animated.View>
     </ScrollView>
-    <View style={s.footer}>{stage === 'slides' ? <><View style={s.progress}><View style={s.dots}>{slides.map((_, i) => <Pressable key={i} accessibilityRole="button" accessibilityLabel={`Go to slide ${i + 1}`} accessibilityState={{ selected: page === i }} onPress={() => setPage(i)} style={s.dotTarget}><View style={[s.dot, page === i && s.dotActive]} /></Pressable>)}</View><Text style={s.counter}>0{page + 1}<Text style={{ color: '#9CA5AB' }}> / 03</Text></Text></View><Button label={saving ? 'Preparing…' : page === 2 ? 'Let’s get started' : 'Continue'} onPress={() => page < 2 ? setPage(page + 1) : void finish()} /><View style={s.bottomRow}>{page > 0 ? <Pressable accessibilityRole="button" onPress={() => setPage(page - 1)} hitSlop={10}><Text style={s.back}>← Back</Text></Pressable> : <Text style={s.bottomText}>Made for individuals & MSMEs</Text>}<Text style={s.bottomText}>A clearer way forward</Text></View><Text style={s.disclosure}>{current.note}</Text></> : <><View style={s.coming}><Text style={s.comingTitle}>Registration · Coming next</Text><Text style={s.small}>No account or financial data is collected in this preview.</Text></View><Button secondary label="Explore the introduction again" onPress={() => { setPage(0); setStage('slides'); }} />{storageError && <Text style={s.disclosure}>Your introduction preference couldn’t be saved on this device.</Text>}</>}</View>
+    <View style={s.footer}><View style={s.progress}><View style={s.dots}>{slides.map((_, i) => <Pressable key={i} accessibilityRole="button" accessibilityLabel={`Go to slide ${i + 1}`} accessibilityState={{ selected: page === i }} onPress={() => setPage(i)} style={s.dotTarget}><View style={[s.dot, page === i && s.dotActive]} /></Pressable>)}</View><Text style={s.counter}>0{page + 1}<Text style={{ color: '#9CA5AB' }}> / 03</Text></Text></View><Button label={saving ? 'Preparing…' : page === 2 ? 'Let’s get started' : 'Continue'} onPress={() => page < 2 ? setPage(page + 1) : void finish()} /><View style={s.bottomRow}>{page > 0 ? <Pressable accessibilityRole="button" onPress={() => setPage(page - 1)} hitSlop={10}><Text style={s.back}>← Back</Text></Pressable> : <Text style={s.bottomText}>Made for individuals & MSMEs</Text>}<Text style={s.bottomText}>A clearer way forward</Text></View><Text style={s.disclosure}>{current.note}</Text></View>
   </View></SafeAreaView>;
 }
 
@@ -80,6 +88,6 @@ const s = StyleSheet.create({
   card: { width: '88%', maxWidth: 305, padding: 20, backgroundColor: '#FFFFFF', borderRadius: 20, borderWidth: 1, borderColor: '#E3E9E4', boxShadow: '0px 14px 32px rgba(8,44,75,0.09)', transform: [{ rotate: '-3deg' }] }, cardTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 13 }, cardLabel: { fontFamily: 'Inter', fontSize: 9, letterSpacing: 1, color: muted }, miniMark: { width: 25, height: 25, backgroundColor: navy, borderRadius: 8, alignItems: 'center', justifyContent: 'center' }, miniMarkText: { color: gold, fontSize: 20 }, scoreCircle: { alignItems: 'center', paddingVertical: 8 }, scoreIcon: { color: navy, fontSize: 46, backgroundColor: '#F7EDCB', width: 74, height: 74, borderRadius: 37, textAlign: 'center', lineHeight: 74 }, scoreTitle: { fontFamily: 'Poppins', color: navy, fontSize: 17, marginTop: 8 }, small: { fontFamily: 'Inter', color: muted, fontSize: 10, lineHeight: 17 }, factor: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 10 }, track: { height: 6, width: '45%', borderRadius: 4, backgroundColor: '#EBEFEB', overflow: 'hidden' }, fill: { height: 6, backgroundColor: '#3D8273', borderRadius: 4 }, preview: { fontFamily: 'Inter', fontSize: 7, letterSpacing: 1, color: muted, textAlign: 'center', marginTop: 17 }, floating: { position: 'absolute', bottom: 4, right: 0, backgroundColor: navy, padding: 14, borderRadius: 15, flexDirection: 'row', gap: 10, alignItems: 'center', boxShadow: '0px 8px 18px rgba(8,44,75,0.15)' }, spark: { backgroundColor: gold, width: 34, height: 34, borderRadius: 11, alignItems: 'center', justifyContent: 'center' }, sparkText: { fontSize: 22, color: navy }, floatTitle: { fontFamily: 'Poppins', color: '#fff', fontSize: 11 },
   cardHeading: { fontFamily: 'Poppins', fontSize: 18, color: navy, marginBottom: 12 }, listRow: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 10 }, number: { width: 29, height: 29, borderRadius: 10, backgroundColor: '#EFF3EC', alignItems: 'center', justifyContent: 'center' }, numberText: { color: navy, fontFamily: 'Inter', fontSize: 12 }, rowText: { fontFamily: 'Inter', color: navy, fontSize: 11, flex: 1 }, check: { color: '#3D8273' }, softPill: { backgroundColor: '#F7EDCB', padding: 9, borderRadius: 8, marginTop: 8 }, pillText: { fontFamily: 'Inter', color: navy, fontSize: 10, textAlign: 'center' },
   copy: { marginTop: 16 }, title: { fontFamily: 'Poppins', fontSize: 29, lineHeight: 39, color: navy, letterSpacing: -0.8 }, accent: { fontFamily: 'Poppins', fontSize: 14, color: '#9A7218', marginTop: 14 }, body: { fontFamily: 'Inter', fontSize: 14, lineHeight: 23, color: muted, marginTop: 8 },
-  footer: { paddingTop: 12, paddingBottom: 12 }, progress: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }, dots: { flexDirection: 'row', alignItems: 'center' }, dotTarget: { minWidth: 28, height: 32, justifyContent: 'center', alignItems: 'center' }, dot: { width: 6, height: 6, borderRadius: 4, backgroundColor: '#CDD4D6' }, dotActive: { width: 26, backgroundColor: navy }, counter: { fontFamily: 'Inter', fontSize: 11, color: navy }, button: { minHeight: 58, backgroundColor: navy, borderRadius: 16, paddingHorizontal: 22, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }, secondary: { backgroundColor: '#E9EEE9', justifyContent: 'center' }, buttonText: { color: '#FFFFFF', fontFamily: 'Poppins', fontSize: 14 }, arrow: { color: gold, fontSize: 25 }, bottomRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', minHeight: 42 }, bottomText: { fontFamily: 'Inter', fontSize: 9, color: muted }, back: { fontFamily: 'Inter', fontSize: 12, color: navy }, disclosure: { fontFamily: 'Inter', fontSize: 9, lineHeight: 14, color: muted, textAlign: 'center' }, coming: { padding: 18, borderRadius: 16, borderWidth: 1, borderColor: '#DDE3DC', marginBottom: 14 }, comingTitle: { fontFamily: 'Poppins', fontSize: 14, color: navy, marginBottom: 6 },
+  footer: { paddingTop: 12, paddingBottom: 12 }, progress: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }, dots: { flexDirection: 'row', alignItems: 'center' }, dotTarget: { minWidth: 28, height: 32, justifyContent: 'center', alignItems: 'center' }, dot: { width: 6, height: 6, borderRadius: 4, backgroundColor: '#CDD4D6' }, dotActive: { width: 26, backgroundColor: navy }, counter: { fontFamily: 'Inter', fontSize: 11, color: navy }, button: { minHeight: 58, backgroundColor: navy, borderRadius: 16, paddingHorizontal: 22, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }, secondary: { backgroundColor: '#E9EEE9', justifyContent: 'center' }, buttonText: { color: '#FFFFFF', fontFamily: 'Poppins', fontSize: 14 }, arrow: { color: gold, fontSize: 25 }, bottomRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', minHeight: 42 }, bottomText: { fontFamily: 'Inter', fontSize: 9, color: muted }, back: { fontFamily: 'Inter', fontSize: 12, color: navy }, disclosure: { fontFamily: 'Inter', fontSize: 9, lineHeight: 14, color: muted, textAlign: 'center' },
   splash: { flex: 1, backgroundColor: navy, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }, splashCenter: { alignItems: 'center', width: '100%', paddingHorizontal: 36 }, splashLogo: { width: '100%', maxWidth: 340, height: 100 }, goldLine: { width: 40, height: 3, borderRadius: 3, backgroundColor: gold, marginTop: 22, marginBottom: 20 }, splashMessage: { fontFamily: 'Inter', color: '#D8E2EA', fontSize: 14 }, splashFooter: { position: 'absolute', bottom: 48, color: '#B2C3D1', fontFamily: 'Inter', fontSize: 9, letterSpacing: 2 }, splashRing: { position: 'absolute', width: 520, height: 520, borderRadius: 260, borderWidth: 1, borderColor: '#17415F' },
 });
