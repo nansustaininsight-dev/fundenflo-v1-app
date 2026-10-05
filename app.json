@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "FundenFlo",
-    "slug": "FundenFlo-v1-app",
+    "slug": "fundenflo",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -44,6 +44,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "1183341a-f350-4302-9f72-a073fd199400"
+      }
+    },
+    "owner": "diplo-devs-team"
   }
 }
