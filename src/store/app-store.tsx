@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import type { ConsentId } from '@/constants/consent';
 import type { LoanCategoryId } from '@/constants/loan';
 import { setAuthToken } from '@/services/api';
 import type { Session, User } from '@/services/auth';
@@ -13,6 +14,13 @@ export type EntityType = 'msme' | 'individual';
 
 export type PreCheck = { entityType: EntityType; answers: Record<string, string> };
 
+/** One entry per consent item; `at` is when it was last changed (ISO) — kept for audit. */
+export type ConsentRecord = {
+  version: string;
+  submittedAt: string;
+  items: Record<ConsentId, { granted: boolean; at: string }>;
+};
+
 export type Journey = {
   entityType?: EntityType;
   loanCategory?: LoanCategoryId;
@@ -23,7 +31,10 @@ export type Journey = {
   purposeNote?: string;
   /** Answers are tied to the entity type they were asked for (questions differ). */
   preCheck?: PreCheck;
-  // Later phases add: consent, documents, ...
+  consent?: ConsentRecord;
+  /** Unsubmitted toggle positions on the consent screen — not consent until submitted. */
+  consentDraft?: Partial<Record<ConsentId, boolean>>;
+  // Later phases add: documents, ...
 };
 
 type Store = {

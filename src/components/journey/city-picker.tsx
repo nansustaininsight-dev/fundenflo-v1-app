@@ -85,6 +85,7 @@ export function CityPicker({ visible, value, title, onSelect, onClose }: Props) 
                   onPress={() => pick(item)}
                   accessibilityRole="radio"
                   accessibilityState={{ checked: on }}
+                  aria-checked={on}
                   style={({ pressed }) => [s.row, pressed && s.rowPressed]}>
                   <Icon name="location" size={18} color={on ? C.navy : C.slate} />
                   <Text style={[s.rowText, on && s.rowTextOn]} numberOfLines={1}>{item}</Text>

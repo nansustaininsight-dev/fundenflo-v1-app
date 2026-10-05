@@ -80,6 +80,7 @@ export default function LoanCategoryScreen() {
                   <Pressable
                     accessibilityRole="radio"
                     accessibilityState={{ checked: on }}
+                    aria-checked={on}
                     accessibilityLabel={cat.title}
                     onPress={() => select(item.id)}
                     style={({ pressed }) => [s.tile, on && s.tileOn, pressed && s.pressed]}>

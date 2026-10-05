@@ -85,6 +85,7 @@ export default function LoanPurposeScreen() {
               <Pressable
                 accessibilityRole="radio"
                 accessibilityState={{ checked: on }}
+                aria-checked={on}
                 accessibilityLabel={p.label}
                 onPress={() => pick(p.id)}
                 style={({ pressed }) => [s.row, on && s.rowOn, pressed && s.pressed]}>

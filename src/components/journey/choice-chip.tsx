@@ -19,6 +19,7 @@ export function ChoiceChip({ label, selected, onPress, tone = 'card', style }: P
     <Pressable
       accessibilityRole="radio"
       accessibilityState={{ checked: selected }}
+      aria-checked={selected}
       accessibilityLabel={label}
       onPress={onPress}
       style={({ pressed }) => [s.base, s[tone], selected && s.on, pressed && s.pressed, style]}>

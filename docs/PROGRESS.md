@@ -2,7 +2,7 @@
 
 > Ye file har phase ke baad update hoti hai. Agla kaam shuru karne se pehle ye file AI/dev ko de do — isse pata chal jayega kya ho chuka hai aur aage kya karna hai.
 >
-> Last update: 5 Oct 2026 · Phase 2 complete
+> Last update: 5 Oct 2026 · Phase 3 complete
 
 ---
 
@@ -34,8 +34,8 @@
 | 0 | Splash + Onboarding | Splash, 3 intro slides | ✅ (user ne pehle banaya tha) |
 | 1 | Auth + Foundation | Mobile login, OTP, Step 1 (Individual/MSME) | ✅ Done |
 | 2 | Loan requirement + Pre-check | Loan Category, Loan Amount & Tenure, Loan Purpose, Pre-Eligibility (Step 3) | ✅ Done |
-| 3 | Consent | Consent (Step 4) — abhi placeholder hai | ⏳ Next |
-| 4 | Documents | Documents checklist, Upload (Step 5), Document Verification (analysing) | ⬜ |
+| 3 | Consent | Consent (Step 4) | ✅ Done |
+| 4 | Documents | Documents checklist, Upload (Step 5), Document Verification (analysing) — `/documents` abhi placeholder hai | ⏳ Next |
 | 5 | Identity | **Verify Your Details** (Full Name, PAN, DOB, Confirm & Continue) — NEW screen, design me nahi hai | ⬜ |
 | 6 | Assessment | Financial Assessment, Financial Health Score (Step 6), Improvement Plan | ⬜ |
 | 7 | Matching + Apply | Lender Matching, Application, Borrower consent | ⬜ |
@@ -79,11 +79,12 @@
 | `/loan-amount` | `src/app/(borrower)/loan-amount.tsx` | Step 2 of 6 · "2 of 3" | "How much?" card: bada ₹ amount **editable** (number-pad, Indian commas `25,00,000` live), custom **slider** (category ke min/max/step), ₹5 Lakh — Max sanction pool — ₹2 Crore labels, tenure pills (category-wise), location picker (bottom sheet + search + "Use ‹typed town›"), **Illustrative EMI** card. Upar "Working Capital · Change" chip. |
 | `/loan-purpose` | `src/app/(borrower)/loan-purpose.tsx` | Step 2 of 6 · "3 of 3" | Summary card (category · amount · tenure · city + Edit), category-wise purpose list (radio rows), notes textarea (optional; "Something else" pe **required, min 10 chars**, max 250 + counter). Continue → `submitLoanRequirement` (loading + error banner). |
 | `/pre-check` | `src/app/(borrower)/pre-check.tsx` | Step 3 of 6 · "Assessment • Step 3 of 6" | Design jaisa: 4 question cards ("1 of 4"), 2-column chips, selected = navy + gold tick, shield note. MSME: business age / turnover / EMIs / GST. Individual: income type / monthly income / work years / EMIs. Continue → `submitPreCheck` (loading + error). |
-| `/consent` | `src/app/(borrower)/consent.tsx` | Step 4 of 6 | **Sirf placeholder** (typed routes ke liye route exist karna zaroori tha). Saved summary dikhata hai. Phase 3 me isi file ko design `your_consent_step_4_of_6/` se replace karna hai. |
+| `/consent` | `src/app/(borrower)/consent.tsx` | Step 4 of 6 | Phase 2 me placeholder tha — **Phase 3 me real screen ban gaya** (neeche section 6 dekho). |
 
 ### Naye reusable pieces
 - `src/constants/loan.ts` — **loan catalog**: har category ka title/icon, `minAmount/maxAmount/step/defaultAmount`, `tenures`, `purposes`, `assumedRate` (sirf illustration). `CATEGORIES_FOR` (MSME vs Individual), `PRE_CHECK_QUESTIONS`, `CITIES`, helpers `formatINR` (Indian grouping, Intl pe depend nahi), `formatShortINR` (₹5 Lakh / ₹2 Crore), `formatTenure`, `estimateEmi`, `clamp`.
-- `src/services/loan.ts` — `getLoanCategories(entityType)`, `submitLoanRequirement(req)`, `submitPreCheck(entityType, answers)`. Mock mode me delay + data; real me `GET /loan/categories?entityType=`, `POST /loan/requirement`, `POST /loan/pre-check`.
+- `src/services/loan.ts` — `getLoanCategories(entityType)`, `submitLoanRequirement(req)`, `submitPreCheck(entityType, answers)`. Mock mode me delay + data; real me `GET /loan/categories?entityType=`, `POST /loan/requirement`, `POST /loan/pre-check`, `POST /consent` (`ConsentRecord`).
+- Privacy policy link: `.env` me `EXPO_PUBLIC_PRIVACY_POLICY_URL=https://...`.
 - `src/components/ui/slider.tsx` — RN core touch responder pe bana slider (koi library nahi). Drag + tap-to-jump, ScrollView drag nahi churata, accessibility `adjustable` (increment/decrement).
 - `src/components/journey/choice-chip.tsx` — radio chip (`card` = pre-check style, `pill` = tenure style).
 - `src/components/journey/journey-footer.tsx` — Continue + hint ("kya missing hai") + red error + "256-Bit…" line. Aage ke journey screens me yahi use karo.
@@ -114,19 +115,60 @@
 - Headless Chrome (CDP script) se **pura MSME flow** 390px aur 320px dono pe chalaya — 23/23 checks pass: disabled states, unavailable tile, slider drag, out-of-range error, Indian comma formatting, tenure/location hints, city search, EMI, "Something else" required note, **back → forward data preserved**, submit loading, pre-check partial hint, consent navigation, **reload ke baad answers restore**.
 - ❗ Abhi tak **nahi** hua: physical Android/iPhone test (keyboard, Modal, slider touch real device pe check karna), Individual flow ka e2e run (sirf typecheck), real backend API.
 
-## 6. Phase 3 me kya karna hai (NEXT)
+## 6. Phase 3 me kya bana (detail) — Consent
 
-- `src/app/(borrower)/consent.tsx` placeholder ko design `your_consent_step_4_of_6/` se replace karo (Step 4 of 6, `JourneyFooter` reuse).
-- `Journey` me consent fields add karo (kis cheez ka consent, timestamp) + `services/` me consent API (mock + real) — consent audit ke liye zaroori.
-- Pre-check (`pre-check.tsx`) already `router.push('/consent')` karta hai — kuch change nahi chahiye.
-- Consent ke baad Phase 4 (Documents) ka route connect karna.
+Design: `your_consent_step_4_of_6/`. Flow: Pre-check → **Consent** → `/documents` (Phase 4 placeholder).
 
-## 7. Baaki phases ke notes
+### Screen — `/consent` (`src/app/(borrower)/consent.tsx`, Step 4 of 6)
+- Design jaisa: shield badge, "You stay in control", 3 white cards + navy toggle, "You can change or withdraw consent anytime.", "Read full privacy policy →", "I agree & continue" + "256-bit encrypted".
+- 3 consent items (`src/constants/consent.ts`):
+  1. **Read my documents with AI** — **Required** (bina iske Financial Health Score nahi banega).
+  2. **Fetch my credit bureau report** — Optional.
+  3. **Share my file with lenders I choose** — Optional (off rakhoge toh bhi score + improvement plan milega).
+- Poora card tap karo ya toggle — dono se on/off hota hai.
+- Required off ho toh button disabled + hint: "Turn on “Read my documents with AI” to continue…".
+- "I agree & continue" → `submitConsent()` (loading spinner) → button "Preferences confirmed ✓" (~0.7s) → `/documents`. Fail hua toh red error banner, toggles waise hi rehte hain.
+- **Privacy sheet** (`src/components/journey/privacy-sheet.tsx`): bottom sheet me har consent ka simple-language explanation + Required/Optional badge. `.env` me `EXPO_PUBLIC_PRIVACY_POLICY_URL` set karoge toh "Open full privacy policy" button in-app browser (`expo-web-browser`, already installed) me kholega; warna "Got it".
+
+### Consent rules (jaan-boojh ke design se alag)
+- ⚠️ **Saare toggles default OFF.** Design me AI + Share pehle se ON the — par pre-ticked consent valid consent nahi maana jaata (DPDP Act: consent "clear affirmative action" se hona chahiye). User khud ON karega.
+- Design ka text "withdraw … from Settings" → "change or withdraw consent anytime" kiya, kyunki Settings screen abhi exist nahi karta. Abhi withdraw = wapas Step 4 pe aake toggle off + submit.
+- Design ka toast "FunderFlo Data Shield v2.4 Active" nahi dikhaya (fake/typo claim). Privacy sheet me bhi koi unverified claim (encryption-at-rest, soft enquiry) nahi likha.
+
+### Data / audit
+- `Journey.consent: ConsentRecord` = `{ version, submittedAt, items: { aiDocuments|creditBureau|lenderSharing: { granted, at } } }`.
+- `CONSENT_VERSION = '2026-10-v1'`. **Wording ya purpose badle toh version bump karo** → purana record invalid, user se dobara consent liya jayega.
+- Kisi item ka choice same raha toh uska purana `at` timestamp preserve hota hai; badla toh naya timestamp (audit trail).
+- Kuch bhi change nahi kiya aur dobara Continue → API call skip, seedha aage.
+- `Journey.consentDraft` — submit se pehle ke toggle positions (back/forward pe preserve). Ye consent **nahi** hai; submit ke baad clear ho jata hai.
+- API: `src/services/consent.ts` → `submitConsent(record)` → `POST /consent` (mock me 800ms delay).
+
+### Naye / badle files
+- Naye: `src/app/(borrower)/documents.tsx` (Phase 4 placeholder — consent summary dikhata hai; valid consent na ho toh `/consent` pe redirect), `src/components/ui/toggle.tsx` (Reanimated navy switch, `role=switch` + `aria-checked`), `src/components/journey/privacy-sheet.tsx`, `src/constants/consent.ts`, `src/services/consent.ts`.
+- Badle: `consent.tsx` (placeholder → real screen), `app-store.tsx` (`ConsentRecord`, `consent`, `consentDraft`), `journey-footer.tsx` (optional `icon` + `note` props).
+- **Accessibility fix (Phase 2 files me bhi):** react-native-web `accessibilityState.checked` ko `aria-checked` me convert nahi karta tha → web pe screen reader ko selected/on state pata nahi chalti thi. `choice-chip.tsx`, `loan-category.tsx`, `loan-purpose.tsx`, `city-picker.tsx` aur naye `toggle.tsx` me `aria-checked` add kiya.
+  - Phase 1 ke `entity-type.tsx` aur `login.tsx` (language toggle) me bhi yahi issue hai — Phase 1 ko touch nahi kiya. Chaho toh 1-line fix hai.
+
+### Testing (Phase 3)
+- `npx tsc --noEmit` ✅ · `npx expo lint` ✅ · `npx expo export -p web` ✅ (`/consent`, `/documents` build hue).
+- Headless Chrome (CDP) **21/21 checks pass, 390px + 320px**: consent ke bina `/documents` → redirect, sab toggles default off, required off → disabled + hint, card tap se toggle, privacy sheet open/close, back/forward pe draft preserve, draft consent nahi maana jata, loading state, `/documents` navigation, record me version + timestamps, draft clear, saved consent wapas load, ek item badalne pe sirf uska timestamp badalta hai.
+- Phase 2 regression suite dobara chalayi — sab pass.
+- ❗ Abhi **nahi** hua: physical Android/iPhone (toggle animation, Modal sheet), real backend, privacy policy URL (abhi koi URL nahi hai).
+
+## 7. Phase 4 me kya karna hai (NEXT)
+
+- Design: `upload_3_documents_step_5_of_6/` (+ `analysing_your_documents/` verification screen).
+- `src/app/(borrower)/documents.tsx` placeholder ko real checklist + upload se replace karo (Step 5 of 6, `JourneyFooter` reuse).
+- Documents list `entityType` + `loanCategory` ke hisaab se (MSME: bank statement, GST, ITR …; Individual: salary slips, bank statement …).
+- **Consent check:** AI processing tabhi chalao jab `journey.consent.items.aiDocuments.granted` true ho (route guard already hai).
+- File picking ke liye pehle check karo `expo-document-picker` / `expo-image-picker` chahiye ya nahi — ye nayi dependency hogi, `npx expo install` se hi add karna.
+
+## 8. Baaki phases ke notes
 - **Verify Your Details** (Phase 5): Document Verification ke baad. Fields: Full Name, PAN (format `ABCDE1234F`, auto-uppercase), DOB (18+ check, DD/MM/YYYY). Confirm & Continue → `updateUser({ fullName, pan, dob })`.
 - **Dashboard** (Phase 8): `Namaste, {firstName(session.user)} 👋` — name kabhi hardcode nahi. Name missing ho toh sirf `Namaste 👋`. Design: `home/`.
 - Partner portal / case queue / commissions designs CA/DSA app ke liye hain — borrower journey ka part nahi.
 
-## 8. Run / Test commands
+## 9. Run / Test commands
 
 ```bash
 npm start                 # dev server (Expo Go / dev build me scan karo)
@@ -136,7 +178,8 @@ npx expo lint             # lint
 ```
 
 - Mock OTP: **123456**
-- Real backend: `.env` me `EXPO_PUBLIC_API_URL=https://...` → endpoints `POST /auth/otp/request {mobile,countryCode,referralCode}`, `POST /auth/otp/verify {mobile,otp}` → `{ token, user }`, `GET /loan/categories?entityType=` → `{ categories: [{ id, available, reason? }] }`, `POST /loan/requirement`, `POST /loan/pre-check`.
+- Real backend: `.env` me `EXPO_PUBLIC_API_URL=https://...` → endpoints `POST /auth/otp/request {mobile,countryCode,referralCode}`, `POST /auth/otp/verify {mobile,otp}` → `{ token, user }`, `GET /loan/categories?entityType=` → `{ categories: [{ id, available, reason? }] }`, `POST /loan/requirement`, `POST /loan/pre-check`, `POST /consent` (`ConsentRecord`).
+- Privacy policy link: `.env` me `EXPO_PUBLIC_PRIVACY_POLICY_URL=https://...`.
 - Mock me Invoice Finance "Unavailable" dikhta hai (`MOCK_UNAVAILABLE` in `services/loan.ts`).
 - Onboarding dobara dekhna ho: app data clear karo (web pe localStorage clear).
 - Phase 1 test kiya: `tsc` ✅, `expo lint` ✅, web export ✅, headless Chrome screenshots (390px + 320px) login/OTP/Step 1 ✅. Physical Android/iPhone pe abhi test nahi hua.

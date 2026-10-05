@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { Button } from '@/components/ui/button';
-import { Icon } from '@/components/ui/icon';
+import { Icon, type IconName } from '@/components/ui/icon';
 import { C, F, R } from '@/constants/brand';
 
 type Props = {
@@ -14,10 +14,13 @@ type Props = {
   /** Submit failure (shown in red above the button). */
   error?: string | null;
   label?: string;
+  icon?: IconName;
+  /** Footer note under the button. */
+  note?: string;
 };
 
 /** Pinned CTA bar for journey screens: hint / error + Continue + encryption note. */
-export function JourneyFooter({ onContinue, disabled, loading, hint, error, label = 'Continue' }: Props) {
+export function JourneyFooter({ onContinue, disabled, loading, hint, error, label = 'Continue', icon = 'arrow-forward', note = '256-Bit Bank-Grade Encryption Guaranteed' }: Props) {
   return (
     <>
       {error ? (
@@ -28,10 +31,10 @@ export function JourneyFooter({ onContinue, disabled, loading, hint, error, labe
       ) : hint && disabled ? (
         <Text style={s.hint} accessibilityLiveRegion="polite">{hint}</Text>
       ) : null}
-      <Button label={label} icon="arrow-forward" onPress={onContinue} disabled={disabled} loading={loading} />
+      <Button label={label} icon={icon} onPress={onContinue} disabled={disabled} loading={loading} />
       <View style={s.secure}>
         <Icon name="lock" size={13} color={C.muted} />
-        <Text style={s.secureText}>256-Bit Bank-Grade Encryption Guaranteed</Text>
+        <Text style={s.secureText}>{note}</Text>
       </View>
     </>
   );
