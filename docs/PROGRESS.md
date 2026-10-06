@@ -208,7 +208,8 @@ Design: `home/`. Route `/home`.
 - “Start a new application” confirms, clears the journey (`resetJourney`), login rehta hai, `/entity-type`.
 - Apply ke baad `/home`. Application Status ka back aur “Go to home” bhi `/home` pe laate hain. Home khulte hi purana form stack hat jata hai, isliye Android back form pe nahi lautata.
 - Dobara app kholo aur application ho toh splash ke baad `/home`, warna `/entity-type`.
-- Bell, profile, advisor, aur bottom tabs (Applications / Documents / Profile) design me hain par unke screens nahi. Woh nahi banaye.
+- Bottom tabs: Home (`/home`), Applications (`/application`), Documents (`/documents`), Profile (`/profile`). Profile sirf signed-in name, mobile, aur saved PAN/DOB dikhata hai.
+- Bell aur advisor design me hain par unke screens nahi. Woh nahi banaye.
 
 ## 12. Baaki
 - Partner portal / case queue / commissions designs CA/DSA app ke liye hain — borrower journey ka part nahi.

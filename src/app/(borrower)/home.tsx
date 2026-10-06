@@ -2,6 +2,7 @@ import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { router } from 'expo-router';
 
+import { HomeTabs } from '@/components/journey/home-tabs';
 import { Icon } from '@/components/ui/icon';
 import { ProgressRing } from '@/components/ui/progress-ring';
 import { Screen } from '@/components/ui/screen';
@@ -33,7 +34,7 @@ export default function HomeScreen() {
   }
 
   return (
-    <Screen>
+    <Screen edges={['top']} flushFooter footer={<HomeTabs active="home" />}>
       <Animated.View entering={FadeInDown.duration(400)}>
         <Text style={s.greeting} accessibilityRole="header">{name ? `Namaste, ${name} 👋` : 'Namaste 👋'}</Text>
       </Animated.View>

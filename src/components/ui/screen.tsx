@@ -15,10 +15,11 @@ type Props = {
   edges?: Edge[];
   contentStyle?: StyleProp<ViewStyle>;
   padded?: boolean;
+  flushFooter?: boolean;
 };
 
 /** Standard screen shell: safe area + keyboard avoidance + scroll + centered 560px column. */
-export function Screen({ children, footer, header, background = C.canvas, edges = ['top', 'bottom'], contentStyle, padded = true }: Props) {
+export function Screen({ children, footer, header, background = C.canvas, edges = ['top', 'bottom'], contentStyle, padded = true, flushFooter = false }: Props) {
   return (
     <SafeAreaView edges={edges} style={[s.root, { backgroundColor: background }]}>
       <StatusBar style="dark" />
@@ -31,7 +32,7 @@ export function Screen({ children, footer, header, background = C.canvas, edges 
           showsVerticalScrollIndicator={false}>
           <View style={[s.column, s.flexGrow]}>{children}</View>
         </ScrollView>
-        {footer && <View style={[s.column, s.footer]}>{footer}</View>}
+        {footer && <View style={[s.column, flushFooter ? s.footerFlush : s.footer]}>{footer}</View>}
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -45,4 +46,5 @@ const s = StyleSheet.create({
   padded: { paddingHorizontal: S.margin, paddingBottom: S.lg },
   column: { width: '100%', maxWidth: MAX_WIDTH, alignSelf: 'center' },
   footer: { paddingHorizontal: S.margin, paddingTop: S.sm, paddingBottom: S.md },
+  footerFlush: { paddingBottom: 0 },
 });

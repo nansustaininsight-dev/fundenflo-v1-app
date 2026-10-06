@@ -47,6 +47,10 @@ const ICONS = {
   quote: { ios: 'doc.plaintext', android: 'request_quote' },
   copy: { ios: 'doc.on.doc', android: 'content_copy' },
   add: { ios: 'plus.circle', android: 'add_circle' },
+  'tab-home': { ios: 'house.fill', android: 'home' },
+  assignment: { ios: 'list.clipboard', android: 'assignment' },
+  folder: { ios: 'folder', android: 'folder_open' },
+  account: { ios: 'person.crop.circle', android: 'account_circle' },
 } as const;
 
 export type IconName = keyof typeof ICONS;
