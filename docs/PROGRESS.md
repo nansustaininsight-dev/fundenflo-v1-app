@@ -201,15 +201,16 @@ Stitch: `matched_lenders/` and `application/`. “Step 10 of 12” copy nahi kiy
 
 Design: `home/`. Route `/home`.
 
-- Greeting `Namaste, {firstName} 👋`. Name missing ho toh `Namaste 👋`. “Rohit” hardcode nahi.
+- Header greeting `Namaste, {firstName}`. Name missing ho toh `Namaste`. “Rohit” hardcode nahi.
 - Active application card tabhi jab application ho: product, lender, amount, ref, status, Track → `/application`.
 - Score card tabhi jab score ho. Open → `/score`. Reassess → `/documents`.
 - Pending task tabhi jab application `pendingDocument` ho → `/documents`.
 - “Start a new application” confirms, clears the journey (`resetJourney`), login rehta hai, `/entity-type`.
 - Apply ke baad `/home`. Application Status ka back aur “Go to home” bhi `/home` pe laate hain. Home khulte hi purana form stack hat jata hai, isliye Android back form pe nahi lautata.
 - Dobara app kholo aur application ho toh splash ke baad `/home`, warna `/entity-type`.
-- Bottom tabs: Home (`/home`), Applications (`/application`), Documents (`/documents`), Profile (`/profile`). Profile sirf signed-in name, mobile, aur saved PAN/DOB dikhata hai.
-- Bell aur advisor design me hain par unke screens nahi. Woh nahi banaye.
+- Header: back, `Namaste, {firstName}`, notifications bell (`/notifications`, sirf application timeline), profile avatar (`/profile`).
+- Bottom tabs: Home (`/home`), Applications (`/application`), Documents (`/documents`), Profile (`/profile`). Profile me name, PAN aur DOB edit + save hota hai. Mobile sign-in wala rehta hai.
+- Advisor design me hai par screen nahi. Woh nahi banaya.
 
 ## 12. Baaki
 - Partner portal / case queue / commissions designs CA/DSA app ke liye hain — borrower journey ka part nahi.

@@ -2,6 +2,7 @@ import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { router } from 'expo-router';
 
+import { HomeHeader } from '@/components/journey/home-header';
 import { HomeTabs } from '@/components/journey/home-tabs';
 import { Icon } from '@/components/ui/icon';
 import { ProgressRing } from '@/components/ui/progress-ring';
@@ -9,11 +10,10 @@ import { Screen } from '@/components/ui/screen';
 import { C, F, R, S, shadow } from '@/constants/brand';
 import { formatINR } from '@/constants/loan';
 import { assessedLabel } from '@/services/score';
-import { firstName, useAppStore } from '@/store/app-store';
+import { useAppStore } from '@/store/app-store';
 
 export default function HomeScreen() {
-  const { session, journey, resetJourney } = useAppStore();
-  const name = firstName(session?.user);
+  const { journey, resetJourney } = useAppStore();
   const application = journey.application;
   const score = journey.score;
   const pending = application?.pendingDocument;
@@ -34,11 +34,7 @@ export default function HomeScreen() {
   }
 
   return (
-    <Screen edges={['top']} flushFooter footer={<HomeTabs active="home" />}>
-      <Animated.View entering={FadeInDown.duration(400)}>
-        <Text style={s.greeting} accessibilityRole="header">{name ? `Namaste, ${name} 👋` : 'Namaste 👋'}</Text>
-      </Animated.View>
-
+    <Screen edges={['top']} flushFooter header={<HomeHeader />} footer={<HomeTabs active="home" />}>
       {application && (
         <Animated.View entering={FadeInDown.delay(60).duration(400)} style={s.navy}>
           <View style={s.navyTop}>
@@ -97,8 +93,7 @@ export default function HomeScreen() {
 }
 
 const s = StyleSheet.create({
-  greeting: { fontFamily: F.heading, fontSize: 28, lineHeight: 36, color: C.navy },
-  navy: { marginTop: S.lg, padding: S.md + 4, borderRadius: R.card, backgroundColor: C.navy },
+  navy: { padding: S.md + 4, borderRadius: R.card, backgroundColor: C.navy },
   navyTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 },
   kicker: { fontFamily: F.body, fontSize: 11, fontWeight: '600', letterSpacing: 0.8, textTransform: 'uppercase', color: C.gold },
   badge: { fontFamily: F.body, fontSize: 12, fontWeight: '600', color: C.gold, backgroundColor: 'rgba(253,185,1,0.16)', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 999, overflow: 'hidden' },
