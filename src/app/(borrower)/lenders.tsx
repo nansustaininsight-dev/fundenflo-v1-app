@@ -88,7 +88,7 @@ export default function LendersScreen() {
         amount: journey.amount,
       });
       await updateJourney({ application, selectedLenderId: selected.id });
-      router.dismissTo('/home');
+      router.push('/application');
     } catch (e) {
       setError(e instanceof ApiError ? e.message : 'Could Not Send Your Application. Please Try Again.');
     } finally {

@@ -18,7 +18,7 @@ export default function ScoreScreen() {
   const { journey, session, updateJourney } = useAppStore();
   const analysisId = journey.analysis?.status === 'done' ? journey.analysis.id : undefined;
   const entityType = journey.entityType;
-  const profileReady = !!(session?.user.fullName && session.user.pan && session.user.dob);
+  const profileReady = !!(session?.user.fullName && session.user.dob);
   const cached = journey.score && journey.score.analysisId === analysisId ? journey.score : null;
 
   const [score, setScore] = useState<HealthScore | null>(cached);
