@@ -1,11 +1,8 @@
-import * as ClipboardModule from 'react-native/Libraries/Components/Clipboard/Clipboard';
+import * as Clipboard from 'expo-clipboard';
 
 export async function copyText(value: string) {
   try {
-    const native = ClipboardModule as { default?: { setString: (text: string) => void } };
-    if (!native.default) return false;
-    native.default.setString(value);
-    return true;
+    return await Clipboard.setStringAsync(value);
   } catch {
     return false;
   }
