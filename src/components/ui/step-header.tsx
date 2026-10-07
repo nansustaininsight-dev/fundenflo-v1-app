@@ -19,11 +19,11 @@ export function StepHeader({ step, total = 6, title, onBack, hideBack = false }:
     <View style={s.wrap}>
       <View style={s.row}>
         {hideBack ? <View style={s.side} /> : (
-          <Pressable accessibilityRole="button" accessibilityLabel="Go back" onPress={back} hitSlop={10} style={({ pressed }) => [s.side, s.back, pressed && { backgroundColor: C.subtle }]}>
+          <Pressable accessibilityRole="button" accessibilityLabel="Go Back" onPress={back} hitSlop={10} style={({ pressed }) => [s.side, s.back, pressed && { backgroundColor: C.subtle }]}>
             <Icon name="arrow-back" size={22} color={C.text} />
           </Pressable>
         )}
-        <Text style={s.title} accessibilityRole="header">{title ?? (step ? `Step ${step} of ${total}` : '')}</Text>
+        <Text style={s.title} accessibilityRole="header">{title ?? (step ? `Step ${step} Of ${total}` : '')}</Text>
         <View style={s.side} />
       </View>
       {step !== undefined && (

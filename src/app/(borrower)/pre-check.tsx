@@ -31,7 +31,7 @@ export default function PreCheckScreen() {
   if (!entityType || !journey.purpose) return <Redirect href="/loan-purpose" />;
 
   const remaining = questions.filter(q => !answers[q.id]).length;
-  const hint = remaining ? `Answer ${remaining === questions.length ? 'all' : 'the remaining'} ${remaining} question${remaining > 1 ? 's' : ''} to continue.` : null;
+  const hint = remaining ? `Answer ${remaining === questions.length ? 'all' : 'The Remaining'} ${remaining} Question${remaining > 1 ? 's' : ''} To Continue.` : null;
 
   function answer(questionId: string, optionId: string) {
     const next = { ...answers, [questionId]: optionId };
@@ -48,7 +48,7 @@ export default function PreCheckScreen() {
       await submitPreCheck(entityType, answers);
       router.push('/consent');
     } catch (e) {
-      setError(e instanceof ApiError ? e.message : 'Could not save your answers. Please try again.');
+      setError(e instanceof ApiError ? e.message : 'Could Not Save Your Answers. Please Try Again.');
     } finally {
       setSubmitting(false);
     }
@@ -59,9 +59,9 @@ export default function PreCheckScreen() {
       header={<StepHeader step={3} />}
       footer={<JourneyFooter onContinue={() => void next()} disabled={remaining > 0} loading={submitting} hint={hint} error={error} />}>
       <Animated.View entering={FadeInDown.duration(400)}>
-        <Eyebrow label="Assessment • Step 3 of 6" />
-        <Text style={s.title} accessibilityRole="header">Quick pre-check</Text>
-        <Text style={s.sub}>{questions.length} quick questions. No impact on your credit score.</Text>
+        <Eyebrow label="Assessment • Step 3 Of 6" />
+        <Text style={s.title} accessibilityRole="header">Quick Pre-Check</Text>
+        <Text style={s.sub}>{questions.length} Quick Questions. No Impact On Your Credit Score.</Text>
       </Animated.View>
 
       <View style={s.list}>
@@ -69,7 +69,7 @@ export default function PreCheckScreen() {
           <Animated.View key={q.id} entering={FadeInDown.delay(80 + qi * 60).duration(360)} style={s.card}>
             <View style={s.cardHead}>
               <Text style={s.question} accessibilityRole="header">{q.title}</Text>
-              <Text style={s.count}>{qi + 1} of {questions.length}</Text>
+              <Text style={s.count}>{qi + 1} Of {questions.length}</Text>
             </View>
             <View style={s.grid} accessibilityRole="radiogroup" accessibilityLabel={q.title}>
               {q.options.map(o => (
@@ -82,7 +82,7 @@ export default function PreCheckScreen() {
 
       <View style={s.note}>
         <Icon name="shield-person" size={18} color={C.navy} />
-        <Text style={s.noteText}>We use these details only to filter lenders with matching eligibility criteria. Never shared without consent.</Text>
+        <Text style={s.noteText}>We Use These Details Only To Filter Lenders With Matching Eligibility Criteria. Never Shared Without Consent.</Text>
       </View>
     </Screen>
   );

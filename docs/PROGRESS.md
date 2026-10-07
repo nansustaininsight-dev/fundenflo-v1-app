@@ -159,7 +159,7 @@ Design: `your_consent_step_4_of_6/`. Flow: Pre-check → **Consent** → `/docum
 
 Design: `upload_3_documents_step_5_of_6/` and `analysing_your_documents/`.
 
-- `/documents` — checklist from `documentsFor(entityType, loanCategory, preCheck)`. Required: PAN, bank statement, and ITR/GST (MSME) or salary slips / ITR (individual). Optional property, vehicle, or machinery file when the category needs it.
+- `/documents` — checklist from `documentsFor(entityType, loanCategory, preCheck)`. Required: bank statement, and ITR/GST (MSME) or salary slips / ITR (individual). PAN card is not on this checklist. Optional property, vehicle, or machinery file when the category needs it.
 - Upload PDF and camera scan work (`expo-document-picker`, `expo-image-picker`, already installed). DigiLocker stays disabled with “Soon”.
 - AI read only when `journey.consent.items.aiDocuments.granted` is true. Otherwise redirect to `/consent`.
 - Card states: pending, uploading %, reading, verified, failed, cancel, remove.
@@ -209,7 +209,7 @@ Design: `home/`. Route `/home`.
 - Apply ke baad `/home`. Application Status ka back aur “Go to home” bhi `/home` pe laate hain. Home khulte hi purana form stack hat jata hai, isliye Android back form pe nahi lautata.
 - Dobara app kholo aur application ho toh splash ke baad `/home`, warna `/entity-type`.
 - Header: back, `Namaste, {firstName}`, notifications bell (`/notifications`, sirf application timeline), profile avatar (`/profile`).
-- Bottom tabs: Home (`/home`), Applications (`/application`), Documents (`/documents`), Profile (`/profile`). Profile me name, PAN aur DOB edit + save hota hai. Mobile sign-in wala rehta hai.
+- Bottom tabs: Home (`/home`), Applications (`/application`), Documents (`/documents`), Profile (`/profile`). Profile me name aur DOB edit + save hota hai. PAN field nahi hai. Mobile sign-in wala rehta hai.
 - Advisor design me hai par screen nahi. Woh nahi banaya.
 
 ## 12. Baaki

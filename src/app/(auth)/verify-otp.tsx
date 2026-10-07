@@ -55,7 +55,7 @@ export default function VerifyOtpScreen() {
       router.dismissAll();
       router.replace('/entity-type');
     } catch (e) {
-      setError(e instanceof ApiError ? e.message : 'Verification failed. Please try again.');
+      setError(e instanceof ApiError ? e.message : 'Verification Failed. Please Try Again.');
       shake.set(withSequence(withTiming(-8, { duration: 50 }), withRepeat(withTiming(8, { duration: 80 }), 3, true), withTiming(0, { duration: 50 })));
       setCode('');
       inputRef.current?.focus();
@@ -78,10 +78,10 @@ export default function VerifyOtpScreen() {
     try {
       const { resendIn } = await requestOtp(mobile);
       setSeconds(resendIn);
-      setNotice('A new code has been sent.');
+      setNotice('A New Code Has Been Sent.');
       setTimeout(() => setNotice(null), 3000);
     } catch (e) {
-      setError(e instanceof ApiError ? e.message : 'Could not resend code. Please try again.');
+      setError(e instanceof ApiError ? e.message : 'Could Not Resend Code. Please Try Again.');
     } finally {
       setResending(false);
     }
@@ -94,19 +94,19 @@ export default function VerifyOtpScreen() {
       background={C.card}
       header={<StepHeader onBack={() => router.back()} />}
       footer={<>
-        <Button label="Verify & continue" onPress={() => void verify()} loading={loading} disabled={code.length !== LENGTH} />
-        <Text style={s.terms}>By continuing you agree to the <Text style={s.termsLink}>Terms</Text> and <Text style={s.termsLink}>Privacy Policy</Text></Text>
+        <Button label="Verify & Continue" onPress={() => void verify()} loading={loading} disabled={code.length !== LENGTH} />
+        <Text style={s.terms}>By Continuing You Agree To The <Text style={s.termsLink}>Terms</Text> And <Text style={s.termsLink}>Privacy Policy</Text></Text>
       </>}>
-      <Text style={s.title} accessibilityRole="header">Enter the 6-digit code</Text>
+      <Text style={s.title} accessibilityRole="header">Enter The 6-Digit Code</Text>
       <View style={s.sentRow}>
-        <Text style={s.sent}>Sent to +91 {formatMobile(mobile)}</Text>
+        <Text style={s.sent}>Sent To +91 {formatMobile(mobile)}</Text>
         <Text style={s.sent}>·</Text>
-        <Pressable accessibilityRole="button" accessibilityLabel="Edit mobile number" onPress={() => router.back()} hitSlop={10}>
+        <Pressable accessibilityRole="button" accessibilityLabel="Edit Mobile Number" onPress={() => router.back()} hitSlop={10}>
           <Text style={s.edit}>Edit</Text>
         </Pressable>
       </View>
 
-      <Pressable onPress={() => inputRef.current?.focus()} accessibilityLabel={`One-time code, ${code.length} of ${LENGTH} digits entered`}>
+      <Pressable onPress={() => inputRef.current?.focus()} accessibilityLabel={`One-Time Code, ${code.length} Of ${LENGTH} Digits Entered`}>
         <Animated.View style={[s.boxes, shakeStyle]}>
           {Array.from({ length: LENGTH }, (_, i) => {
             const digit = code[i];
@@ -151,10 +151,10 @@ export default function VerifyOtpScreen() {
 
       <View style={s.resendRow}>
         {seconds > 0 ? (
-          <Text style={s.resend}>Resend code in <Text style={s.tabular}>{timer}</Text></Text>
+          <Text style={s.resend}>Resend Code In <Text style={s.tabular}>{timer}</Text></Text>
         ) : (
           <Pressable accessibilityRole="button" onPress={() => void resend()} disabled={resending} hitSlop={10}>
-            <Text style={s.resendLink}>{resending ? 'Sending…' : 'Resend code'}</Text>
+            <Text style={s.resendLink}>{resending ? 'Sending…' : 'Resend Code'}</Text>
           </Pressable>
         )}
       </View>
@@ -162,7 +162,7 @@ export default function VerifyOtpScreen() {
       {USE_MOCK && (
         <View style={s.demo}>
           <Icon name="info" size={15} color={C.goldDeep} />
-          <Text style={s.demoText}>Demo mode (no backend): use code {MOCK_OTP}</Text>
+          <Text style={s.demoText}>Demo Mode (No Backend): Use Code {MOCK_OTP}</Text>
         </View>
       )}
     </Screen>

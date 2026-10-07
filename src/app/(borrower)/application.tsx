@@ -60,18 +60,18 @@ export default function ApplicationScreen() {
       await updateJourney({ application: { ...application, whatsApp: true } });
     } catch (e) {
       setWhatsApp(false);
-      setError(e instanceof ApiError ? e.message : 'Could not set up WhatsApp updates. Please try again.');
+      setError(e instanceof ApiError ? e.message : 'Could Not Set Up WhatsApp Updates. Please Try Again.');
     } finally {
       setUpdating(false);
     }
   }
 
-  const mobile = session?.user.mobile ? `+91 ${formatMobile(session.user.mobile)}` : 'your mobile number';
+  const mobile = session?.user.mobile ? `+91 ${formatMobile(session.user.mobile)}` : 'Your Mobile Number';
 
   return (
     <Screen
       header={<StepHeader title="Application Status" onBack={goHome} />}
-      footer={<Button label="Go to home" onPress={goHome} />}>
+      footer={<Button label="Go To Home" onPress={goHome} />}>
       <Animated.View entering={FadeInDown.duration(400)} style={s.summary}>
         <Text style={s.kicker}>Facility</Text>
         <Text style={s.facility}>{application.product} · {application.lenderName}</Text>
@@ -79,7 +79,7 @@ export default function ApplicationScreen() {
         <Text style={s.amount}>{formatINR(application.amount)}</Text>
         <View style={s.idRow}>
           <Text style={s.idLabel} selectable>App ID {application.id}</Text>
-          <Pressable accessibilityRole="button" accessibilityLabel={copied ? 'Copied' : 'Copy application ID'} onPress={() => void copyId()} hitSlop={8} style={s.copy}>
+          <Pressable accessibilityRole="button" accessibilityLabel={copied ? 'Copied' : 'Copy Application ID'} onPress={() => void copyId()} hitSlop={8} style={s.copy}>
             <Icon name={copied ? 'check' : 'copy'} size={16} color={C.navy} />
             {copied && <Text style={s.copied}>Copied</Text>}
           </Pressable>
@@ -90,12 +90,12 @@ export default function ApplicationScreen() {
         <View style={s.alert}>
           <Icon name="error" size={18} color={C.goldDeep} />
           <View style={s.alertBody}>
-            <Text style={s.alertTitle}>Lender asked for 1 more document</Text>
+            <Text style={s.alertTitle}>Lender Asked For 1 More Document</Text>
             <Text style={s.alertText}>{application.pendingDocument.title}</Text>
             <Text style={s.alertDetail}>{application.pendingDocument.detail}</Text>
           </View>
           <Pressable accessibilityRole="button" onPress={() => router.push('/documents')} style={s.upload}>
-            <Text style={s.uploadText}>Upload now</Text>
+            <Text style={s.uploadText}>Upload Now</Text>
           </Pressable>
         </View>
       )}
@@ -125,10 +125,10 @@ export default function ApplicationScreen() {
       <View style={s.whatsapp}>
         <Icon name="chat" size={22} color={C.success} />
         <View style={s.whatsappText}>
-          <Text style={s.whatsappTitle}>Get status updates on WhatsApp</Text>
-          <Text style={s.whatsappSub}>We’ll message {mobile} when this status changes.</Text>
+          <Text style={s.whatsappTitle}>Get Status Updates On WhatsApp</Text>
+          <Text style={s.whatsappSub}>We’ll Message {mobile} When This Status Changes.</Text>
         </View>
-        <Toggle value={whatsApp} onChange={next => void toggleUpdates(next)} disabled={updating} accessibilityLabel="WhatsApp status updates" />
+        <Toggle value={whatsApp} onChange={next => void toggleUpdates(next)} disabled={updating} accessibilityLabel="WhatsApp Status Updates" />
       </View>
       {error && <Text style={s.error} accessibilityLiveRegion="polite">{error}</Text>}
     </Screen>

@@ -36,7 +36,7 @@ export default function LoginScreen() {
   function applyReferral() {
     const code = referral.trim().toUpperCase();
     if (!/^[A-Z0-9]{4,12}$/.test(code)) {
-      setReferralError('Use 4–12 letters or numbers.');
+      setReferralError('Use 4–12 Letters Or Numbers.');
       return;
     }
     setReferralError(null);
@@ -52,7 +52,7 @@ export default function LoginScreen() {
       const { resendIn } = await requestOtp(mobile, appliedReferral ?? undefined);
       router.push({ pathname: '/verify-otp', params: { mobile, resendIn: String(resendIn) } });
     } catch (e) {
-      setError(e instanceof ApiError ? e.message : 'Could not send OTP. Please try again.');
+      setError(e instanceof ApiError ? e.message : 'Could Not Send OTP. Please Try Again.');
     } finally {
       setLoading(false);
     }
@@ -82,12 +82,12 @@ export default function LoginScreen() {
                 </View>
               </View>
               {lang === 'hi' && (
-                <Animated.Text entering={FadeIn} exiting={FadeOut} style={s.langNote}>हिंदी जल्द उपलब्ध होगी · Hindi is coming soon</Animated.Text>
+                <Animated.Text entering={FadeIn} exiting={FadeOut} style={s.langNote}>हिंदी जल्द उपलब्ध होगी · Hindi Is Coming Soon</Animated.Text>
               )}
               <Animated.View entering={FadeInDown.duration(500)}>
-                <Image source={require('../../../assets/brand/logo-white.png')} style={s.logo} resizeMode="contain" accessibilityLabel="FundenFlo — The Right Funding, At the Right Time" />
-                <Text style={s.headline} accessibilityRole="header">Know who can fund you — in minutes</Text>
-                <Text style={s.sub}>Upload a few documents. See matching lenders. Track till disbursal.</Text>
+                <Image source={require('../../../assets/brand/logo-white.png')} style={s.logo} resizeMode="contain" accessibilityLabel="FundenFlo — The Right Funding, At The Right Time" />
+                <Text style={s.headline} accessibilityRole="header">Know Who Can Fund You — In Minutes</Text>
+                <Text style={s.sub}>Upload A Few Documents. See Matching Lenders. Track Till Disbursal.</Text>
               </Animated.View>
             </View>
           </View>
@@ -96,7 +96,7 @@ export default function LoginScreen() {
           <Animated.View entering={FadeInDown.delay(120).duration(500)} style={[s.sheet, { paddingBottom: Math.max(insets.bottom, S.md) + S.sm }]}>
             <View style={s.column}>
               <View style={s.pullBar} />
-              <Text style={s.label} nativeID="mobileLabel">Mobile number</Text>
+              <Text style={s.label} nativeID="mobileLabel">Mobile Number</Text>
               <Pressable onPress={() => inputRef.current?.focus()} style={[s.field, focused && s.fieldFocused, (showInvalid || !!error) && s.fieldError]}>
                 <View style={s.flag} accessibilityLabel="India">
                   <View style={[s.flagBand, { backgroundColor: '#FF9933' }]} />
@@ -120,7 +120,7 @@ export default function LoginScreen() {
                   maxLength={11}
                   returnKeyType="done"
                   accessibilityLabelledBy="mobileLabel"
-                  accessibilityLabel="Mobile number"
+                  accessibilityLabel="Mobile Number"
                   style={s.input}
                 />
                 {valid && <Animated.View entering={FadeIn}><Icon name="check-circle" size={20} color={C.success} /></Animated.View>}
@@ -128,14 +128,14 @@ export default function LoginScreen() {
               {(showInvalid || error) && (
                 <Animated.View entering={FadeIn} style={s.errorRow} accessibilityLiveRegion="polite">
                   <Icon name="error" size={14} color={C.error} />
-                  <Text style={s.errorText}>{error ?? 'Enter a valid 10-digit mobile number starting with 6–9.'}</Text>
+                  <Text style={s.errorText}>{error ?? 'Enter A Valid 10-Digit Mobile Number Starting With 6–9.'}</Text>
                 </Animated.View>
               )}
 
               <Button label="Get OTP" icon="arrow-forward" onPress={() => void submit()} loading={loading} disabled={!valid} style={s.cta} />
 
               <Pressable accessibilityRole="button" accessibilityState={{ expanded: referralOpen }} onPress={() => setReferralOpen(o => !o)} hitSlop={8} style={s.referralToggle}>
-                <Text style={s.referralText}>{appliedReferral ? `Referral applied · ${appliedReferral}` : 'Have a referral code?'}</Text>
+                <Text style={s.referralText}>{appliedReferral ? `Referral Applied · ${appliedReferral}` : 'Have A Referral Code?'}</Text>
                 <Icon name="expand-more" size={16} color={C.goldDeep} style={{ transform: [{ rotate: referralOpen ? '180deg' : '0deg' }] }} />
               </Pressable>
               {referralOpen && (
@@ -150,7 +150,7 @@ export default function LoginScreen() {
                       autoCorrect={false}
                       maxLength={12}
                       onSubmitEditing={applyReferral}
-                      accessibilityLabel="Referral code"
+                      accessibilityLabel="Referral Code"
                       style={s.referralInput}
                     />
                     <Pressable accessibilityRole="button" onPress={applyReferral} disabled={!referral} style={({ pressed }) => [s.apply, (!referral || pressed) && { opacity: 0.6 }]}>
@@ -164,7 +164,7 @@ export default function LoginScreen() {
               <View style={s.flexSpacer} />
               <View style={s.secure}>
                 <Icon name="lock" size={14} color={C.muted} />
-                <Text style={s.secureText}>256-bit encrypted · Your data is shared only with your consent</Text>
+                <Text style={s.secureText}>256-Bit Encrypted · Your Data Is Shared Only With Your Consent</Text>
               </View>
             </View>
           </Animated.View>

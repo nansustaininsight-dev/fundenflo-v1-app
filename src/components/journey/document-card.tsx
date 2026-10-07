@@ -34,7 +34,7 @@ type Props = {
 export function DocumentCard({ spec, slot, onPick, onCancel, onRemove, locked }: Props) {
   const busy = slot.kind === 'uploading' || slot.kind === 'reading';
   return (
-    <Animated.View layout={LinearTransition.duration(200)} style={s.card} accessibilityLabel={`${spec.title}${spec.required ? '' : ', optional'}`}>
+    <Animated.View layout={LinearTransition.duration(200)} style={s.card} accessibilityLabel={`${spec.title}${spec.required ? '' : ', Optional'}`}>
       <View style={s.row}>
         <View style={[s.iconBox, slot.kind === 'verified' && s.iconBoxDone]}>
           <Icon name={spec.icon} size={22} color={C.navy} />
@@ -44,7 +44,7 @@ export function DocumentCard({ spec, slot, onPick, onCancel, onRemove, locked }:
           {slot.kind === 'verified' ? (
             <View style={s.statusRow}>
               <Icon name="check-circle" size={15} color={C.success} />
-              <Text style={s.verified}>Verified • Read by AI</Text>
+              <Text style={s.verified}>Verified • Read By AI</Text>
             </View>
           ) : slot.kind === 'reading' ? (
             <Text style={s.sub} numberOfLines={1}>Reading {slot.fileName}…</Text>
@@ -60,7 +60,7 @@ export function DocumentCard({ spec, slot, onPick, onCancel, onRemove, locked }:
           <View style={s.track} accessibilityRole="progressbar" accessibilityValue={{ min: 0, max: 100, now: slot.progress }}>
             <View style={[s.fill, { width: `${slot.progress}%` }]} />
           </View>
-          <Pressable onPress={onCancel} hitSlop={8} accessibilityRole="button" accessibilityLabel={`Cancel ${spec.title} upload`} style={s.link}>
+          <Pressable onPress={onCancel} hitSlop={8} accessibilityRole="button" accessibilityLabel={`Cancel ${spec.title} Upload`} style={s.link}>
             <Text style={s.linkText}>Cancel</Text>
           </Pressable>
         </View>
@@ -97,7 +97,7 @@ export function DocumentCard({ spec, slot, onPick, onCancel, onRemove, locked }:
                 onPress={() => onPick(src)}
                 disabled={soon || locked || busy}
                 accessibilityRole="button"
-                accessibilityLabel={`${label}${soon ? ', coming soon' : ''} — ${spec.title}`}
+                accessibilityLabel={`${label}${soon ? ', Coming Soon' : ''} — ${spec.title}`}
                 accessibilityState={{ disabled: soon || locked }}
                 style={({ pressed }) => [s.source, pressed && s.sourcePressed, soon && s.sourceSoon]}>
                 <Icon name={SOURCES[src].icon} size={17} color={soon ? C.slate : C.navy} />
@@ -119,7 +119,7 @@ function Badge({ slot, required }: { slot: Slot; required: boolean }) {
     case 'uploading':
       return <Text style={[s.badge, s.badgeActive]}>Uploading {slot.progress}%</Text>;
     case 'reading':
-      return <ActivityIndicator size="small" color={C.goldDeep} accessibilityLabel="Reading document" />;
+      return <ActivityIndicator size="small" color={C.goldDeep} accessibilityLabel="Reading Document" />;
     case 'failed':
       return <Text style={[s.badge, s.badgeError]}>FAILED</Text>;
     default:

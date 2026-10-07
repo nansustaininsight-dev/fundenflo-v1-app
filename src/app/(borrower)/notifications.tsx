@@ -13,7 +13,7 @@ export default function NotificationsScreen() {
     <Screen header={<StepHeader title="Notifications" />}>
       <Text style={s.title} accessibilityRole="header">Notifications</Text>
       {items.length === 0 ? (
-        <Text style={s.empty}>No notifications yet.</Text>
+        <Text style={s.empty}>No Notifications Yet.</Text>
       ) : (
         items.map(step => (
           <View key={step.id} style={s.card}>

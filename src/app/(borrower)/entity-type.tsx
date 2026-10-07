@@ -11,8 +11,8 @@ import { C, F, R, S, shadow } from '@/constants/brand';
 import { useAppStore, type EntityType } from '@/store/app-store';
 
 const OPTIONS: { id: EntityType; title: string; sub: string; icon: IconName }[] = [
-  { id: 'msme', title: 'Business / MSME', sub: 'Proprietor, Partnership, LLP or Pvt Ltd', icon: 'business' },
-  { id: 'individual', title: 'Individual', sub: 'Salaried or Self-employed', icon: 'person' },
+  { id: 'msme', title: 'Business / MSME', sub: 'Proprietor, Partnership, LLP Or Pvt Ltd', icon: 'business' },
+  { id: 'individual', title: 'Individual', sub: 'Salaried Or Self-Employed', icon: 'person' },
 ];
 
 export default function EntityTypeScreen() {
@@ -41,8 +41,8 @@ export default function EntityTypeScreen() {
         </View>
       </>}>
       <Animated.View entering={FadeInDown.duration(400)}>
-        <Text style={s.title} accessibilityRole="header">Who is this loan for?</Text>
-        <Text style={s.sub}>Select your entity type to personalize documentation and matching lenders.</Text>
+        <Text style={s.title} accessibilityRole="header">Who Is This Loan For?</Text>
+        <Text style={s.sub}>Select Your Entity Type To Personalize Documentation And Matching Lenders.</Text>
       </Animated.View>
 
       <View style={s.list} accessibilityRole="radiogroup">
@@ -74,12 +74,12 @@ export default function EntityTypeScreen() {
 
       <View style={s.hint}>
         <Icon name="info" size={15} color={C.muted} />
-        <Text style={s.hintText}>Your checklist and assessment adapt to this choice.</Text>
+        <Text style={s.hintText}>Your Checklist And Assessment Adapt To This Choice.</Text>
       </View>
 
       <View style={s.grow} />
       <Pressable accessibilityRole="button" onPress={() => void logout()} hitSlop={8} style={s.logout}>
-        <Text style={s.logoutText}>Not you? Log out</Text>
+        <Text style={s.logoutText}>Not You? Log Out</Text>
       </Pressable>
     </Screen>
   );

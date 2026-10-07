@@ -35,11 +35,11 @@ export default function VerifyDetailsScreen() {
   const dobMsg = dobError(dob);
   const valid = !nameMsg && panOk && !dobMsg;
   const hint = nameMsg
-    ? 'Enter your full name.'
+    ? 'Enter Your Full Name.'
     : !panOk
-      ? (pan.length === 0 ? 'Enter your PAN.' : 'PAN should look like ABCDE1234F.')
+      ? (pan.length === 0 ? 'Enter Your PAN.' : 'PAN Should Look Like ABCDE1234F.')
       : dobMsg
-        ? (dob.length < 10 ? 'Enter your date of birth as DD/MM/YYYY.' : dobMsg)
+        ? (dob.length < 10 ? 'Enter Your Date Of Birth As DD/MM/YYYY.' : dobMsg)
         : null;
 
   function remember(patch: { fullName?: string; pan?: string; dob?: string }) {
@@ -60,7 +60,7 @@ export default function VerifyDetailsScreen() {
       await updateJourney({ profileDraft: undefined });
       router.push('/score');
     } catch (e) {
-      setError(e instanceof ApiError ? e.message : 'Could not save your details. Please try again.');
+      setError(e instanceof ApiError ? e.message : 'Could Not Save Your Details. Please Try Again.');
     } finally {
       setSubmitting(false);
     }
@@ -68,7 +68,7 @@ export default function VerifyDetailsScreen() {
 
   return (
     <Screen
-      header={<StepHeader title="Verify your details" />}
+      header={<StepHeader title="Verify Your Details" />}
       footer={
         <JourneyFooter
           onContinue={() => void confirm()}
@@ -77,20 +77,20 @@ export default function VerifyDetailsScreen() {
           hint={hint}
           error={error}
           label="Confirm & Continue"
-          note="Private • Never shared without your consent"
+          note="Private • Never Shared Without Your Consent"
         />
       }>
       <Animated.View entering={FadeInDown.duration(400)}>
         <Eyebrow label="Identity" />
-        <Text style={s.title} accessibilityRole="header">Confirm the details on your PAN</Text>
-        <Text style={s.sub}>Check your name, PAN and date of birth before we use them for your Financial Health Score.</Text>
+        <Text style={s.title} accessibilityRole="header">Confirm The Details On Your PAN</Text>
+        <Text style={s.sub}>Check Your Name, PAN And Date Of Birth Before We Use Them For Your Financial Health Score.</Text>
       </Animated.View>
 
       <View style={s.form}>
         <Field
-          label="Full name"
+          label="Full Name"
           value={fullName}
-          placeholder="As printed on your PAN"
+          placeholder="As Printed On Your PAN"
           autoCapitalize="words"
           autoComplete="name"
           textContentType="name"
@@ -116,7 +116,7 @@ export default function VerifyDetailsScreen() {
           maxLength={10}
           focused={focus === 'pan'}
           valid={panOk}
-          error={touched.pan && focus !== 'pan' ? (pan.length === 0 ? 'Enter your PAN.' : !panOk ? 'Enter a valid PAN, like ABCDE1234F.' : null) : null}
+          error={touched.pan && focus !== 'pan' ? (pan.length === 0 ? 'Enter Your PAN.' : !panOk ? 'Enter A Valid PAN, Like ABCDE1234F.' : null) : null}
           onFocus={() => setFocus('pan')}
           onBlur={() => { setFocus(null); setTouched(t => ({ ...t, pan: true })); }}
           onChangeText={text => {
@@ -126,7 +126,7 @@ export default function VerifyDetailsScreen() {
           }}
         />
         <Field
-          label="Date of birth"
+          label="Date Of Birth"
           value={dob}
           placeholder="DD/MM/YYYY"
           keyboardType="number-pad"

@@ -75,7 +75,7 @@ export default function AnalysingScreen() {
       await requestWhatsAppUpdate(analysisId);
       await updateJourney(prev => (prev.analysis ? { analysis: { ...prev.analysis, notifyWhatsApp: true } } : {}));
     } catch (e) {
-      setNotifyError(e instanceof ApiError ? e.message : 'Could not set up WhatsApp updates. Please try again.');
+      setNotifyError(e instanceof ApiError ? e.message : 'Could Not Set Up WhatsApp Updates. Please Try Again.');
     } finally {
       setNotifying(false);
     }
@@ -88,7 +88,7 @@ export default function AnalysingScreen() {
       const { id } = await startAnalysis(analysis.fingerprint.split(','), entityType);
       await updateJourney({ analysis: { ...analysis, id, startedAt: new Date().toISOString(), status: 'running' } });
     } catch {
-      setStatus(prev => (prev ? { ...prev, message: 'Could not restart. Check your connection and try again.' } : prev));
+      setStatus(prev => (prev ? { ...prev, message: 'Could Not Restart. Check Your Connection And Try Again.' } : prev));
     } finally {
       setRetrying(false);
     }
@@ -97,9 +97,9 @@ export default function AnalysingScreen() {
   const backToDocuments = () => (router.canGoBack() ? router.back() : router.replace('/documents'));
 
   const footer = done ? (
-    <JourneyFooter onContinue={() => router.replace('/verify-details')} label="Continue" note="Private • Never shared without your consent" />
+    <JourneyFooter onContinue={() => router.replace('/verify-details')} label="Continue" note="Private • Never Shared Without Your Consent" />
   ) : failed ? (
-    <JourneyFooter onContinue={() => void retry()} loading={retrying} label="Try again" icon="refresh" note="Your uploaded documents are kept" />
+    <JourneyFooter onContinue={() => void retry()} loading={retrying} label="Try Again" icon="refresh" note="Your Uploaded Documents Are Kept" />
   ) : undefined;
 
   return (
@@ -107,15 +107,15 @@ export default function AnalysingScreen() {
       <Animated.View entering={FadeIn.duration(500)} style={s.hero}>
         <Spinner done={done} failed={failed} />
         <Text style={s.title} accessibilityRole="header" accessibilityLiveRegion="polite">
-          {done ? 'Your documents are read' : failed ? 'We couldn’t finish reading' : 'Reading your documents'}
+          {done ? 'Your Documents Are Read' : failed ? 'We Couldn’t Finish Reading' : 'Reading Your Documents'}
         </Text>
-        {done && <Text style={s.sub}>Next, confirm a few details so your score is accurate.</Text>}
-        {failed && <Text style={[s.sub, s.errorText]}>{status?.message ?? 'Something went wrong while reading your documents.'}</Text>}
+        {done && <Text style={s.sub}>Next, Confirm A Few Details So Your Score Is Accurate.</Text>}
+        {failed && <Text style={[s.sub, s.errorText]}>{status?.message ?? 'Something Went Wrong While Reading Your Documents.'}</Text>}
       </Animated.View>
 
       <Animated.View entering={FadeInDown.delay(150).duration(400)} style={s.card}>
         {status ? status.steps.map((step, i) => (
-          <View key={step.id} style={[s.step, i > 0 && s.stepBorder]} accessible accessibilityLabel={`${step.label}: ${step.state === 'done' ? 'done' : step.state === 'active' ? 'in progress' : 'waiting'}`}>
+          <View key={step.id} style={[s.step, i > 0 && s.stepBorder]} accessible accessibilityLabel={`${step.label}: ${step.state === 'done' ? 'done' : step.state === 'active' ? 'In Progress' : 'waiting'}`}>
             <View style={[s.dot, step.state === 'done' && s.dotDone]}>
               {step.state === 'done' ? <Icon name="check-circle" size={20} color={C.success} />
                 : step.state === 'active' && !failed ? <ActivityIndicator size="small" color={C.gold} />
@@ -131,7 +131,7 @@ export default function AnalysingScreen() {
       {offline && (
         <Animated.View entering={FadeIn} style={s.offline} accessibilityLiveRegion="polite">
           <Icon name="refresh" size={14} color={C.muted} />
-          <Text style={s.offlineText}>Connection lost — retrying…</Text>
+          <Text style={s.offlineText}>Connection Lost — Retrying…</Text>
         </Animated.View>
       )}
 
@@ -141,15 +141,15 @@ export default function AnalysingScreen() {
             <View style={s.notified}>
               <Icon name="check-circle" size={16} color={C.success} />
               <Text style={s.notifiedText}>
-                We’ll message you on WhatsApp{session?.user.mobile ? ` at +91 ${formatMobile(session.user.mobile)}` : ''} when it’s ready. You can safely leave.
+                We’ll Message You On WhatsApp{session?.user.mobile ? ` At +91 ${formatMobile(session.user.mobile)}` : ''} When It’s Ready. You Can Safely Leave.
               </Text>
             </View>
           ) : (
             <>
-              <Text style={s.note}>Usually takes under 2 minutes. You can safely leave — we’ll let you know on WhatsApp.</Text>
+              <Text style={s.note}>Usually Takes Under 2 Minutes. You Can Safely Leave — We’ll Let You Know On WhatsApp.</Text>
               <Pressable onPress={() => void notify()} disabled={notifying} hitSlop={6} accessibilityRole="button" style={({ pressed }) => [s.whatsapp, pressed && s.pressed]}>
                 {notifying ? <ActivityIndicator size="small" color={C.success} /> : <Icon name="chat" size={20} color={C.success} />}
-                <Text style={s.whatsappText}>Notify me on WhatsApp</Text>
+                <Text style={s.whatsappText}>Notify Me On WhatsApp</Text>
               </Pressable>
               {notifyError && <Text style={[s.note, s.errorText]}>{notifyError}</Text>}
             </>
@@ -159,7 +159,7 @@ export default function AnalysingScreen() {
 
       {failed && (
         <Pressable onPress={backToDocuments} hitSlop={6} accessibilityRole="button" style={s.backLink}>
-          <Text style={s.backText}>Back to documents</Text>
+          <Text style={s.backText}>Back To Documents</Text>
         </Pressable>
       )}
     </Screen>
@@ -187,7 +187,7 @@ function Spinner({ done, failed }: { done: boolean; failed: boolean }) {
   const pulse = useAnimatedStyle(() => ({ opacity: glow.value, transform: [{ scale: 0.92 + glow.value * 0.08 }] }));
 
   return (
-    <View style={s.spinner} accessible accessibilityRole="progressbar" accessibilityLabel={done ? 'Finished' : failed ? 'Stopped' : 'Reading documents'}>
+    <View style={s.spinner} accessible accessibilityRole="progressbar" accessibilityLabel={done ? 'Finished' : failed ? 'Stopped' : 'Reading Documents'}>
       <Animated.View style={[s.glow, pulse]} />
       <Animated.View style={rotate}>
         <ProgressRing progress={still ? 1 : 0.72} size={150} stroke={4} color={failed ? C.error : done ? C.success : C.gold} track="#EDE6D3" />

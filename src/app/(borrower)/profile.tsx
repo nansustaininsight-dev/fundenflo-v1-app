@@ -10,43 +10,45 @@ import { Screen } from '@/components/ui/screen';
 import { StepHeader } from '@/components/ui/step-header';
 import { C, F, R, S } from '@/constants/brand';
 import { ApiError } from '@/services/api';
-import { dobError, formatDobInput, formatMobile, isValidPan, nameError, normalizePan, saveProfile } from '@/services/auth';
+import { dobError, formatDobInput, formatMobile, isValidPan, nameError, saveProfile } from '@/services/auth';
 import { useAppStore } from '@/store/app-store';
 
-type FocusField = 'name' | 'pan' | 'dob';
+type FocusField = 'name' | 'dob';
 
 export default function ProfileScreen() {
   const { session, updateUser } = useAppStore();
   const saved = session?.user;
   const [fullName, setFullName] = useState(saved?.fullName ?? '');
-  const [pan, setPan] = useState(saved?.pan ?? '');
   const [dob, setDob] = useState(saved?.dob ?? '');
   const [focus, setFocus] = useState<FocusField | null>(null);
-  const [touched, setTouched] = useState({ name: false, pan: false, dob: false });
+  const [touched, setTouched] = useState({ name: false, dob: false });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [savedNote, setSavedNote] = useState(false);
 
   const nameMsg = nameError(fullName);
-  const panOk = isValidPan(pan);
   const dobMsg = dobError(dob);
-  const valid = !nameMsg && panOk && !dobMsg;
+  const valid = !nameMsg && !dobMsg;
   const mobile = saved?.mobile ? `+91 ${formatMobile(saved.mobile)}` : '';
 
   async function save() {
     if (!valid || saving) return;
-    const profile = { fullName: fullName.trim().replace(/\s+/g, ' '), pan, dob };
+    const profile = { fullName: fullName.trim().replace(/\s+/g, ' '), dob };
     setSaving(true);
     setError(null);
     setSavedNote(false);
     try {
-      if (saved?.fullName !== profile.fullName || saved?.pan !== profile.pan || saved?.dob !== profile.dob) {
-        const next = await saveProfile(profile);
-        await updateUser(next);
+      if (saved?.fullName !== profile.fullName || saved?.dob !== profile.dob) {
+        if (saved?.pan && isValidPan(saved.pan)) {
+          const next = await saveProfile({ ...profile, pan: saved.pan });
+          await updateUser(next);
+        } else {
+          await updateUser({ fullName: profile.fullName, dob: profile.dob });
+        }
       }
       setSavedNote(true);
     } catch (e) {
-      setError(e instanceof ApiError ? e.message : 'Could not save your profile. Please try again.');
+      setError(e instanceof ApiError ? e.message : 'Could Not Save Your Profile. Please Try Again.');
     } finally {
       setSaving(false);
     }
@@ -59,42 +61,27 @@ export default function ProfileScreen() {
       header={<StepHeader title="Profile" onBack={() => (router.canGoBack() ? router.back() : router.replace('/home'))} />}
       footer={<HomeTabs active="profile" />}>
       <Text style={s.title} accessibilityRole="header">Profile</Text>
-      <Text style={s.sub}>Update the name, PAN and date of birth on your account. Your mobile number stays the one you signed in with.</Text>
+      <Text style={s.sub}>Update The Name And Date Of Birth On Your Account. Your Mobile Number Stays The One You Signed In With.</Text>
       {mobile ? <Text style={s.mobile}>{mobile}</Text> : null}
 
       <View style={s.form}>
         <Field
-          label="Full name"
+          label="Full Name"
           value={fullName}
-          placeholder="As printed on your PAN"
+          placeholder="Your Full Name"
           autoCapitalize="words"
           autoComplete="name"
           textContentType="name"
           maxLength={80}
           focused={focus === 'name'}
           valid={!nameMsg && fullName.trim().length > 0}
-          error={touched.name && focus !== 'name' ? nameMsg : null}
+          error={touched.name && focus !== 'name' ? (nameMsg?.includes('PAN') ? 'Use Letters Only.' : nameMsg) : null}
           onFocus={() => setFocus('name')}
           onBlur={() => { setFocus(null); setTouched(t => ({ ...t, name: true })); }}
           onChangeText={text => { setSavedNote(false); setFullName(text.replace(/[^A-Za-z .'-]/g, '').slice(0, 80)); }}
         />
         <Field
-          label="PAN"
-          value={pan}
-          placeholder="ABCDE1234F"
-          autoCapitalize="characters"
-          autoCorrect={false}
-          autoComplete="off"
-          maxLength={10}
-          focused={focus === 'pan'}
-          valid={panOk}
-          error={touched.pan && focus !== 'pan' ? (pan.length === 0 ? 'Enter your PAN.' : !panOk ? 'Enter a valid PAN, like ABCDE1234F.' : null) : null}
-          onFocus={() => setFocus('pan')}
-          onBlur={() => { setFocus(null); setTouched(t => ({ ...t, pan: true })); }}
-          onChangeText={text => { setSavedNote(false); setPan(normalizePan(text)); }}
-        />
-        <Field
-          label="Date of birth"
+          label="Date Of Birth"
           value={dob}
           placeholder="DD/MM/YYYY"
           autoCapitalize="none"
@@ -111,8 +98,8 @@ export default function ProfileScreen() {
       </View>
 
       {error ? <Text style={s.formError} accessibilityLiveRegion="polite">{error}</Text> : null}
-      {savedNote ? <Text style={s.saved} accessibilityLiveRegion="polite">Profile saved.</Text> : null}
-      <Button label="Save profile" loading={saving} disabled={!valid} onPress={() => void save()} style={s.save} />
+      {savedNote ? <Text style={s.saved} accessibilityLiveRegion="polite">Profile Saved.</Text> : null}
+      <Button label="Save Profile" loading={saving} disabled={!valid} onPress={() => void save()} style={s.save} />
     </Screen>
   );
 }

@@ -40,17 +40,17 @@ const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 
 export function assessedLabel(iso: string, now = new Date()) {
   const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return 'Last assessed today';
+  if (Number.isNaN(date.getTime())) return 'Last Assessed Today';
   const sameDay = date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth() && date.getDate() === now.getDate();
-  if (sameDay) return 'Last assessed today';
-  return `Last assessed ${date.getDate()} ${MONTHS[date.getMonth()]}`;
+  if (sameDay) return 'Last Assessed Today';
+  return `Last Assessed ${date.getDate()} ${MONTHS[date.getMonth()]}`;
 }
 
 export function bandFor(value: number) {
-  if (value >= 80) return 'Strong — ready for funding';
-  if (value >= 60) return 'Good — ready for funding';
-  if (value >= 40) return 'Fair — a few gaps to close';
-  return 'Needs work before matching';
+  if (value >= 80) return 'Strong — Ready For Funding';
+  if (value >= 60) return 'Good — Ready For Funding';
+  if (value >= 40) return 'Fair — A Few Gaps To Close';
+  return 'Needs Work Before Matching';
 }
 
 export async function getAssessment(input: AssessmentInput): Promise<Assessment> {
@@ -66,24 +66,24 @@ function mockAssessment(input: AssessmentInput): Assessment {
   const msme = input.entityType === 'msme';
   const emis = input.existingEmis;
   const factors: ScoreFactor[] = [
-    { id: 'cashflow', label: 'Cash flow & bank behaviour', score: 19, max: 25 },
-    { id: 'income', label: msme ? 'Profitability & margins' : 'Income stability', score: 14, max: 20 },
-    { id: 'repayment', label: 'Repayment capacity', score: 15, max: 20, attention: emis && !input.creditBureau },
-    { id: 'consistency', label: msme ? 'GST & ITR consistency' : 'Income consistency', score: 12, max: 15 },
-    { id: 'vintage', label: msme ? 'Business vintage' : 'Work vintage', score: 8, max: 10 },
+    { id: 'cashflow', label: 'Cash Flow & Bank Behaviour', score: 19, max: 25 },
+    { id: 'income', label: msme ? 'Profitability & Margins' : 'Income Stability', score: 14, max: 20 },
+    { id: 'repayment', label: 'Repayment Capacity', score: 15, max: 20, attention: emis && !input.creditBureau },
+    { id: 'consistency', label: msme ? 'GST & ITR Consistency' : 'Income Consistency', score: 12, max: 15 },
+    { id: 'vintage', label: msme ? 'Business Vintage' : 'Work Vintage', score: 8, max: 10 },
   ];
   if (input.creditBureau) {
-    factors.push({ id: 'credit', label: 'Credit history', score: emis ? 4 : 8, max: 10, attention: emis });
+    factors.push({ id: 'credit', label: 'Credit History', score: emis ? 4 : 8, max: 10, attention: emis });
   }
   const value = factors.reduce((sum, factor) => sum + factor.score, 0);
   const improvement: ImprovementItem[] = emis
     ? [{
       id: 'emis',
-      title: 'Existing EMIs are high',
-      found: 'You already pay EMIs alongside this new loan.',
-      why: 'Lenders look at how much of your inflow already goes to EMIs.',
-      action: 'Close or consolidate one small loan, or add a co-applicant.',
-      evidence: 'Latest loan statement or closure letter.',
+      title: 'Existing EMIs Are High',
+      found: 'You Already Pay EMIs Alongside This New Loan.',
+      why: 'Lenders Look At How Much Of Your Inflow Already Goes To EMIs.',
+      action: 'Close Or Consolidate One Small Loan, Or Add A Co-Applicant.',
+      evidence: 'Latest Loan Statement Or Closure Letter.',
     }]
     : [];
   return {
@@ -100,8 +100,7 @@ function mockAssessment(input: AssessmentInput): Assessment {
 }
 
 function basedOn(titles: string[]) {
-  if (titles.length === 0) return 'Based on the documents you uploaded.';
-  const parts = titles.map(title => (/^[A-Z]{2}/.test(title) ? title : title.charAt(0).toLowerCase() + title.slice(1)));
-  const list = parts.length === 1 ? parts[0] : `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}`;
-  return `Based on your ${list}.`;
+  if (titles.length === 0) return 'Based On The Documents You Uploaded.';
+  const list = titles.length === 1 ? titles[0] : `${titles.slice(0, -1).join(', ')} And ${titles[titles.length - 1]}`;
+  return `Based On Your ${list}.`;
 }

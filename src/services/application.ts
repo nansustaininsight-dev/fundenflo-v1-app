@@ -44,7 +44,7 @@ export async function getApplication(id: string): Promise<LoanApplication> {
   if (USE_MOCK) {
     await delay(300);
     const saved = mockApps.get(id);
-    if (!saved) throw new ApiError('This application is no longer available on this device.', 404);
+    if (!saved) throw new ApiError('This Application Is No Longer Available On This Device.', 404);
     return saved;
   }
   return api(`/applications/${encodeURIComponent(id)}`);
@@ -70,11 +70,11 @@ function mockApplication(input: ApplyInput): LoanApplication {
     status: 'under_review',
     createdAt,
     timeline: [
-      { id: 'documents', title: 'Documents complete', detail: 'Your uploaded file is ready.', at: when, state: 'done' },
-      { id: 'sent', title: 'Sent to lender', detail: 'This lender has your file.', at: when, state: 'done' },
-      { id: 'review', title: 'Under review', detail: 'The lender is reviewing your file.', at: 'Now', state: 'active' },
-      { id: 'sanctioned', title: 'Sanctioned', detail: 'The lender approves the loan.', state: 'pending' },
-      { id: 'disbursed', title: 'Disbursed', detail: 'Funds are sent to your account.', state: 'pending' },
+      { id: 'documents', title: 'Documents Complete', detail: 'Your Uploaded File Is Ready.', at: when, state: 'done' },
+      { id: 'sent', title: 'Sent To Lender', detail: 'This Lender Has Your File.', at: when, state: 'done' },
+      { id: 'review', title: 'Under Review', detail: 'The Lender Is Reviewing Your File.', at: 'Now', state: 'active' },
+      { id: 'sanctioned', title: 'Sanctioned', detail: 'The Lender Approves The Loan.', state: 'pending' },
+      { id: 'disbursed', title: 'Disbursed', detail: 'Funds Are Sent To Your Account.', state: 'pending' },
     ],
   };
 }

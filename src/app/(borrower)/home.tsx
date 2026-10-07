@@ -17,16 +17,16 @@ export default function HomeScreen() {
   const application = journey.application;
   const score = journey.score;
   const pending = application?.pendingDocument;
-  const status = application?.timeline.find(step => step.state === 'active')?.title ?? 'In progress';
+  const status = application?.timeline.find(step => step.state === 'active')?.title ?? 'In Progress';
 
   function startNew() {
     Alert.alert(
-      'Start a new application?',
-      'This clears the current application, documents and score on this device. Your login stays.',
+      'Start A New Application?',
+      'This Clears The Current Application, Documents And Score On This Device. Your Login Stays.',
       [
         { text: 'Cancel', style: 'cancel' },
         {
-          text: 'Start new',
+          text: 'Start New',
           onPress: () => { void resetJourney().then(() => router.replace('/entity-type')); },
         },
       ],
@@ -38,14 +38,14 @@ export default function HomeScreen() {
       {application && (
         <Animated.View entering={FadeInDown.delay(60).duration(400)} style={s.navy}>
           <View style={s.navyTop}>
-            <Text style={s.kicker}>Active application</Text>
+            <Text style={s.kicker}>Active Application</Text>
             <Text style={s.badge}>{status}</Text>
           </View>
           <Text style={s.facility}>{application.product} · {application.lenderName}</Text>
           <Text style={s.amount}>{formatINR(application.amount)}</Text>
           <View style={s.navyFoot}>
             <Text style={s.ref}>Ref: {application.id}</Text>
-            <Pressable accessibilityRole="button" accessibilityLabel="Track application" onPress={() => router.push('/application')} hitSlop={8} style={s.track}>
+            <Pressable accessibilityRole="button" accessibilityLabel="Track Application" onPress={() => router.push('/application')} hitSlop={8} style={s.track}>
               <Text style={s.trackText}>Track</Text>
               <Icon name="arrow-forward" size={16} color={C.gold} />
             </Pressable>
@@ -56,7 +56,7 @@ export default function HomeScreen() {
       {score && (
         <View style={s.scoreCard}>
           <View style={s.scoreText}>
-            <Pressable accessibilityRole="button" accessibilityLabel={`Financial Health Score ${score.value} out of 100`} onPress={() => router.push('/score')}>
+            <Pressable accessibilityRole="button" accessibilityLabel={`Financial Health Score ${score.value} Out Of 100`} onPress={() => router.push('/score')}>
               <Text style={s.scoreTitle}>Financial Health Score</Text>
               <Text style={s.scoreWhen}>{assessedLabel(score.assessedAt)}</Text>
             </Pressable>
@@ -65,7 +65,7 @@ export default function HomeScreen() {
               <Icon name="arrow-forward" size={14} color={C.goldDeep} />
             </Pressable>
           </View>
-          <Pressable accessibilityRole="button" accessibilityLabel="Open score" onPress={() => router.push('/score')}>
+          <Pressable accessibilityRole="button" accessibilityLabel="Open Score" onPress={() => router.push('/score')}>
             <ProgressRing progress={score.value / 100} size={72} stroke={6} color={C.goldDeep} track={C.subtle}>
               <Text style={s.scoreValue}>{score.value}<Text style={s.scoreMax}>/100</Text></Text>
             </ProgressRing>
@@ -77,7 +77,7 @@ export default function HomeScreen() {
         <Pressable accessibilityRole="button" onPress={() => router.push('/documents')} style={s.task}>
           <View style={s.taskIcon}><Icon name="error" size={18} color={C.goldDeep} /></View>
           <View style={s.taskBody}>
-            <Text style={s.taskTitle}>1 pending task</Text>
+            <Text style={s.taskTitle}>1 Pending Task</Text>
             <Text style={s.taskText}>{pending.title}</Text>
           </View>
           <Icon name="chevron-right" size={18} color={C.muted} />
@@ -86,7 +86,7 @@ export default function HomeScreen() {
 
       <Pressable accessibilityRole="button" onPress={startNew} style={s.newApp}>
         <Icon name="add" size={20} color={C.navy} />
-        <Text style={s.newAppText}>Start a new application</Text>
+        <Text style={s.newAppText}>Start A New Application</Text>
       </Pressable>
     </Screen>
   );

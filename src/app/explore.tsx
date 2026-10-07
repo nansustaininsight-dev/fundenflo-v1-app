@@ -41,13 +41,13 @@ export default function TabTwoScreen() {
         <ThemedView style={styles.titleContainer}>
           <ThemedText type="subtitle">Explore</ThemedText>
           <ThemedText style={styles.centerText} themeColor="textSecondary">
-            This starter app includes example{'\n'}code to help you get started.
+            This Starter App Includes Example{'\n'}Code To Help You Get Started.
           </ThemedText>
 
           <ExternalLink href="https://docs.expo.dev" asChild>
             <Pressable style={({ pressed }) => pressed && styles.pressed}>
               <ThemedView type="backgroundElement" style={styles.linkButton}>
-                <ThemedText type="link">Expo documentation</ThemedText>
+                <ThemedText type="link">Expo Documentation</ThemedText>
                 <SymbolView
                   tintColor={theme.text}
                   name={{ ios: 'arrow.up.right.square', android: 'link', web: 'link' }}
@@ -59,26 +59,26 @@ export default function TabTwoScreen() {
         </ThemedView>
 
         <ThemedView style={styles.sectionsWrapper}>
-          <Collapsible title="File-based routing">
+          <Collapsible title="File-Based Routing">
             <ThemedText type="small">
-              This app has two screens: <ThemedText type="code">src/app/index.tsx</ThemedText> and{' '}
+              This App Has Two Screens: <ThemedText type="code">src/app/index.tsx</ThemedText> And{' '}
               <ThemedText type="code">src/app/explore.tsx</ThemedText>
             </ThemedText>
             <ThemedText type="small">
-              The layout file in <ThemedText type="code">src/app/_layout.tsx</ThemedText> sets up
-              the tab navigator.
+              The Layout File In <ThemedText type="code">src/app/_layout.tsx</ThemedText> Sets Up
+              The Tab Navigator.
             </ThemedText>
             <ExternalLink href="https://docs.expo.dev/router/introduction">
-              <ThemedText type="linkPrimary">Learn more</ThemedText>
+              <ThemedText type="linkPrimary">Learn More</ThemedText>
             </ExternalLink>
           </Collapsible>
 
-          <Collapsible title="Android, iOS, and web support">
+          <Collapsible title="Android, iOS, And Web Support">
             <ThemedView type="backgroundElement" style={styles.collapsibleContent}>
               <ThemedText type="small">
-                You can open this project on Android, iOS, and the web. To open the web version,
-                press <ThemedText type="smallBold">w</ThemedText> in the terminal running this
-                project.
+                You Can Open This Project On Android, iOS, And The Web. To Open The Web Version,
+                Press <ThemedText type="smallBold">w</ThemedText> In The Terminal Running This
+                Project.
               </ThemedText>
               <Image
                 source={require('@/assets/images/tutorial-web.png')}
@@ -89,33 +89,33 @@ export default function TabTwoScreen() {
 
           <Collapsible title="Images">
             <ThemedText type="small">
-              For static images, you can use the <ThemedText type="code">@2x</ThemedText> and{' '}
-              <ThemedText type="code">@3x</ThemedText> suffixes to provide files for different
-              screen densities.
+              For Static Images, You Can Use The <ThemedText type="code">@2x</ThemedText> And{' '}
+              <ThemedText type="code">@3x</ThemedText> Suffixes To Provide Files For Different
+              Screen Densities.
             </ThemedText>
             <Image source={require('@/assets/images/react-logo.png')} style={styles.imageReact} />
             <ExternalLink href="https://reactnative.dev/docs/images">
-              <ThemedText type="linkPrimary">Learn more</ThemedText>
+              <ThemedText type="linkPrimary">Learn More</ThemedText>
             </ExternalLink>
           </Collapsible>
 
-          <Collapsible title="Light and dark mode components">
+          <Collapsible title="Light And Dark Mode Components">
             <ThemedText type="small">
-              This template has light and dark mode support. The{' '}
-              <ThemedText type="code">useColorScheme()</ThemedText> hook lets you inspect what the
-              user&apos;s current color scheme is, and so you can adjust UI colors accordingly.
+              This Template Has Light And Dark Mode Support. The{' '}
+              <ThemedText type="code">useColorScheme()</ThemedText> Hook Lets You Inspect What The
+              User&apos;s Current Color Scheme Is, And So You Can Adjust UI Colors Accordingly.
             </ThemedText>
             <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-              <ThemedText type="linkPrimary">Learn more</ThemedText>
+              <ThemedText type="linkPrimary">Learn More</ThemedText>
             </ExternalLink>
           </Collapsible>
 
           <Collapsible title="Animations">
             <ThemedText type="small">
-              This template includes an example of an animated component. The{' '}
-              <ThemedText type="code">src/components/ui/collapsible.tsx</ThemedText> component uses
-              the powerful <ThemedText type="code">react-native-reanimated</ThemedText> library to
-              animate opening this hint.
+              This Template Includes An Example Of An Animated Component. The{' '}
+              <ThemedText type="code">src/components/ui/collapsible.tsx</ThemedText> Component Uses
+              The Powerful <ThemedText type="code">react-native-reanimated</ThemedText> Library To
+              Animate Opening This Hint.
             </ThemedText>
           </Collapsible>
         </ThemedView>

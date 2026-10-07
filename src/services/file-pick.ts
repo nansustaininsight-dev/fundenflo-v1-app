@@ -18,8 +18,8 @@ export async function scanWithCamera(): Promise<PickedFile | null> {
   const perm = await ImagePicker.requestCameraPermissionsAsync();
   if (!perm.granted) {
     throw new ApiError(perm.canAskAgain
-      ? 'Camera access is needed to scan. You can upload a file instead.'
-      : 'Camera access is off. Turn it on in Settings, or upload a file instead.');
+      ? 'Camera Access Is Needed To Scan. You Can Upload A File Instead.'
+      : 'Camera Access Is Off. Turn It On In Settings, Or Upload A File Instead.');
   }
   const res = await ImagePicker.launchCameraAsync({ mediaTypes: 'images', quality: 0.7 });
   if (res.canceled || !res.assets?.[0]) return null;

@@ -19,24 +19,24 @@ export type ConsentItem = {
 export const CONSENT_ITEMS: ConsentItem[] = [
   {
     id: 'aiDocuments',
-    title: 'Read my documents with AI',
-    sub: 'Required · to calculate your Financial Health Score',
+    title: 'Read My Documents With AI',
+    sub: 'Required · To Calculate Your Financial Health Score',
     required: true,
-    details: 'The documents you upload (bank statements, GST returns, ITR) are read automatically to extract income, cash-flow and repayment patterns. These are used only to calculate your Financial Health Score and improvement plan.',
+    details: 'The Documents You Upload (Bank Statements, GST Returns, ITR) Are Read Automatically To Extract Income, Cash-Flow And Repayment Patterns. These Are Used Only To Calculate Your Financial Health Score And Improvement Plan.',
   },
   {
     id: 'creditBureau',
-    title: 'Fetch my credit bureau report',
-    sub: 'Optional · helps match lenders accurately',
+    title: 'Fetch My Credit Bureau Report',
+    sub: 'Optional · Helps Match Lenders Accurately',
     required: false,
-    details: 'With your permission we request your credit report from a credit bureau to understand your existing loans and repayment history. If you keep this off, matching uses only the information you provide.',
+    details: 'With Your Permission We Request Your Credit Report From A Credit Bureau To Understand Your Existing Loans And Repayment History. If You Keep This Off, Matching Uses Only The Information You Provide.',
   },
   {
     id: 'lenderSharing',
-    title: 'Share my file with lenders I choose',
-    sub: 'Optional · nothing is sent without your approval',
+    title: 'Share My File With Lenders I Choose',
+    sub: 'Optional · Nothing Is Sent Without Your Approval',
     required: false,
-    details: 'Your loan file is shared only with the specific lenders you select, and only after you confirm. If you keep this off you still get your score and improvement plan; you can turn it on before applying.',
+    details: 'Your Loan File Is Shared Only With The Specific Lenders You Select, And Only After You Confirm. If You Keep This Off You Still Get Your Score And Improvement Plan; You Can Turn It On Before Applying.',
   },
 ];
 

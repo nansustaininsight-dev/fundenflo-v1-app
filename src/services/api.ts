@@ -30,10 +30,10 @@ export async function api<T>(path: string, init: { method?: string; body?: unkno
       body: init.body ? JSON.stringify(init.body) : undefined,
     });
   } catch {
-    throw new ApiError('No internet connection. Please check your network and try again.');
+    throw new ApiError('No Internet Connection. Please Check Your Network And Try Again.');
   }
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new ApiError(data?.message ?? 'Something went wrong. Please try again.', res.status, data?.code);
+  if (!res.ok) throw new ApiError(data?.message ?? 'Something Went Wrong. Please Try Again.', res.status, data?.code);
   return data as T;
 }
 

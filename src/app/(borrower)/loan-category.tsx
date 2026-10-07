@@ -28,7 +28,7 @@ export default function LoanCategoryScreen() {
     let active = true;
     getLoanCategories(entityType).then(
       res => { if (active) setItems(res); },
-      e => { if (active) setError(e instanceof ApiError ? e.message : 'Could not load loan categories. Please try again.'); },
+      e => { if (active) setError(e instanceof ApiError ? e.message : 'Could Not Load Loan Categories. Please Try Again.'); },
     );
     return () => { active = false; };
   }, [entityType, attempt]);
@@ -51,25 +51,25 @@ export default function LoanCategoryScreen() {
   return (
     <Screen
       header={<StepHeader step={2} />}
-      footer={<JourneyFooter onContinue={() => router.push('/loan-amount')} disabled={!selected} hint={items ? 'Select a loan category to continue.' : null} />}>
+      footer={<JourneyFooter onContinue={() => router.push('/loan-amount')} disabled={!selected} hint={items ? 'Select A Loan Category To Continue.' : null} />}>
       <Animated.View entering={FadeInDown.duration(400)}>
-        <Eyebrow label="Loan requirement • 1 of 3" />
-        <Text style={s.title} accessibilityRole="header">What do you need funding for?</Text>
-        <Text style={s.sub}>Select the primary purpose for your loan requirement.</Text>
+        <Eyebrow label="Loan Requirement • 1 Of 3" />
+        <Text style={s.title} accessibilityRole="header">What Do You Need Funding For?</Text>
+        <Text style={s.sub}>Select The Primary Purpose For Your Loan Requirement.</Text>
       </Animated.View>
 
       {error ? (
         <Animated.View entering={FadeIn} style={s.errorCard}>
           <Icon name="error" size={22} color={C.error} />
           <Text style={s.errorText}>{error}</Text>
-          <Button label="Try again" variant="ghost" icon="refresh" onPress={retry} style={s.retry} />
+          <Button label="Try Again" variant="ghost" icon="refresh" onPress={retry} style={s.retry} />
         </Animated.View>
       ) : !items ? (
-        <View style={s.grid} accessibilityLabel="Loading loan categories" accessibilityState={{ busy: true }}>
+        <View style={s.grid} accessibilityLabel="Loading Loan Categories" accessibilityState={{ busy: true }}>
           {Array.from({ length: entityType === 'msme' ? 8 : 4 }, (_, i) => <SkeletonTile key={i} />)}
         </View>
       ) : (
-        <View style={s.grid} accessibilityRole="radiogroup" accessibilityLabel="Loan category">
+        <View style={s.grid} accessibilityRole="radiogroup" accessibilityLabel="Loan Category">
           {items.map((item, i) => {
             const cat = CATEGORIES[item.id];
             if (!cat) return null;
@@ -119,7 +119,7 @@ export default function LoanCategoryScreen() {
       {items && (
         <View style={s.hint}>
           <Icon name="info" size={15} color={C.muted} />
-          <Text style={s.hintText}>We only list categories where verified lender routes exist.</Text>
+          <Text style={s.hintText}>We Only List Categories Where Verified Lender Routes Exist.</Text>
         </View>
       )}
     </Screen>

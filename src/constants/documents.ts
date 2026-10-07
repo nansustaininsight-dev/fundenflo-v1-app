@@ -3,7 +3,7 @@ import type { LoanCategoryId } from '@/constants/loan';
 import type { EntityType, PreCheck } from '@/store/app-store';
 
 /**
- * Step 5 document checklist. The three required documents are what the Financial Health
+ * Step 5 document checklist. Required documents are what the Financial Health
  * Score needs; a category can add one optional document that lenders usually ask for.
  */
 export type DocumentId = 'pan' | 'bankStatement' | 'itrGst' | 'itr' | 'salarySlips' | 'property' | 'vehicleQuote' | 'machineryQuote';
@@ -20,8 +20,7 @@ export type DocumentSpec = {
   sources: DocumentSource[];
 };
 
-const PAN: DocumentSpec = { id: 'pan', title: 'PAN card', sub: 'Business or proprietor PAN', icon: 'id-card', required: true, sources: ['digilocker', 'upload', 'scan'] };
-const BANK: DocumentSpec = { id: 'bankStatement', title: 'Bank statement', sub: 'Last 6 months · main account', icon: 'bank', required: true, sources: ['upload', 'scan'] };
+const BANK: DocumentSpec = { id: 'bankStatement', title: 'Bank Statement', sub: 'Last 6 Months · Main Account', icon: 'bank', required: true, sources: ['upload', 'scan'] };
 
 /** Assessment year for the most recent ITR (AY runs April–March, filed for the previous FY). */
 export function latestAssessmentYear(now = new Date()) {
@@ -30,26 +29,26 @@ export function latestAssessmentYear(now = new Date()) {
 }
 
 const OPTIONAL: Partial<Record<LoanCategoryId, DocumentSpec>> = {
-  lap: { id: 'property', title: 'Property papers', sub: 'Sale deed or title document', icon: 'home', required: false, sources: ['upload', 'scan'] },
-  home: { id: 'property', title: 'Property papers', sub: 'Sale agreement or allotment letter', icon: 'home', required: false, sources: ['upload', 'scan'] },
-  vehicle: { id: 'vehicleQuote', title: 'Vehicle quotation', sub: 'Proforma invoice from the dealer', icon: 'car', required: false, sources: ['upload', 'scan'] },
-  machinery: { id: 'machineryQuote', title: 'Machinery quotation', sub: 'Quotation from the supplier', icon: 'quote', required: false, sources: ['upload', 'scan'] },
+  lap: { id: 'property', title: 'Property Papers', sub: 'Sale Deed Or Title Document', icon: 'home', required: false, sources: ['upload', 'scan'] },
+  home: { id: 'property', title: 'Property Papers', sub: 'Sale Agreement Or Allotment Letter', icon: 'home', required: false, sources: ['upload', 'scan'] },
+  vehicle: { id: 'vehicleQuote', title: 'Vehicle Quotation', sub: 'Proforma Invoice From The Dealer', icon: 'car', required: false, sources: ['upload', 'scan'] },
+  machinery: { id: 'machineryQuote', title: 'Machinery Quotation', sub: 'Quotation From The Supplier', icon: 'quote', required: false, sources: ['upload', 'scan'] },
 };
 
 export function documentsFor(entityType: EntityType, category?: LoanCategoryId, preCheck?: PreCheck): DocumentSpec[] {
   const ay = latestAssessmentYear();
   let third: DocumentSpec;
   if (entityType === 'msme') {
-    third = { id: 'itrGst', title: 'ITR or GST returns', sub: `Assessment Year ${ay} or last 12 months GSTR-3B`, icon: 'receipt', required: true, sources: ['upload', 'scan'] };
+    third = { id: 'itrGst', title: 'ITR Or GST Returns', sub: `Assessment Year ${ay} Or Last 12 Months GSTR-3B`, icon: 'receipt', required: true, sources: ['upload', 'scan'] };
   } else if (preCheck?.entityType === 'individual' && preCheck.answers.employment === 'salaried') {
-    third = { id: 'salarySlips', title: 'Salary slips', sub: 'Last 3 months', icon: 'payments', required: true, sources: ['upload', 'scan'] };
+    third = { id: 'salarySlips', title: 'Salary Slips', sub: 'Last 3 Months', icon: 'payments', required: true, sources: ['upload', 'scan'] };
   } else {
-    third = { id: 'itr', title: 'Income tax return', sub: `ITR for Assessment Year ${ay}`, icon: 'receipt', required: true, sources: ['upload', 'scan'] };
+    third = { id: 'itr', title: 'Income Tax Return', sub: `ITR For Assessment Year ${ay}`, icon: 'receipt', required: true, sources: ['upload', 'scan'] };
   }
   const extra = category ? OPTIONAL[category] : undefined;
-  return [{ ...PAN, sub: entityType === 'msme' ? PAN.sub : 'Your personal PAN' }, BANK, third, ...(extra ? [extra] : [])];
+  return [BANK, third, ...(extra ? [extra] : [])];
 }
 
 export const MAX_FILE_MB = 10;
 export const ACCEPTED_TYPES = ['application/pdf', 'image/jpeg', 'image/png'];
-export const ACCEPTED_LABEL = 'PDF, JPG or PNG · up to 10 MB';
+export const ACCEPTED_LABEL = 'PDF, JPG Or PNG · Up To 10 MB';

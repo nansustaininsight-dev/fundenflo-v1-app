@@ -29,11 +29,11 @@ export default function LoanAmountScreen() {
   if (!cat) return <Redirect href="/loan-category" />;
 
   const isBusiness = journey.entityType === 'msme';
-  const locationLabel = isBusiness ? 'Operating business location' : 'Current city';
+  const locationLabel = isBusiness ? 'Operating Business Location' : 'Current City';
   const amountValid = amount >= cat.minAmount && amount <= cat.maxAmount;
   const showAmountError = !amountValid && (!focused || amount > cat.maxAmount);
   const valid = amountValid && !!tenure && !!location;
-  const hint = !amountValid ? 'Enter a loan amount within the allowed range.' : !tenure ? 'Select your preferred tenure.' : !location ? `Select your ${locationLabel.toLowerCase()}.` : null;
+  const hint = !amountValid ? 'Enter A Loan Amount Within The Allowed Range.' : !tenure ? 'Select Your Preferred Tenure.' : !location ? `Select Your ${locationLabel.toLowerCase()}.` : null;
   const emi = amountValid && tenure ? estimateEmi(amount, cat.assumedRate, tenure) : 0;
 
   function onType(t: string) {
@@ -75,12 +75,12 @@ export default function LoanAmountScreen() {
       header={<StepHeader step={2} />}
       footer={<JourneyFooter onContinue={() => void next()} disabled={!valid} hint={hint} />}>
       <Animated.View entering={FadeInDown.duration(400)}>
-        <Eyebrow label="Loan requirement • 2 of 3" />
-        <Text style={s.title} accessibilityRole="header">How much do you need?</Text>
-        <Text style={s.sub}>Set the amount and repayment period that works for you.</Text>
+        <Eyebrow label="Loan Requirement • 2 Of 3" />
+        <Text style={s.title} accessibilityRole="header">How Much Do You Need?</Text>
+        <Text style={s.sub}>Set The Amount And Repayment Period That Works For You.</Text>
       </Animated.View>
 
-      <Pressable onPress={() => router.dismissTo('/loan-category')} style={s.catChip} accessibilityRole="button" accessibilityLabel={`${cat.title}. Change category`}>
+      <Pressable onPress={() => router.dismissTo('/loan-category')} style={s.catChip} accessibilityRole="button" accessibilityLabel={`${cat.title}. Change Category`}>
         <View style={s.catIcon}><Icon name={cat.icon} size={14} color={C.white} /></View>
         <Text style={s.catText} numberOfLines={1}>{cat.title}</Text>
         <Text style={s.change}>Change</Text>
@@ -88,8 +88,8 @@ export default function LoanAmountScreen() {
 
       <Animated.View entering={FadeInDown.delay(80).duration(400)} style={s.card}>
         <View style={s.cardHead}>
-          <Text style={s.cardTitle}>How much?</Text>
-          <Text style={s.tag}>Requested limit</Text>
+          <Text style={s.cardTitle}>How Much?</Text>
+          <Text style={s.tag}>Requested Limit</Text>
         </View>
         <View style={[s.amountRow, focused && s.amountRowFocused, showAmountError && s.amountRowError]}>
           <Text style={s.rupee}>₹</Text>
@@ -105,14 +105,14 @@ export default function LoanAmountScreen() {
             placeholder="0"
             placeholderTextColor={C.slate}
             style={[s.amountInput, text.length > 11 && s.amountInputLong]}
-            accessibilityLabel={`Loan amount in rupees, between ${formatShortINR(cat.minAmount)} and ${formatShortINR(cat.maxAmount)}`}
+            accessibilityLabel={`Loan Amount In Rupees, Between ${formatShortINR(cat.minAmount)} And ${formatShortINR(cat.maxAmount)}`}
           />
           <Icon name="edit" size={18} color={C.muted} />
         </View>
         {showAmountError ? (
           <Animated.View entering={FadeIn} style={s.errorRow} accessibilityLiveRegion="polite">
             <Icon name="error" size={14} color={C.error} />
-            <Text style={s.errorText}>Enter an amount between {formatShortINR(cat.minAmount)} and {formatShortINR(cat.maxAmount)}.</Text>
+            <Text style={s.errorText}>Enter An Amount Between {formatShortINR(cat.minAmount)} And {formatShortINR(cat.maxAmount)}.</Text>
           </Animated.View>
         ) : (
           <Text style={s.words}>{amount ? formatShortINR(amount) : ' '}</Text>
@@ -125,19 +125,19 @@ export default function LoanAmountScreen() {
           step={cat.step}
           onChange={onSlide}
           onChangeEnd={v => void updateJourney({ amount: v })}
-          accessibilityLabel="Loan amount"
+          accessibilityLabel="Loan Amount"
           formatValue={formatINR}
         />
         <View style={s.rangeRow}>
           <Text style={s.rangeText}>{formatShortINR(cat.minAmount)}</Text>
-          <Text style={[s.rangeText, s.rangeMid]}>Max sanction pool</Text>
+          <Text style={[s.rangeText, s.rangeMid]}>Max Sanction Pool</Text>
           <Text style={[s.rangeText, s.rangeEnd]}>{formatShortINR(cat.maxAmount)}</Text>
         </View>
 
-        <Text style={s.label}>Preferred tenure</Text>
-        <View style={s.tenures} accessibilityRole="radiogroup" accessibilityLabel="Tenure in years">
+        <Text style={s.label}>Preferred Tenure</Text>
+        <View style={s.tenures} accessibilityRole="radiogroup" accessibilityLabel="Tenure In Years">
           {cat.tenures.map(y => (
-            <ChoiceChip key={y} tone="pill" label={`${y} yr`} selected={tenure === y} onPress={() => pickTenure(y)} style={s.tenure} />
+            <ChoiceChip key={y} tone="pill" label={`${y} Yr`} selected={tenure === y} onPress={() => pickTenure(y)} style={s.tenure} />
           ))}
         </View>
 
@@ -146,9 +146,9 @@ export default function LoanAmountScreen() {
           onPress={() => setPickerOpen(true)}
           style={({ pressed }) => [s.location, pressed && s.locationPressed]}
           accessibilityRole="button"
-          accessibilityLabel={`${locationLabel}: ${location ?? 'not selected'}. ${location ? 'Change' : 'Select'}`}>
+          accessibilityLabel={`${locationLabel}: ${location ?? 'Not Selected'}. ${location ? 'Change' : 'Select'}`}>
           <Icon name="location" size={20} color={location ? C.navy : C.slate} />
-          <Text style={[s.locationText, !location && s.placeholder]} numberOfLines={1}>{location ?? 'Select city'}</Text>
+          <Text style={[s.locationText, !location && s.placeholder]} numberOfLines={1}>{location ?? 'Select City'}</Text>
           <Text style={s.change}>{location ? 'Change' : 'Select'}</Text>
           <Icon name="expand-more" size={18} color={C.muted} />
         </Pressable>
@@ -160,11 +160,11 @@ export default function LoanAmountScreen() {
           <View style={s.emiBody}>
             <Text style={s.emiText}>Illustrative EMI ≈ <Text style={s.emiStrong}>{formatINR(emi)}/mo</Text></Text>
             <Text style={s.emiNote}>
-              Assumes {cat.assumedRate}% p.a. over {formatTenure(tenure!)} for illustration only. Not a lender offer — lenders set the final rate.
+              Assumes {cat.assumedRate}% P.A. Over {formatTenure(tenure!)} For Illustration Only. Not A Lender Offer — Lenders Set The Final Rate.
             </Text>
           </View>
         ) : (
-          <Text style={[s.emiText, s.emiBody]}>Choose an amount and tenure to see an illustrative EMI.</Text>
+          <Text style={[s.emiText, s.emiBody]}>Choose An Amount And Tenure To See An Illustrative EMI.</Text>
         )}
       </Animated.View>
 

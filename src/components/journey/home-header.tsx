@@ -14,7 +14,7 @@ export function HomeHeader() {
     <View style={s.bar}>
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel="Go back"
+        accessibilityLabel="Go Back"
         onPress={() => { if (router.canGoBack()) router.back(); }}
         hitSlop={8}
         style={s.back}>

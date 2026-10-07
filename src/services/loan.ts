@@ -5,7 +5,7 @@ import type { EntityType, Journey } from '@/store/app-store';
 export type CategoryAvailability = { id: LoanCategoryId; available: boolean; reason?: string };
 
 /** Mock: categories without a verified lender route yet. */
-const MOCK_UNAVAILABLE: Partial<Record<LoanCategoryId, string>> = { invoice: 'Not yet available in your area' };
+const MOCK_UNAVAILABLE: Partial<Record<LoanCategoryId, string>> = { invoice: 'Not Yet Available In Your Area' };
 
 /** Which categories have a live lender route for this borrower (GET /loan/categories). */
 export async function getLoanCategories(entityType: EntityType): Promise<CategoryAvailability[]> {

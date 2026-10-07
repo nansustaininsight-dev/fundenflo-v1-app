@@ -25,18 +25,18 @@ export type LoanCategory = {
 
 const LAKH = 100_000;
 const CRORE = 100 * LAKH;
-const OTHER: Option = { id: 'other', label: 'Something else' };
+const OTHER: Option = { id: 'other', label: 'Something Else' };
 
 export const CATEGORIES: Record<LoanCategoryId, LoanCategory> = {
   business: {
     id: 'business', title: 'Business Loan', icon: 'store',
     minAmount: 5 * LAKH, maxAmount: 2 * CRORE, step: 2.5 * LAKH, defaultAmount: 25 * LAKH, tenures: [1, 2, 3, 5], assumedRate: 15,
     purposes: [
-      { id: 'expansion', label: 'Business expansion' },
-      { id: 'inventory', label: 'Buy inventory or stock' },
-      { id: 'equipment', label: 'Equipment or technology' },
-      { id: 'marketing', label: 'Marketing and growth' },
-      { id: 'refinance', label: 'Refinance an existing loan' },
+      { id: 'expansion', label: 'Business Expansion' },
+      { id: 'inventory', label: 'Buy Inventory Or Stock' },
+      { id: 'equipment', label: 'Equipment Or Technology' },
+      { id: 'marketing', label: 'Marketing And Growth' },
+      { id: 'refinance', label: 'Refinance An Existing Loan' },
       OTHER,
     ],
   },
@@ -44,11 +44,11 @@ export const CATEGORIES: Record<LoanCategoryId, LoanCategory> = {
     id: 'working-capital', title: 'Working Capital', icon: 'sync-alt',
     minAmount: 5 * LAKH, maxAmount: 2 * CRORE, step: 2.5 * LAKH, defaultAmount: 25 * LAKH, tenures: [1, 2, 3, 5], assumedRate: 14,
     purposes: [
-      { id: 'operations', label: 'Day-to-day operations' },
-      { id: 'raw-material', label: 'Inventory or raw material' },
-      { id: 'suppliers', label: 'Pay suppliers and vendors' },
-      { id: 'seasonal', label: 'Seasonal demand' },
-      { id: 'receivables', label: 'Bridge a receivables gap' },
+      { id: 'operations', label: 'Day-To-Day Operations' },
+      { id: 'raw-material', label: 'Inventory Or Raw Material' },
+      { id: 'suppliers', label: 'Pay Suppliers And Vendors' },
+      { id: 'seasonal', label: 'Seasonal Demand' },
+      { id: 'receivables', label: 'Bridge A Receivables Gap' },
       OTHER,
     ],
   },
@@ -56,11 +56,11 @@ export const CATEGORIES: Record<LoanCategoryId, LoanCategory> = {
     id: 'lap', title: 'Loan Against Property', icon: 'business',
     minAmount: 10 * LAKH, maxAmount: 5 * CRORE, step: 5 * LAKH, defaultAmount: 50 * LAKH, tenures: [3, 5, 10, 15], assumedRate: 10,
     purposes: [
-      { id: 'business-use', label: 'Business needs' },
-      { id: 'debt-consolidation', label: 'Consolidate existing debt' },
+      { id: 'business-use', label: 'Business Needs' },
+      { id: 'debt-consolidation', label: 'Consolidate Existing Debt' },
       { id: 'education', label: 'Education' },
-      { id: 'medical', label: 'Medical expenses' },
-      { id: 'renovation', label: 'Home renovation' },
+      { id: 'medical', label: 'Medical Expenses' },
+      { id: 'renovation', label: 'Home Renovation' },
       OTHER,
     ],
   },
@@ -68,27 +68,27 @@ export const CATEGORIES: Record<LoanCategoryId, LoanCategory> = {
     id: 'machinery', title: 'Machinery Finance', icon: 'machinery',
     minAmount: 5 * LAKH, maxAmount: 2 * CRORE, step: 2.5 * LAKH, defaultAmount: 25 * LAKH, tenures: [1, 3, 5, 7], assumedRate: 13,
     purposes: [
-      { id: 'new-machine', label: 'Buy new machinery' },
-      { id: 'used-machine', label: 'Buy used / refurbished machinery' },
-      { id: 'upgrade', label: 'Upgrade or replace equipment' },
+      { id: 'new-machine', label: 'Buy New Machinery' },
+      { id: 'used-machine', label: 'Buy Used / Refurbished Machinery' },
+      { id: 'upgrade', label: 'Upgrade Or Replace Equipment' },
       OTHER,
     ],
   },
   invoice: {
     id: 'invoice', title: 'Invoice Finance', icon: 'receipt',
     minAmount: 5 * LAKH, maxAmount: 2 * CRORE, step: 2.5 * LAKH, defaultAmount: 25 * LAKH, tenures: [1], assumedRate: 14,
-    purposes: [{ id: 'unpaid-invoices', label: 'Fund unpaid invoices' }, OTHER],
+    purposes: [{ id: 'unpaid-invoices', label: 'Fund Unpaid Invoices' }, OTHER],
   },
   personal: {
     id: 'personal', title: 'Personal Loan', icon: 'wallet',
     minAmount: 50_000, maxAmount: 40 * LAKH, step: 50_000, defaultAmount: 5 * LAKH, tenures: [1, 2, 3, 5], assumedRate: 13,
     purposes: [
-      { id: 'medical', label: 'Medical expenses' },
+      { id: 'medical', label: 'Medical Expenses' },
       { id: 'education', label: 'Education' },
       { id: 'wedding', label: 'Wedding' },
       { id: 'travel', label: 'Travel' },
-      { id: 'renovation', label: 'Home renovation' },
-      { id: 'debt-consolidation', label: 'Consolidate existing debt' },
+      { id: 'renovation', label: 'Home Renovation' },
+      { id: 'debt-consolidation', label: 'Consolidate Existing Debt' },
       OTHER,
     ],
   },
@@ -96,11 +96,11 @@ export const CATEGORIES: Record<LoanCategoryId, LoanCategory> = {
     id: 'home', title: 'Home Loan', icon: 'home',
     minAmount: 5 * LAKH, maxAmount: 5 * CRORE, step: 5 * LAKH, defaultAmount: 50 * LAKH, tenures: [5, 10, 15, 20], assumedRate: 9,
     purposes: [
-      { id: 'ready', label: 'Buy a ready-to-move home' },
-      { id: 'under-construction', label: 'Buy an under-construction home' },
-      { id: 'construct', label: 'Build on my own plot' },
-      { id: 'extension', label: 'Renovation or extension' },
-      { id: 'balance-transfer', label: 'Transfer an existing home loan' },
+      { id: 'ready', label: 'Buy A Ready-To-Move Home' },
+      { id: 'under-construction', label: 'Buy An Under-Construction Home' },
+      { id: 'construct', label: 'Build On My Own Plot' },
+      { id: 'extension', label: 'Renovation Or Extension' },
+      { id: 'balance-transfer', label: 'Transfer An Existing Home Loan' },
       OTHER,
     ],
   },
@@ -108,10 +108,10 @@ export const CATEGORIES: Record<LoanCategoryId, LoanCategory> = {
     id: 'vehicle', title: 'Vehicle Loan', icon: 'car',
     minAmount: LAKH, maxAmount: 50 * LAKH, step: LAKH, defaultAmount: 8 * LAKH, tenures: [1, 3, 5, 7], assumedRate: 10,
     purposes: [
-      { id: 'new-car', label: 'New car' },
-      { id: 'used-car', label: 'Used car' },
+      { id: 'new-car', label: 'New Car' },
+      { id: 'used-car', label: 'Used Car' },
       { id: 'two-wheeler', label: 'Two-wheeler' },
-      { id: 'commercial', label: 'Commercial vehicle' },
+      { id: 'commercial', label: 'Commercial Vehicle' },
       OTHER,
     ],
   },
@@ -156,7 +156,7 @@ export function formatShortINR(n: number) {
   return formatINR(n);
 }
 
-export const formatTenure = (years: number) => `${years} yr${years > 1 ? 's' : ''}`;
+export const formatTenure = (years: number) => `${years} Yr${years > 1 ? 's' : ''}`;
 
 /** Standard reducing-balance EMI. Illustration only. */
 export function estimateEmi(principal: number, annualRate: number, years: number) {
@@ -175,23 +175,23 @@ const YES_NO: Option[] = [{ id: 'no', label: 'No' }, { id: 'yes', label: 'Yes' }
 
 export const PRE_CHECK_QUESTIONS: Record<EntityType, PreCheckQuestion[]> = {
   msme: [
-    { id: 'businessAge', title: 'How old is the business?', options: [
-      { id: 'lt1', label: '< 1 yr' }, { id: '1-3', label: '1–3 yrs' }, { id: '3-5', label: '3–5 yrs' }, { id: '5+', label: '5+ yrs' },
+    { id: 'businessAge', title: 'How Old Is The Business?', options: [
+      { id: 'lt1', label: '< 1 Yr' }, { id: '1-3', label: '1–3 Yrs' }, { id: '3-5', label: '3–5 Yrs' }, { id: '5+', label: '5+ Yrs' },
     ] },
-    { id: 'monthlyTurnover', title: 'Average monthly turnover', options: [
+    { id: 'monthlyTurnover', title: 'Average Monthly Turnover', options: [
       { id: 'lt5L', label: '< ₹5L' }, { id: '5-25L', label: '₹5–25L' }, { id: '25L-1Cr', label: '₹25L–1Cr' }, { id: '1Cr+', label: '₹1Cr+' },
     ] },
-    { id: 'existingEmis', title: 'Any existing EMIs?', options: YES_NO },
-    { id: 'gstRegistered', title: 'GST registered?', options: [{ id: 'yes', label: 'Yes' }, { id: 'no', label: 'No' }] },
+    { id: 'existingEmis', title: 'Any Existing EMIs?', options: YES_NO },
+    { id: 'gstRegistered', title: 'GST Registered?', options: [{ id: 'yes', label: 'Yes' }, { id: 'no', label: 'No' }] },
   ],
   individual: [
-    { id: 'employment', title: 'How do you earn?', options: [{ id: 'salaried', label: 'Salaried' }, { id: 'self-employed', label: 'Self-employed' }] },
-    { id: 'monthlyIncome', title: 'Net monthly income', options: [
+    { id: 'employment', title: 'How Do You Earn?', options: [{ id: 'salaried', label: 'Salaried' }, { id: 'self-employed', label: 'Self-employed' }] },
+    { id: 'monthlyIncome', title: 'Net Monthly Income', options: [
       { id: 'lt25K', label: '< ₹25K' }, { id: '25-50K', label: '₹25–50K' }, { id: '50K-1L', label: '₹50K–1L' }, { id: '1L+', label: '₹1L+' },
     ] },
-    { id: 'workExperience', title: 'Years in current work', options: [
-      { id: 'lt1', label: '< 1 yr' }, { id: '1-3', label: '1–3 yrs' }, { id: '3-5', label: '3–5 yrs' }, { id: '5+', label: '5+ yrs' },
+    { id: 'workExperience', title: 'Years In Current Work', options: [
+      { id: 'lt1', label: '< 1 Yr' }, { id: '1-3', label: '1–3 Yrs' }, { id: '3-5', label: '3–5 Yrs' }, { id: '5+', label: '5+ Yrs' },
     ] },
-    { id: 'existingEmis', title: 'Any existing EMIs?', options: YES_NO },
+    { id: 'existingEmis', title: 'Any Existing EMIs?', options: YES_NO },
   ],
 };

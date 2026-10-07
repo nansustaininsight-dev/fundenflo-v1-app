@@ -35,7 +35,7 @@ export default function ConsentScreen() {
   if (!journey.preCheck) return <Redirect href="/pre-check" />;
 
   const missing = CONSENT_ITEMS.filter(i => i.required && !choices[i.id]);
-  const hint = missing.length ? `Turn on “${missing[0].title}” to continue — it’s needed to calculate your Financial Health Score.` : null;
+  const hint = missing.length ? `Turn On “${missing[0].title}” To Continue — It’s Needed To Calculate Your Financial Health Score.` : null;
 
   function toggle(id: ConsentId, value: boolean) {
     const next = { ...choices, [id]: value };
@@ -74,7 +74,7 @@ export default function ConsentScreen() {
       router.push('/documents');
     } catch (e) {
       setSubmitting(false);
-      setError(e instanceof ApiError ? e.message : 'Could not save your consent. Please try again.');
+      setError(e instanceof ApiError ? e.message : 'Could Not Save Your Consent. Please Try Again.');
     }
   }
 
@@ -88,15 +88,15 @@ export default function ConsentScreen() {
           loading={submitting}
           hint={confirmed ? null : hint}
           error={error}
-          label={confirmed ? 'Preferences confirmed' : 'I agree & continue'}
+          label={confirmed ? 'Preferences Confirmed' : 'I Agree & Continue'}
           icon={confirmed ? 'check' : 'arrow-forward'}
-          note="256-bit encrypted"
+          note="256-Bit Encrypted"
         />
       }>
       <Animated.View entering={FadeInDown.duration(400)}>
         <View style={s.badge}><Icon name="shield" size={22} color={C.navy} /></View>
-        <Text style={s.title} accessibilityRole="header">You stay in control</Text>
-        <Text style={s.sub}>We respect your data. Choose how FundenFlo processes your documents and matches lenders.</Text>
+        <Text style={s.title} accessibilityRole="header">You Stay In Control</Text>
+        <Text style={s.sub}>We Respect Your Data. Choose How FundenFlo Processes Your Documents And Matches Lenders.</Text>
       </Animated.View>
 
       <View style={s.list}>
@@ -118,10 +118,10 @@ export default function ConsentScreen() {
 
       <View style={s.info}>
         <Icon name="info" size={15} color={C.muted} />
-        <Text style={s.infoText}>You can change or withdraw consent anytime.</Text>
+        <Text style={s.infoText}>You Can Change Or Withdraw Consent Anytime.</Text>
       </View>
       <Pressable onPress={() => setPolicyOpen(true)} hitSlop={8} style={s.policy} accessibilityRole="button">
-        <Text style={s.policyText}>Read full privacy policy</Text>
+        <Text style={s.policyText}>Read Full Privacy Policy</Text>
         <Icon name="arrow-forward" size={14} color={C.goldDeep} />
       </Pressable>
 

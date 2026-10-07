@@ -15,9 +15,9 @@ export type DocumentStatus =
 
 export function validateFile(f: PickedFile): string | null {
   const type = f.mimeType ?? guessType(f.name);
-  if (!type || !ACCEPTED_TYPES.includes(type)) return 'Only PDF, JPG or PNG files can be read.';
-  if (f.size !== undefined && f.size > MAX_FILE_MB * 1024 * 1024) return `This file is larger than ${MAX_FILE_MB} MB. Try a smaller file or scan it instead.`;
-  if (f.size === 0) return 'This file is empty.';
+  if (!type || !ACCEPTED_TYPES.includes(type)) return 'Only PDF, JPG Or PNG Files Can Be Read.';
+  if (f.size !== undefined && f.size > MAX_FILE_MB * 1024 * 1024) return `This File Is Larger Than ${MAX_FILE_MB} MB. Try A Smaller File Or Scan It Instead.`;
+  if (f.size === 0) return 'This File Is Empty.';
   return null;
 }
 
@@ -50,10 +50,10 @@ export function uploadDocument(docType: DocumentId, f: PickedFile, onProgress: (
       let data: { id?: string; message?: string; code?: string } = {};
       try { data = JSON.parse(xhr.responseText); } catch { /* non-JSON error page */ }
       if (xhr.status >= 200 && xhr.status < 300 && data.id) resolve({ id: data.id });
-      else reject(new ApiError(data.message ?? 'Upload failed. Please try again.', xhr.status, data.code));
+      else reject(new ApiError(data.message ?? 'Upload Failed. Please Try Again.', xhr.status, data.code));
     };
-    xhr.onerror = () => reject(new ApiError('Upload failed — check your internet connection and try again.'));
-    xhr.onabort = () => reject(new ApiError('Upload cancelled.', 0, 'ABORTED'));
+    xhr.onerror = () => reject(new ApiError('Upload Failed — Check Your Internet Connection And Try Again.'));
+    xhr.onabort = () => reject(new ApiError('Upload Cancelled.', 0, 'ABORTED'));
     signal.addEventListener('abort', () => xhr.abort());
     xhr.send(body);
   });
@@ -65,7 +65,7 @@ export async function getDocumentStatus(id: string): Promise<DocumentStatus> {
     await delay(1200);
     const name = mockNames.get(id) ?? '';
     // Mock-only: a file name containing "blurry" simulates an unreadable document.
-    if (/blurry/i.test(name)) return { status: 'rejected', reason: 'We couldn’t read this file clearly. Please upload a clearer copy.' };
+    if (/blurry/i.test(name)) return { status: 'rejected', reason: 'We Couldn’t Read This File Clearly. Please Upload A Clearer Copy.' };
     return { status: 'verified' };
   }
   return api(`/documents/${encodeURIComponent(id)}`);
@@ -74,12 +74,12 @@ export async function getDocumentStatus(id: string): Promise<DocumentStatus> {
 /** Poll until the document is read (or rejected). Throws on timeout. */
 export async function waitForDocument(id: string, signal: AbortSignal): Promise<Exclude<DocumentStatus, { status: 'processing' }>> {
   for (let i = 0; i < 40; i++) {
-    if (signal.aborted) throw new ApiError('Upload cancelled.', 0, 'ABORTED');
+    if (signal.aborted) throw new ApiError('Upload Cancelled.', 0, 'ABORTED');
     const res = await getDocumentStatus(id);
     if (res.status !== 'processing') return res;
     await delay(1500);
   }
-  throw new ApiError('Reading this document is taking longer than usual. Please try again.');
+  throw new ApiError('Reading This Document Is Taking Longer Than Usual. Please Try Again.');
 }
 
 /** DELETE /documents/:id — best effort; the slot is cleared locally either way. */
@@ -112,9 +112,9 @@ export async function getAnalysis(id: string, entityType: EntityType): Promise<A
     if (!mockAnalyses.has(id)) mockAnalyses.set(id, { started: Date.now(), entityType });
     const job = mockAnalyses.get(id)!;
     const labels = [
-      'Reading your bank statement',
-      job.entityType === 'msme' ? 'Checking GST & ITR consistency' : 'Checking income consistency',
-      'Calculating your Financial Health Score',
+      'Reading Your Bank Statement',
+      job.entityType === 'msme' ? 'Checking GST & ITR Consistency' : 'Checking Income Consistency',
+      'Calculating Your Financial Health Score',
     ];
     const at = Math.floor((Date.now() - job.started) / 2500);
     const steps = labels.map((label, i): AnalysisStep => ({ id: `s${i}`, label, state: i < at ? 'done' : i === at ? 'active' : 'pending' }));
@@ -139,7 +139,7 @@ const mockAnalyses = new Map<string, { started: number; entityType: EntityType }
 
 async function mockUpload(docType: DocumentId, name: string, onProgress: (pct: number) => void, signal: AbortSignal) {
   for (let pct = 0; pct <= 100; pct += 10) {
-    if (signal.aborted) throw new ApiError('Upload cancelled.', 0, 'ABORTED');
+    if (signal.aborted) throw new ApiError('Upload Cancelled.', 0, 'ABORTED');
     onProgress(pct);
     await delay(140);
   }

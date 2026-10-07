@@ -13,11 +13,11 @@ export function PrivacySheet({ visible, onClose }: { visible: boolean; onClose: 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose} statusBarTranslucent navigationBarTranslucent>
       <View style={s.root}>
-        <Pressable style={s.backdrop} onPress={onClose} accessibilityRole="button" accessibilityLabel="Close privacy summary" />
+        <Pressable style={s.backdrop} onPress={onClose} accessibilityRole="button" accessibilityLabel="Close Privacy Summary" />
         <View style={[s.sheet, { paddingBottom: Math.max(insets.bottom, S.md), marginTop: insets.top + 40 }]}>
           <View style={s.grabber} />
           <View style={s.head}>
-            <Text style={s.title} accessibilityRole="header">How we use your data</Text>
+            <Text style={s.title} accessibilityRole="header">How We Use Your Data</Text>
             <Pressable onPress={onClose} hitSlop={10} accessibilityRole="button" accessibilityLabel="Close" style={s.close}>
               <Icon name="close" size={20} color={C.text} />
             </Pressable>
@@ -34,13 +34,13 @@ export function PrivacySheet({ visible, onClose }: { visible: boolean; onClose: 
             ))}
             <View style={s.note}>
               <Icon name="shield" size={16} color={C.navy} />
-              <Text style={s.noteText}>Nothing is processed for an item you keep off. You can change or withdraw any consent later by returning to this step.</Text>
+              <Text style={s.noteText}>Nothing Is Processed For An Item You Keep Off. You Can Change Or Withdraw Any Consent Later By Returning To This Step.</Text>
             </View>
           </ScrollView>
           {PRIVACY_POLICY_URL ? (
-            <Button label="Open full privacy policy" variant="ghost" icon="arrow-forward" onPress={() => void WebBrowser.openBrowserAsync(PRIVACY_POLICY_URL)} style={s.cta} />
+            <Button label="Open Full Privacy Policy" variant="ghost" icon="arrow-forward" onPress={() => void WebBrowser.openBrowserAsync(PRIVACY_POLICY_URL)} style={s.cta} />
           ) : (
-            <Button label="Got it" onPress={onClose} style={s.cta} />
+            <Button label="Got It" onPress={onClose} style={s.cta} />
           )}
         </View>
       </View>

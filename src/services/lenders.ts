@@ -36,13 +36,13 @@ function mockLenders(input: MatchInput): LenderOffer[] {
   const product = input.categoryId ? CATEGORIES[input.categoryId].title : 'Loan';
   const city = input.location?.split(',')[0]?.trim();
   const reasons = [
-    input.entityType === 'msme' ? 'Your business profile fits a category they publish' : 'Your profile fits a category they publish',
-    input.existingEmis ? 'They can consider borrowers who already pay EMIs' : 'You are not already paying EMIs',
-    city ? `They serve ${city}` : 'They serve your selected location',
+    input.entityType === 'msme' ? 'Your Business Profile Fits A Category They Publish' : 'Your Profile Fits A Category They Publish',
+    input.existingEmis ? 'They Can Consider Borrowers Who Already Pay EMIs' : 'You Are Not Already Paying EMIs',
+    city ? `They Serve ${city}` : 'They Serve Your Selected Location',
   ];
   return [
-    { id: 'mock-nbfc-1', name: 'Lender A', kind: 'NBFC', product, verified: true, interest: 'As per lender policy', reasons },
-    { id: 'mock-bank-2', name: 'Lender B', kind: 'Bank', product, verified: true, interest: 'As per lender policy', reasons },
-    { id: 'mock-nbfc-3', name: 'Lender C', kind: 'NBFC', product, verified: true, interest: 'As per lender policy', reasons },
+    { id: 'mock-nbfc-1', name: 'Lender A', kind: 'NBFC', product, verified: true, interest: 'As Per Lender Policy', reasons },
+    { id: 'mock-bank-2', name: 'Lender B', kind: 'Bank', product, verified: true, interest: 'As Per Lender Policy', reasons },
+    { id: 'mock-nbfc-3', name: 'Lender C', kind: 'NBFC', product, verified: true, interest: 'As Per Lender Policy', reasons },
   ];
 }

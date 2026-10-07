@@ -52,7 +52,7 @@ export default function LendersScreen() {
       } catch (e) {
         if (cancelled) return;
         setLoading(false);
-        setError(e instanceof ApiError ? e.message : 'Could not load lenders. Please try again.');
+        setError(e instanceof ApiError ? e.message : 'Could Not Load Lenders. Please Try Again.');
       }
     })();
     return () => { cancelled = true; };
@@ -90,7 +90,7 @@ export default function LendersScreen() {
       await updateJourney({ application, selectedLenderId: selected.id });
       router.dismissTo('/home');
     } catch (e) {
-      setError(e instanceof ApiError ? e.message : 'Could not send your application. Please try again.');
+      setError(e instanceof ApiError ? e.message : 'Could Not Send Your Application. Please Try Again.');
     } finally {
       setSubmitting(false);
     }
@@ -98,39 +98,39 @@ export default function LendersScreen() {
 
   const footer = selected ? (
     <View style={s.footer}>
-      {!sharing && <Text style={s.shareNote}>Your file is sent only to {selected.name}, and only after you confirm.</Text>}
+      {!sharing && <Text style={s.shareNote}>Your File Is Sent Only To {selected.name}, And Only After You Confirm.</Text>}
       {error && <Text style={s.error}>{error}</Text>}
       <Button
-        label={sharing ? `Apply with ${selected.name}` : `Share and apply with ${selected.name}`}
+        label={sharing ? `Apply With ${selected.name}` : `Share And Apply With ${selected.name}`}
         icon="arrow-forward"
         loading={submitting}
         onPress={() => void apply()}
       />
     </View>
   ) : error ? (
-    <Button label="Try again" icon="refresh" onPress={() => { setError(null); setLoading(true); setItems(null); setAttempt(n => n + 1); }} />
+    <Button label="Try Again" icon="refresh" onPress={() => { setError(null); setLoading(true); setItems(null); setAttempt(n => n + 1); }} />
   ) : undefined;
 
   return (
-    <Screen header={<StepHeader title="Matched lenders" />} footer={footer}>
+    <Screen header={<StepHeader title="Matched Lenders" />} footer={footer}>
       <Animated.View entering={FadeInDown.duration(400)}>
-        <Text style={s.title} accessibilityRole="header">Lenders that fit you</Text>
-        <Text style={s.sub}>Based on your documents and each lender’s published criteria.</Text>
+        <Text style={s.title} accessibilityRole="header">Lenders That Fit You</Text>
+        <Text style={s.sub}>Based On Your Documents And Each Lender’s Published Criteria.</Text>
       </Animated.View>
 
       {loading && !items && (
-        <View style={s.loading} accessibilityLabel="Finding lenders">
+        <View style={s.loading} accessibilityLabel="Finding Lenders">
           <ActivityIndicator color={C.gold} />
         </View>
       )}
 
       {items && items.length === 0 && (
         <View style={s.empty}>
-          <Text style={s.emptyTitle}>No verified lender matches this profile yet</Text>
-          <Text style={s.emptyBody}>You still have your score and improvement plan. Lenders make the final credit decision.</Text>
+          <Text style={s.emptyTitle}>No Verified Lender Matches This Profile Yet</Text>
+          <Text style={s.emptyBody}>You Still Have Your Score And Improvement Plan. Lenders Make The Final Credit Decision.</Text>
           {(journey.improvement?.length ?? 0) > 0 && (
             <Pressable accessibilityRole="button" onPress={() => router.push('/improvement')} style={s.emptyLink}>
-              <Text style={s.emptyLinkText}>See your improvement plan</Text>
+              <Text style={s.emptyLinkText}>See Your Improvement Plan</Text>
             </Pressable>
           )}
         </View>
@@ -153,7 +153,7 @@ export default function LendersScreen() {
       {!!items?.length && (
         <View style={s.decision}>
           <Icon name="lock" size={14} color={C.muted} />
-          <Text style={s.decisionText}>Final credit decision is always made by the lender.</Text>
+          <Text style={s.decisionText}>Final Credit Decision Is Always Made By The Lender.</Text>
         </View>
       )}
     </Screen>
@@ -205,19 +205,19 @@ function LenderCard({
         </View>
         {lender.indicative && (
           <View style={s.meta}>
-            <Text style={s.metaLabel}>Eligible amount (indicative)</Text>
+            <Text style={s.metaLabel}>Eligible Amount (Indicative)</Text>
             <Text style={s.metaValue}>{lender.indicative}</Text>
           </View>
         )}
         {lender.documentsStillNeeded != null && lender.documentsStillNeeded > 0 && (
           <View style={s.docs}>
             <Icon name="document" size={14} color={C.muted} />
-            <Text style={s.docsText}>Documents still needed: {lender.documentsStillNeeded}</Text>
+            <Text style={s.docsText}>Documents Still Needed: {lender.documentsStillNeeded}</Text>
           </View>
         )}
       </Pressable>
       <Pressable accessibilityRole="button" accessibilityState={{ expanded: open }} onPress={onToggle} style={s.why}>
-        <Text style={s.whyText}>Why this lender?</Text>
+        <Text style={s.whyText}>Why This Lender?</Text>
         <Icon name="expand-more" size={18} color={C.muted} style={{ transform: [{ rotate: open ? '180deg' : '0deg' }] }} />
       </Pressable>
       {open && lender.reasons.map(reason => (

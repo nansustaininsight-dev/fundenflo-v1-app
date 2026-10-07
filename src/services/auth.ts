@@ -33,23 +33,23 @@ export function formatDobInput(value: string) {
 
 export function nameError(value: string): string | null {
   const name = value.trim().replace(/\s+/g, ' ');
-  if (name.length < 2) return 'Enter your full name.';
-  if (name.length > 80 || !/^[A-Za-z][A-Za-z .'-]*$/.test(name)) return 'Use the name printed on your PAN, letters only.';
+  if (name.length < 2) return 'Enter Your Full Name.';
+  if (name.length > 80 || !/^[A-Za-z][A-Za-z .'-]*$/.test(name)) return 'Use The Name Printed On Your PAN, Letters Only.';
   return null;
 }
 
 export function dobError(value: string, today = new Date()): string | null {
-  if (!/^\d{2}\/\d{2}\/\d{4}$/.test(value)) return 'Enter your date of birth as DD/MM/YYYY.';
+  if (!/^\d{2}\/\d{2}\/\d{4}$/.test(value)) return 'Enter Your Date Of Birth As DD/MM/YYYY.';
   const [dd, mm, yyyy] = value.split('/').map(Number);
   const date = new Date(yyyy, mm - 1, dd);
-  if (date.getFullYear() !== yyyy || date.getMonth() !== mm - 1 || date.getDate() !== dd) return 'Enter a valid date.';
+  if (date.getFullYear() !== yyyy || date.getMonth() !== mm - 1 || date.getDate() !== dd) return 'Enter A Valid Date.';
   const start = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-  if (date > start) return 'Date of birth can’t be in the future.';
+  if (date > start) return 'Date Of Birth Can’t Be In The Future.';
   let age = start.getFullYear() - yyyy;
   const monthDelta = start.getMonth() - (mm - 1);
   if (monthDelta < 0 || (monthDelta === 0 && start.getDate() < dd)) age -= 1;
-  if (age < 18) return 'You need to be 18 or older to continue.';
-  if (age > 100) return 'Enter a valid date of birth.';
+  if (age < 18) return 'You Need To Be 18 Or Older To Continue.';
+  if (age > 100) return 'Enter A Valid Date Of Birth.';
   return null;
 }
 
@@ -59,7 +59,7 @@ export async function saveProfile(profile: Profile): Promise<Profile> {
   const fullName = profile.fullName.trim().replace(/\s+/g, ' ');
   const pan = normalizePan(profile.pan);
   if (nameError(fullName) || !isValidPan(pan) || dobError(profile.dob)) {
-    throw new ApiError('Check your name, PAN and date of birth.');
+    throw new ApiError('Check Your Name, PAN And Date Of Birth.');
   }
   if (USE_MOCK) {
     await delay(700);
@@ -69,7 +69,7 @@ export async function saveProfile(profile: Profile): Promise<Profile> {
 }
 
 export async function requestOtp(mobile: string, referralCode?: string): Promise<{ resendIn: number }> {
-  if (!isValidMobile(mobile)) throw new ApiError('Enter a valid 10-digit mobile number.');
+  if (!isValidMobile(mobile)) throw new ApiError('Enter A Valid 10-Digit Mobile Number.');
   if (USE_MOCK) {
     await delay(800);
     return { resendIn: 30 };
@@ -80,7 +80,7 @@ export async function requestOtp(mobile: string, referralCode?: string): Promise
 export async function verifyOtp(mobile: string, otp: string): Promise<Session> {
   if (USE_MOCK) {
     await delay(900);
-    if (otp !== MOCK_OTP) throw new ApiError('Incorrect code. Please check and try again.', 401, 'OTP_INVALID');
+    if (otp !== MOCK_OTP) throw new ApiError('Incorrect Code. Please Check And Try Again.', 401, 'OTP_INVALID');
     return { token: `mock-${Date.now()}`, user: { id: `u-${mobile}`, mobile } };
   }
   return api('/auth/otp/verify', { body: { mobile, otp } });
