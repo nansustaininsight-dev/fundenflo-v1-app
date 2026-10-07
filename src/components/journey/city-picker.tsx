@@ -36,7 +36,7 @@ export function CityPicker({ visible, value, title, onSelect, onClose }: Props) 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={close} statusBarTranslucent navigationBarTranslucent>
       <KeyboardAvoidingView style={s.flex} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <Pressable style={s.backdrop} onPress={close} accessibilityRole="button" accessibilityLabel="Close city picker" />
+        <Pressable style={s.backdrop} onPress={close} accessibilityRole="button" accessibilityLabel="Close City Picker" />
         <View style={[s.sheet, { paddingBottom: Math.max(insets.bottom, S.md), maxHeight: '88%', marginTop: insets.top + 40 }]}>
           <View style={s.grabber} />
           <View style={s.head}>
@@ -50,18 +50,18 @@ export function CityPicker({ visible, value, title, onSelect, onClose }: Props) 
             <TextInput
               value={query}
               onChangeText={setQuery}
-              placeholder="Search city"
+              placeholder="Search City"
               placeholderTextColor={C.slate}
               autoCorrect={false}
               autoCapitalize="words"
               returnKeyType="done"
               onSubmitEditing={() => { if (results.length === 1) pick(results[0]); else if (canUseCustom && !results.length) pick(custom); }}
               style={s.input}
-              accessibilityLabel="Search city"
+              accessibilityLabel="Search City"
               maxLength={60}
             />
             {!!query && (
-              <Pressable onPress={() => setQuery('')} hitSlop={8} accessibilityLabel="Clear search">
+              <Pressable onPress={() => setQuery('')} hitSlop={8} accessibilityLabel="Clear Search">
                 <Icon name="close" size={16} color={C.muted} />
               </Pressable>
             )}
@@ -77,7 +77,7 @@ export function CityPicker({ visible, value, title, onSelect, onClose }: Props) 
                 <Text style={s.rowText} numberOfLines={1}>Use “{custom}”</Text>
               </Pressable>
             ) : null}
-            ListEmptyComponent={!canUseCustom ? <Text style={s.empty}>Type at least 3 letters to use your town.</Text> : null}
+            ListEmptyComponent={!canUseCustom ? <Text style={s.empty}>Type At Least 3 Letters To Use Your Town.</Text> : null}
             renderItem={({ item }) => {
               const on = item === value;
               return (

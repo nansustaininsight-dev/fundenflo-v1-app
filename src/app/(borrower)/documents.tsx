@@ -57,9 +57,9 @@ export default function DocumentsScreen() {
   const busy = specs.some(d => ['uploading', 'reading'].includes(slotFor(d.id).kind));
   const missing = required.filter(d => slotFor(d.id).kind !== 'verified');
   const hint = busy
-    ? 'Hang on — we’re still reading your documents.'
+    ? 'Hang On — We’re Still Reading Your Documents.'
     : missing.length
-      ? `Add your ${joinTitles(missing.map(d => d.title))} to continue.`
+      ? `Add Your ${joinTitles(missing.map(d => d.title))} To Continue.`
       : null;
 
   async function pick(spec: DocumentSpec, source: DocumentSource) {
@@ -69,7 +69,7 @@ export default function DocumentsScreen() {
     try {
       file = source === 'scan' ? await scanWithCamera() : await pickFile();
     } catch (e) {
-      setSlot(spec.id, { kind: 'failed', error: e instanceof ApiError ? e.message : 'Could not open the picker. Please try again.' });
+      setSlot(spec.id, { kind: 'failed', error: e instanceof ApiError ? e.message : 'Could Not Open The Picker. Please Try Again.' });
       return;
     }
     if (!file) return;
@@ -97,7 +97,7 @@ export default function DocumentsScreen() {
       setSlot(spec.id, undefined);
     } catch (e) {
       if (e instanceof ApiError && e.code === 'ABORTED') setSlot(spec.id, undefined);
-      else setSlot(spec.id, { kind: 'failed', error: e instanceof ApiError ? e.message : 'Upload failed. Please try again.' });
+      else setSlot(spec.id, { kind: 'failed', error: e instanceof ApiError ? e.message : 'Upload Failed. Please Try Again.' });
     } finally {
       if (jobs.current[spec.id] === ctrl) delete jobs.current[spec.id];
     }
@@ -129,7 +129,7 @@ export default function DocumentsScreen() {
       await updateJourney({ analysis: { id, fingerprint, startedAt: new Date().toISOString(), status: 'running' } });
       router.push('/analysing');
     } catch (e) {
-      setError(e instanceof ApiError ? e.message : 'Could not start reading your documents. Please try again.');
+      setError(e instanceof ApiError ? e.message : 'Could Not Start Reading Your Documents. Please Try Again.');
     } finally {
       setStarting(false);
     }
@@ -158,16 +158,16 @@ export default function DocumentsScreen() {
           loading={starting}
           hint={hint}
           error={error}
-          label="Get my Health Score"
-          note="Private • Never shared without your consent"
+          label="Get My Health Score"
+          note="Private • Never Shared Without Your Consent"
         />
       }>
       <Animated.View entering={FadeInDown.duration(400)} style={s.top}>
         <View style={s.topText}>
-          <Text style={s.title} accessibilityRole="header">Unlock your score with just {required.length} documents</Text>
-          <Text style={s.sub}>Takes about 2 minutes. You can add more documents later.</Text>
+          <Text style={s.title} accessibilityRole="header">Unlock Your Score With Just {required.length} Documents</Text>
+          <Text style={s.sub}>Takes About 2 Minutes. You Can Add More Documents Later.</Text>
         </View>
-        <View style={s.readyCard} accessible accessibilityLabel={`${ready} of ${required.length} documents ready`}>
+        <View style={s.readyCard} accessible accessibilityLabel={`${ready} Of ${required.length} Documents Ready`}>
           <ProgressRing progress={ready / required.length} size={60} stroke={5}>
             <Text style={s.readyCount}>{ready}/{required.length}</Text>
           </ProgressRing>
@@ -179,7 +179,7 @@ export default function DocumentsScreen() {
 
       {optional.length > 0 && (
         <>
-          <Text style={s.section}>Optional · lenders usually ask for this</Text>
+          <Text style={s.section}>Optional · Lenders Usually Ask For This</Text>
           <View style={s.list}>{optional.map((d, i) => card(d, required.length + i))}</View>
         </>
       )}
@@ -189,20 +189,18 @@ export default function DocumentsScreen() {
       <View style={s.why}>
         <View style={s.whyHead}>
           <Icon name="info" size={18} color={C.navy} />
-          <Text style={s.whyTitle}>Why these {required.length}?</Text>
+          <Text style={s.whyTitle}>Why These {required.length}?</Text>
         </View>
         <Text style={s.whyText}>
-          They let us calculate your 0–100 Financial Health Score and find verified lenders that fit. Lenders make the final credit decision.
+          They Let Us Calculate Your 0–100 Financial Health Score And Find Verified Lenders That Fit. Lenders Make The Final Credit Decision.
         </Text>
       </View>
     </Screen>
   );
 }
 
-/** "PAN card, bank statement and ITR or GST returns" — acronyms keep their case. */
 function joinTitles(titles: string[]) {
-  const t = titles.map(x => (/^[A-Z]{2}/.test(x) ? x : x.charAt(0).toLowerCase() + x.slice(1)));
-  return t.length <= 1 ? t.join('') : `${t.slice(0, -1).join(', ')} and ${t[t.length - 1]}`;
+  return titles.length <= 1 ? titles.join('') : `${titles.slice(0, -1).join(', ')} And ${titles[titles.length - 1]}`;
 }
 
 const s = StyleSheet.create({

@@ -50,7 +50,7 @@ export default function ScoreScreen() {
       } catch (e) {
         if (cancelled) return;
         setLoading(false);
-        setError(e instanceof ApiError ? e.message : 'Could not load your score. Please try again.');
+        setError(e instanceof ApiError ? e.message : 'Could Not Load Your Score. Please Try Again.');
       }
     })();
     return () => { cancelled = true; };
@@ -67,20 +67,20 @@ export default function ScoreScreen() {
   }
 
   const footer = score ? (
-    <Button label="See matching lenders" icon="arrow-forward" onPress={() => router.push('/lenders')} />
+    <Button label="See Matching Lenders" icon="arrow-forward" onPress={() => router.push('/lenders')} />
   ) : error ? (
-    <Button label="Try again" icon="refresh" onPress={retry} />
+    <Button label="Try Again" icon="refresh" onPress={retry} />
   ) : undefined;
 
   return (
     <Screen header={<StepHeader step={6} />} footer={footer}>
       <Animated.View entering={FadeInDown.duration(400)}>
         <Text style={s.title} accessibilityRole="header">Financial Health Score</Text>
-        <Text style={s.sub}>An explainable score based on your documents.</Text>
+        <Text style={s.sub}>An Explainable Score Based On Your Documents.</Text>
       </Animated.View>
 
       {loading && !score && (
-        <View style={s.loading} accessibilityLabel="Calculating your score">
+        <View style={s.loading} accessibilityLabel="Calculating Your Score">
           <ActivityIndicator color={C.gold} />
         </View>
       )}
@@ -91,17 +91,17 @@ export default function ScoreScreen() {
         <>
           <Animated.View entering={FadeInDown.delay(60).duration(400)} style={s.hero}>
             <ProgressRing progress={score.value / 100} size={176} stroke={10} color={C.gold} track="rgba(255,255,255,0.16)">
-              <Text style={s.value} accessibilityLabel={`Score ${score.value} out of 100`}>{score.value}<Text style={s.valueMax}>/100</Text></Text>
+              <Text style={s.value} accessibilityLabel={`Score ${score.value} Out Of 100`}>{score.value}<Text style={s.valueMax}>/100</Text></Text>
             </ProgressRing>
             <Text style={s.band}>{score.band}</Text>
             <View style={s.badge}>
               <Icon name="shield" size={14} color="#9AABC4" />
-              <Text style={s.badgeText}>Not a CIBIL or bureau score</Text>
+              <Text style={s.badgeText}>Not A CIBIL Or Bureau Score</Text>
             </View>
             <Text style={s.assessed}>{assessedLabel(score.assessedAt)}</Text>
           </Animated.View>
 
-          <Text style={s.section}>What makes up your score</Text>
+          <Text style={s.section}>What Makes Up Your Score</Text>
           <View style={s.card}>
             {score.factors.map(factor => (
               <FactorRow key={factor.id} factor={factor} onPress={factor.attention && items.length > 0 ? () => router.push('/improvement') : undefined} />
@@ -121,7 +121,7 @@ function FactorRow({ factor, onPress }: { factor: ScoreFactor; onPress?: () => v
       <View style={s.factorTop}>
         <View style={s.factorLabel}>
           <Text style={s.factorName}>{factor.label}</Text>
-          {factor.attention && <Text style={s.chip}>Needs attention</Text>}
+          {factor.attention && <Text style={s.chip}>Needs Attention</Text>}
         </View>
         <View style={s.factorScore}>
           <Text style={s.factorValue}>{factor.score}<Text style={s.factorMax}>/{factor.max}</Text></Text>
@@ -135,7 +135,7 @@ function FactorRow({ factor, onPress }: { factor: ScoreFactor; onPress?: () => v
   );
   if (!onPress) return <View style={s.factor}>{body}</View>;
   return (
-    <Pressable accessibilityRole="button" accessibilityLabel={`${factor.label}, needs attention`} onPress={onPress} style={s.factor}>
+    <Pressable accessibilityRole="button" accessibilityLabel={`${factor.label}, Needs Attention`} onPress={onPress} style={s.factor}>
       {body}
     </Pressable>
   );

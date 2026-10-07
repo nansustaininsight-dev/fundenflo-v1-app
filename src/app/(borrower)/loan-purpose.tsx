@@ -33,7 +33,7 @@ export default function LoanPurposeScreen() {
   const noteValid = isOther ? trimmed.length >= PURPOSE_NOTE_MIN : true;
   const valid = !!purpose && noteValid;
   const showNoteError = isOther && !noteValid && noteTouched && !focused;
-  const hint = !purpose ? 'Select what the funds are for.' : !noteValid ? `Describe your purpose in at least ${PURPOSE_NOTE_MIN} characters.` : null;
+  const hint = !purpose ? 'Select What The Funds Are For.' : !noteValid ? `Describe Your Purpose In At Least ${PURPOSE_NOTE_MIN} Characters.` : null;
 
   function pick(id: string) {
     setPurpose(id);
@@ -50,7 +50,7 @@ export default function LoanPurposeScreen() {
       await submitLoanRequirement({ entityType, loanCategory: cat.id, amount, tenureYears, location, purpose, purposeNote: trimmed || undefined });
       router.push('/pre-check');
     } catch (e) {
-      setError(e instanceof ApiError ? e.message : 'Could not save your loan details. Please try again.');
+      setError(e instanceof ApiError ? e.message : 'Could Not Save Your Loan Details. Please Try Again.');
     } finally {
       setSubmitting(false);
     }
@@ -61,9 +61,9 @@ export default function LoanPurposeScreen() {
       header={<StepHeader step={2} />}
       footer={<JourneyFooter onContinue={() => void next()} disabled={!valid} loading={submitting} hint={hint} error={error} />}>
       <Animated.View entering={FadeInDown.duration(400)}>
-        <Eyebrow label="Loan requirement • 3 of 3" />
-        <Text style={s.title} accessibilityRole="header">What will you use the funds for?</Text>
-        <Text style={s.sub}>This helps us match lenders who fund your exact need.</Text>
+        <Eyebrow label="Loan Requirement • 3 Of 3" />
+        <Text style={s.title} accessibilityRole="header">What Will You Use The Funds For?</Text>
+        <Text style={s.sub}>This Helps Us Match Lenders Who Fund Your Exact Need.</Text>
       </Animated.View>
 
       <Animated.View entering={FadeInDown.delay(60).duration(400)} style={s.summary}>
@@ -71,13 +71,13 @@ export default function LoanPurposeScreen() {
           <Text style={s.summaryTitle} numberOfLines={1}>{cat.title}</Text>
           <Text style={s.summaryMeta} numberOfLines={2}>{formatINR(amount)} · {formatTenure(tenureYears)} · {location}</Text>
         </View>
-        <Pressable onPress={() => router.dismissTo('/loan-amount')} hitSlop={8} style={s.edit} accessibilityRole="button" accessibilityLabel="Edit amount, tenure and location">
+        <Pressable onPress={() => router.dismissTo('/loan-amount')} hitSlop={8} style={s.edit} accessibilityRole="button" accessibilityLabel="Edit Amount, Tenure And Location">
           <Icon name="edit" size={14} color={C.goldDeep} />
           <Text style={s.editText}>Edit</Text>
         </Pressable>
       </Animated.View>
 
-      <View style={s.list} accessibilityRole="radiogroup" accessibilityLabel="Loan purpose">
+      <View style={s.list} accessibilityRole="radiogroup" accessibilityLabel="Loan Purpose">
         {cat.purposes.map((p, i) => {
           const on = purpose === p.id;
           return (
@@ -101,23 +101,23 @@ export default function LoanPurposeScreen() {
 
       {purpose && (
         <Animated.View entering={FadeInDown.duration(300)} style={s.noteWrap}>
-          <Text style={s.label}>{isOther ? 'Describe your purpose' : 'Anything else lenders should know? (optional)'}</Text>
+          <Text style={s.label}>{isOther ? 'Describe Your Purpose' : 'Anything Else Lenders Should Know? (Optional)'}</Text>
           <TextInput
             value={note}
             onChangeText={t => setNote(t.slice(0, PURPOSE_NOTE_MAX))}
             onFocus={() => setFocused(true)}
             onBlur={() => { setFocused(false); setNoteTouched(true); void updateJourney({ purposeNote: note.trim() || undefined }); }}
-            placeholder={isOther ? 'e.g. Setting up a second outlet in my city' : 'e.g. Timeline, collateral available, existing lender'}
+            placeholder={isOther ? 'E.G. Setting Up A Second Outlet In My City' : 'E.G. Timeline, Collateral Available, Existing Lender'}
             placeholderTextColor={C.slate}
             multiline
             maxLength={PURPOSE_NOTE_MAX}
             textAlignVertical="top"
             style={[s.note, focused && s.noteFocused, showNoteError && s.noteError]}
-            accessibilityLabel={isOther ? 'Describe your purpose' : 'Additional notes, optional'}
+            accessibilityLabel={isOther ? 'Describe Your Purpose' : 'Additional Notes, Optional'}
           />
           <View style={s.noteFoot}>
             <Text style={[s.noteHelp, showNoteError && s.noteHelpError]}>
-              {showNoteError ? `Please add at least ${PURPOSE_NOTE_MIN} characters.` : isOther ? 'Required' : ''}
+              {showNoteError ? `Please Add At Least ${PURPOSE_NOTE_MIN} Characters.` : isOther ? 'Required' : ''}
             </Text>
             <Text style={s.counter}>{note.length}/{PURPOSE_NOTE_MAX}</Text>
           </View>
