@@ -1,7 +1,7 @@
+import { Redirect, router } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
-import { Redirect, router } from 'expo-router';
 
 import { Eyebrow } from '@/components/journey/eyebrow';
 import { JourneyFooter } from '@/components/journey/journey-footer';
@@ -10,7 +10,7 @@ import { Screen } from '@/components/ui/screen';
 import { StepHeader } from '@/components/ui/step-header';
 import { C, F, R, S } from '@/constants/brand';
 import { ApiError } from '@/services/api';
-import { dobError, formatDobInput, isValidPan, nameError, normalizePan, saveProfile } from '@/services/auth';
+import { dobError, formatDobInput, isValidPan, nameError, saveProfile } from '@/services/auth';
 import { useAppStore } from '@/store/app-store';
 
 type FocusField = 'name' | 'pan' | 'dob';
@@ -83,14 +83,14 @@ export default function VerifyDetailsScreen() {
       <Animated.View entering={FadeInDown.duration(400)}>
         <Eyebrow label="Identity" />
         <Text style={s.title} accessibilityRole="header">Confirm The Details On Your PAN</Text>
-        <Text style={s.sub}>Check Your Name, PAN And Date Of Birth Before We Use Them For Your Financial Health Score.</Text>
+        <Text style={s.sub}>Check Your Name,  And Date Of Birth Before We Use Them For Your Financial Health Score.</Text>
       </Animated.View>
 
       <View style={s.form}>
         <Field
           label="Full Name"
           value={fullName}
-          placeholder="As Printed On Your PAN"
+          placeholder="Enter Your Full Name"
           autoCapitalize="words"
           autoComplete="name"
           textContentType="name"
@@ -106,7 +106,7 @@ export default function VerifyDetailsScreen() {
             remember({ fullName: next });
           }}
         />
-        <Field
+        {/* <Field
           label="PAN"
           value={pan}
           placeholder="ABCDE1234F"
@@ -124,7 +124,7 @@ export default function VerifyDetailsScreen() {
             setPan(next);
             remember({ pan: next });
           }}
-        />
+        /> */}
         <Field
           label="Date Of Birth"
           value={dob}
