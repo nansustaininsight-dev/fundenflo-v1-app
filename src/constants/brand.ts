@@ -33,7 +33,7 @@ export const F = {
 
 export const R = { chip: 8, button: 12, field: 12, card: 16, sheet: 28 } as const;
 
-export const S = { xs: 4, sm: 8, md: 16, lg: 24, xl: 32, margin: 20 } as const;
+export const S = { xs: 4, sm: 8, md: 16, lg: 18, xl: 32, margin: 20 } as const;
 
 /** Content column locks to 560px on tablets/web, per the design system. */
 export const MAX_WIDTH = 560;

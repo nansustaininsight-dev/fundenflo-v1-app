@@ -1,9 +1,9 @@
+import { router } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 import { useRef, useState } from 'react';
 import { Image, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import Animated, { FadeIn, FadeInDown, FadeOut } from 'react-native-reanimated';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { StatusBar } from 'expo-status-bar';
-import { router } from 'expo-router';
 
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
@@ -192,7 +192,7 @@ const s = StyleSheet.create({
   langText: { fontFamily: F.body, fontSize: 11, fontWeight: '600', color: 'rgba(236,238,240,0.7)' },
   langTextOn: { color: C.navy },
   langNote: { fontFamily: F.body, fontSize: 11, color: C.gold, textAlign: 'right', marginTop: 6 },
-  logo: { width: 210, maxWidth: '70%', height: 70, marginTop: S.lg, marginLeft: -6 },
+  logo: { width: 310, maxWidth: '90%', height: 100, marginTop: S.lg, marginLeft: -8 },
   headline: { fontFamily: F.heading, fontSize: 30, lineHeight: 38, letterSpacing: -0.3, color: C.white, marginTop: S.lg },
   sub: { fontFamily: F.body, fontSize: 14, lineHeight: 22, color: C.slate, marginTop: S.sm, maxWidth: 340 },
   sheet: { flexGrow: 1, marginTop: -24, backgroundColor: C.card, borderTopLeftRadius: R.sheet, borderTopRightRadius: R.sheet, paddingHorizontal: S.margin, paddingTop: 12, ...shadow.sheet },
