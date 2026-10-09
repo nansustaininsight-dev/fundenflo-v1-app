@@ -2,7 +2,7 @@
 
 > Ye file har phase ke baad update hoti hai. Agla kaam shuru karne se pehle ye file AI/dev ko de do — isse pata chal jayega kya ho chuka hai aur aage kya karna hai.
 >
-> Last update: 5 Oct 2026 · Phase 8 complete
+> Last update: 9 Oct 2026 · Login role dropdown
 
 ---
 
@@ -54,7 +54,7 @@
 - `src/store/app-store.tsx` — `useAppStore()` → `session`, `journey`, `signIn`, `signOut`, `updateUser`, `updateJourney`. AsyncStorage me persist. `firstName(user)` helper dashboard greeting ke liye.
 
 ### Screens
-- **Login** `src/app/(auth)/login.tsx` (`/login`): navy hero + white bottom sheet, EN/हिं toggle (Hindi abhi "coming soon" note), +91 flag input, live validation (10 digit, 6–9 se start), green tick, error state, loading button, expandable referral code (validate + Apply).
+- **Login** `src/app/(auth)/login.tsx` (`/login`): navy hero + white bottom sheet, EN/हिं toggle (Hindi abhi "coming soon" note), **Login As** dropdown (Loan Borrower, DSA, CA, Lender). Version 1 me sirf **Loan Borrower** OTP flow chalata hai — default yahi hai. DSA, CA, Lender select ho sakte hain, par “Coming Soon” note aata hai aur Get OTP disabled rehta hai. +91 flag input, live validation (10 digit, 6–9 se start), green tick, error state, loading button, expandable referral code (validate + Apply). OTP request me role nahi bheja jata.
 - **OTP** `src/app/(auth)/verify-otp.tsx` (`/verify-otp`): 6 boxes (ek hidden input → paste + SMS autofill support), blinking cursor, auto-submit on 6 digits, wrong code pe shake + red error, resend timer 0:30 → "Resend code", Edit number, Terms footer. Mock mode me "use code 123456" banner.
 - **Step 1** `src/app/(borrower)/entity-type.tsx` (`/entity-type`): Business/MSME vs Individual cards, gold check, journey me save hota hai, "Not you? Log out".
 
@@ -214,6 +214,7 @@ Design: `home/`. Route `/home`.
 
 ## 12. Baaki
 - Partner portal / case queue / commissions designs CA/DSA app ke liye hain — borrower journey ka part nahi.
+- Login dropdown me DSA, CA, aur Lender dikhte hain. Unka login abhi nahi hai. Version 1 sirf Loan Borrower hai.
 
 ## 13. Run / Test commands
 

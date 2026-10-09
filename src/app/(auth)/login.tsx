@@ -2,14 +2,21 @@ import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useRef, useState } from 'react';
 import { Image, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-import Animated, { FadeIn, FadeInDown, FadeOut } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeInDown, FadeOut, ZoomIn } from 'react-native-reanimated';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Button } from '@/components/ui/button';
-import { Icon } from '@/components/ui/icon';
+import { Icon, type IconName } from '@/components/ui/icon';
 import { C, F, MAX_WIDTH, R, S, shadow } from '@/constants/brand';
 import { ApiError } from '@/services/api';
 import { isValidMobile, requestOtp } from '@/services/auth';
+
+const ROLES: { id: 'borrower' | 'dsa' | 'ca' | 'lender'; label: string; hint: string; icon: IconName; ready: boolean }[] = [
+  { id: 'borrower', label: 'Loan Borrower', hint: 'Available Now', icon: 'person', ready: true },
+  { id: 'dsa', label: 'DSA', hint: 'Coming Soon', icon: 'store', ready: false },
+  { id: 'ca', label: 'CA', hint: 'Coming Soon', icon: 'receipt', ready: false },
+  { id: 'lender', label: 'Lender', hint: 'Coming Soon', icon: 'bank', ready: false },
+];
 
 export default function LoginScreen() {
   const insets = useSafeAreaInsets();
@@ -23,8 +30,11 @@ export default function LoginScreen() {
   const [referral, setReferral] = useState('');
   const [appliedReferral, setAppliedReferral] = useState<string | null>(null);
   const [referralError, setReferralError] = useState<string | null>(null);
+  const [role, setRole] = useState<(typeof ROLES)[number]['id']>('borrower');
+  const [roleOpen, setRoleOpen] = useState(false);
   const inputRef = useRef<TextInput>(null);
 
+  const selectedRole = ROLES.find(item => item.id === role) ?? ROLES[0];
   const valid = isValidMobile(mobile);
   const showInvalid = touched && mobile.length > 0 && !valid && !focused;
 
@@ -43,9 +53,14 @@ export default function LoginScreen() {
     setAppliedReferral(code);
   }
 
+  function chooseRole(id: (typeof ROLES)[number]['id']) {
+    setRole(id);
+    setRoleOpen(false);
+  }
+
   async function submit() {
     setTouched(true);
-    if (!valid || loading) return;
+    if (!selectedRole.ready || !valid || loading) return;
     setLoading(true);
     setError(null);
     try {
@@ -96,7 +111,61 @@ export default function LoginScreen() {
           <Animated.View entering={FadeInDown.delay(120).duration(500)} style={[s.sheet, { paddingBottom: Math.max(insets.bottom, S.md) + S.sm }]}>
             <View style={s.column}>
               <View style={s.pullBar} />
-              <Text style={s.label} nativeID="mobileLabel">Mobile Number</Text>
+              <Text style={s.label} nativeID="roleLabel">Login As</Text>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="Login As"
+                accessibilityState={{ expanded: roleOpen }}
+                onPress={() => setRoleOpen(open => !open)}
+                style={[s.field, roleOpen && s.fieldFocused]}
+              >
+                <View style={s.roleIcon}>
+                  <Icon name={selectedRole.icon} size={18} color={C.navy} />
+                </View>
+                <Text style={s.roleValue}>{selectedRole.label}</Text>
+                {!selectedRole.ready && <View style={s.soon}><Text style={s.soonText}>Soon</Text></View>}
+                <Icon name="expand-more" size={20} color={C.muted} style={{ transform: [{ rotate: roleOpen ? '180deg' : '0deg' }] }} />
+              </Pressable>
+              {roleOpen && (
+                <Animated.View entering={FadeInDown.duration(220)} exiting={FadeOut.duration(120)} style={s.menu} accessibilityRole="radiogroup">
+                  {ROLES.map(item => {
+                    const on = item.id === role;
+                    return (
+                      <Pressable
+                        key={item.id}
+                        accessibilityRole="radio"
+                        accessibilityLabel={`${item.label}. ${item.hint}`}
+                        accessibilityState={{ checked: on }}
+                        aria-checked={on}
+                        onPress={() => chooseRole(item.id)}
+                        style={({ pressed }) => [s.menuRow, on && s.menuOn, pressed && { opacity: 0.85 }]}
+                      >
+                        <View style={[s.roleIcon, on && s.roleIconOn]}>
+                          <Icon name={item.icon} size={18} color={C.navy} />
+                        </View>
+                        <View style={s.menuCopy}>
+                          <Text style={[s.menuLabel, on && s.menuLabelOn]}>{item.label}</Text>
+                          <Text style={s.menuHint}>{item.hint}</Text>
+                        </View>
+                        {!item.ready && <View style={s.soon}><Text style={s.soonText}>Soon</Text></View>}
+                        {on && (
+                          <Animated.View entering={ZoomIn.duration(180)}>
+                            <Icon name="check" size={16} color={C.goldDeep} />
+                          </Animated.View>
+                        )}
+                      </Pressable>
+                    );
+                  })}
+                </Animated.View>
+              )}
+              {!selectedRole.ready && (
+                <Animated.View entering={FadeIn} style={s.soonNote} accessibilityLiveRegion="polite">
+                  <Icon name="info" size={14} color={C.goldDeep} />
+                  <Text style={s.soonNoteText}>{selectedRole.label} Login Is Coming Soon. Version 1 Continues As Loan Borrower.</Text>
+                </Animated.View>
+              )}
+
+              <Text style={[s.label, s.mobileLabel]} nativeID="mobileLabel">Mobile Number</Text>
               <Pressable onPress={() => inputRef.current?.focus()} style={[s.field, focused && s.fieldFocused, (showInvalid || !!error) && s.fieldError]}>
                 <View style={s.flag} accessibilityLabel="India">
                   <View style={[s.flagBand, { backgroundColor: '#FF9933' }]} />
@@ -132,7 +201,7 @@ export default function LoginScreen() {
                 </Animated.View>
               )}
 
-              <Button label="Get OTP" icon="arrow-forward" onPress={() => void submit()} loading={loading} disabled={!valid} style={s.cta} />
+              <Button label="Get OTP" icon="arrow-forward" onPress={() => void submit()} loading={loading} disabled={!valid || !selectedRole.ready} style={s.cta} />
 
               <Pressable accessibilityRole="button" accessibilityState={{ expanded: referralOpen }} onPress={() => setReferralOpen(o => !o)} hitSlop={8} style={s.referralToggle}>
                 <Text style={s.referralText}>{appliedReferral ? `Referral Applied · ${appliedReferral}` : 'Have A Referral Code?'}</Text>
@@ -198,6 +267,21 @@ const s = StyleSheet.create({
   sheet: { flexGrow: 1, marginTop: -24, backgroundColor: C.card, borderTopLeftRadius: R.sheet, borderTopRightRadius: R.sheet, paddingHorizontal: S.margin, paddingTop: 12, ...shadow.sheet },
   pullBar: { width: 40, height: 4, borderRadius: 2, backgroundColor: '#E7E8EB', alignSelf: 'center', marginBottom: S.lg },
   label: { fontFamily: F.body, fontSize: 14, fontWeight: '500', color: C.text, marginBottom: S.sm },
+  mobileLabel: { marginTop: S.md },
+  roleIcon: { width: 32, height: 32, borderRadius: 8, backgroundColor: C.subtle, alignItems: 'center', justifyContent: 'center', marginRight: 10 },
+  roleIconOn: { backgroundColor: C.goldSoft },
+  roleValue: { flex: 1, fontFamily: F.body, fontSize: 16, fontWeight: '600', color: C.text },
+  soon: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 999, backgroundColor: C.goldSoft, marginRight: 8 },
+  soonText: { fontFamily: F.body, fontSize: 10, fontWeight: '700', letterSpacing: 0.4, color: C.goldDeep },
+  menu: { marginTop: S.sm, borderRadius: R.card, backgroundColor: C.card, borderWidth: 1, borderColor: C.border, overflow: 'hidden', ...shadow.card },
+  menuRow: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingVertical: 12 },
+  menuOn: { backgroundColor: C.canvas },
+  menuCopy: { flex: 1 },
+  menuLabel: { fontFamily: F.body, fontSize: 15, fontWeight: '600', color: C.text },
+  menuLabelOn: { color: C.navy },
+  menuHint: { fontFamily: F.body, fontSize: 12, color: C.muted, marginTop: 2 },
+  soonNote: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: S.sm },
+  soonNoteText: { fontFamily: F.body, fontSize: 12, color: C.goldDeep, flexShrink: 1 },
   field: { flexDirection: 'row', alignItems: 'center', minHeight: 54, borderRadius: R.field, backgroundColor: C.fieldBg, paddingHorizontal: 14, borderWidth: 2, borderColor: 'transparent' },
   fieldFocused: { backgroundColor: C.card, borderColor: C.navy },
   fieldError: { borderColor: C.error, backgroundColor: '#FFF8F7' },
