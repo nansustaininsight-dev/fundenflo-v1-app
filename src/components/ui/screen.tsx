@@ -1,8 +1,10 @@
 import type { ReactNode } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
+import { useRef } from 'react';
+import { KeyboardAvoidingView, ScrollView, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import { SafeAreaView, type Edge } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 
+import { useKeyboardHeight, useRevealFocusedInput } from '@/components/ui/keyboard-scroll';
 import { C, MAX_WIDTH, S } from '@/constants/brand';
 
 type Props = {
@@ -20,16 +22,23 @@ type Props = {
 
 /** Standard screen shell: safe area + keyboard avoidance + scroll + centered 560px column. */
 export function Screen({ children, footer, header, background = C.canvas, edges = ['top', 'bottom'], contentStyle, padded = true, flushFooter = false }: Props) {
+  const scrollRef = useRef<ScrollView>(null);
+  const keyboardHeight = useKeyboardHeight();
+  const keyboard = useRevealFocusedInput(scrollRef, keyboardHeight);
   return (
     <SafeAreaView edges={edges} style={[s.root, { backgroundColor: background }]}>
       <StatusBar style="dark" />
-      <KeyboardAvoidingView style={s.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <KeyboardAvoidingView style={s.flex} behavior="padding">
         {header && <View style={s.column}>{header}</View>}
         <ScrollView
+          ref={scrollRef}
           style={s.flex}
-          contentContainerStyle={[s.scroll, padded && s.padded, contentStyle]}
+          contentContainerStyle={[s.scroll, padded && s.padded, contentStyle, keyboardHeight > 0 && { paddingBottom: keyboardHeight + S.lg }]}
           keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}>
+          showsVerticalScrollIndicator={false}
+          scrollEventThrottle={16}
+          onScroll={keyboard.onScroll}
+          onTouchStart={keyboard.onTouchStart}>
           <View style={[s.column, s.flexGrow]}>{children}</View>
         </ScrollView>
         {footer && <View style={[s.column, flushFooter ? s.footerFlush : s.footer]}>{footer}</View>}

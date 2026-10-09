@@ -1,12 +1,13 @@
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useRef, useState } from 'react';
-import { Image, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Image, KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import Animated, { FadeIn, FadeInDown, FadeOut, ZoomIn } from 'react-native-reanimated';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Button } from '@/components/ui/button';
 import { Icon, type IconName } from '@/components/ui/icon';
+import { useKeyboardHeight, useRevealFocusedInput } from '@/components/ui/keyboard-scroll';
 import { C, F, MAX_WIDTH, R, S, shadow } from '@/constants/brand';
 import { ApiError } from '@/services/api';
 import { isValidMobile, requestOtp } from '@/services/auth';
@@ -33,6 +34,9 @@ export default function LoginScreen() {
   const [role, setRole] = useState<(typeof ROLES)[number]['id']>('borrower');
   const [roleOpen, setRoleOpen] = useState(false);
   const inputRef = useRef<TextInput>(null);
+  const scrollRef = useRef<ScrollView>(null);
+  const keyboardHeight = useKeyboardHeight();
+  const keyboard = useRevealFocusedInput(scrollRef, keyboardHeight);
 
   const selectedRole = ROLES.find(item => item.id === role) ?? ROLES[0];
   const valid = isValidMobile(mobile);
@@ -76,8 +80,17 @@ export default function LoginScreen() {
   return (
     <SafeAreaView edges={['top']} style={s.root}>
       <StatusBar style="light" />
-      <KeyboardAvoidingView style={s.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-        <ScrollView style={s.flex} contentContainerStyle={s.scroll} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} bounces={false}>
+      <KeyboardAvoidingView style={s.flex} behavior="padding">
+        <ScrollView
+          ref={scrollRef}
+          style={s.flex}
+          contentContainerStyle={[s.scroll, keyboardHeight > 0 && { paddingBottom: keyboardHeight + S.lg }]}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+          bounces={false}
+          scrollEventThrottle={16}
+          onScroll={keyboard.onScroll}
+          onTouchStart={keyboard.onTouchStart}>
           {/* Hero */}
           <View style={s.hero}>
             <View pointerEvents="none" style={s.glowBlue} />

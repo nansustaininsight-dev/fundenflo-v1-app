@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { FlatList, KeyboardAvoidingView, Modal, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { FlatList, Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Icon } from '@/components/ui/icon';
+import { useKeyboardHeight } from '@/components/ui/keyboard-scroll';
 import { C, F, MAX_WIDTH, R, S } from '@/constants/brand';
 import { CITIES } from '@/constants/loan';
 
@@ -17,6 +18,7 @@ type Props = {
 /** Bottom-sheet city search. Unlisted towns can be entered as typed. */
 export function CityPicker({ visible, value, title, onSelect, onClose }: Props) {
   const insets = useSafeAreaInsets();
+  const keyboard = useKeyboardHeight();
   const [query, setQuery] = useState('');
   const q = query.trim().toLowerCase();
   const results = q ? CITIES.filter(c => c.toLowerCase().includes(q)) : CITIES;
@@ -35,9 +37,9 @@ export function CityPicker({ visible, value, title, onSelect, onClose }: Props) 
 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={close} statusBarTranslucent navigationBarTranslucent>
-      <KeyboardAvoidingView style={s.flex} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <View style={s.flex}>
         <Pressable style={s.backdrop} onPress={close} accessibilityRole="button" accessibilityLabel="Close City Picker" />
-        <View style={[s.sheet, { paddingBottom: Math.max(insets.bottom, S.md), maxHeight: '88%', marginTop: insets.top + 40 }]}>
+        <View style={[s.sheet, { paddingBottom: Math.max(insets.bottom, S.md), marginBottom: keyboard, maxHeight: '88%', marginTop: insets.top + 40 }]}>
           <View style={s.grabber} />
           <View style={s.head}>
             <Text style={s.title} accessibilityRole="header">{title}</Text>
@@ -95,7 +97,7 @@ export function CityPicker({ visible, value, title, onSelect, onClose }: Props) 
             }}
           />
         </View>
-      </KeyboardAvoidingView>
+      </View>
     </Modal>
   );
 }
