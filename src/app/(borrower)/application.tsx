@@ -1,7 +1,7 @@
+import { Redirect, router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { BackHandler, Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
-import { Redirect, router, useFocusEffect } from 'expo-router';
 
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
@@ -12,8 +12,8 @@ import { C, F, R, S, shadow } from '@/constants/brand';
 import { formatINR } from '@/constants/loan';
 import { ApiError } from '@/services/api';
 import { requestApplicationUpdates } from '@/services/application';
-import { copyText } from '@/services/clipboard';
 import { formatMobile } from '@/services/auth';
+import { copyText } from '@/services/clipboard';
 import { useAppStore } from '@/store/app-store';
 
 export default function ApplicationScreen() {
@@ -27,7 +27,7 @@ export default function ApplicationScreen() {
   const goHome = useCallback(() => {
     router.dismissTo('/home');
   }, []);
-
+ 
   useFocusEffect(useCallback(() => {
     if (!application) return;
     const sub = BackHandler.addEventListener('hardwareBackPress', () => {
