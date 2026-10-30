@@ -8,7 +8,7 @@ import { Icon } from '@/components/ui/icon';
 import { Screen } from '@/components/ui/screen';
 import { StepHeader } from '@/components/ui/step-header';
 import { Toggle } from '@/components/ui/toggle';
-import { C, F, R, S, shadow } from '@/constants/brand';
+import { C, F, R, S, goldEdge, inset, shadow } from '@/constants/brand';
 import { formatINR } from '@/constants/loan';
 import { ApiError } from '@/services/api';
 import { requestApplicationUpdates } from '@/services/application';
@@ -141,11 +141,11 @@ const s = StyleSheet.create({
   facility: { fontFamily: F.heading, fontSize: 20, lineHeight: 28, color: C.navy, marginTop: 6 },
   amountLabel: { fontFamily: F.body, fontSize: 13, color: C.muted, marginTop: S.md },
   amount: { fontFamily: F.heading, fontSize: 32, lineHeight: 40, color: C.text, fontVariant: ['tabular-nums'] },
-  idRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: S.md, padding: 12, borderRadius: R.field, backgroundColor: C.subtle },
+  idRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: S.md, padding: 12, borderRadius: R.field, backgroundColor: C.subtle, ...inset },
   idLabel: { fontFamily: F.body, fontSize: 14, fontWeight: '600', color: C.navy },
   copy: { flexDirection: 'row', alignItems: 'center', gap: 4, minHeight: 32 },
   copied: { fontFamily: F.body, fontSize: 12, fontWeight: '600', color: C.success },
-  alert: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: S.md, padding: 14, borderRadius: R.card, backgroundColor: C.goldSoft },
+  alert: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: S.md, padding: 14, borderRadius: R.card, backgroundColor: C.goldSoft, ...goldEdge },
   alertBody: { flex: 1 },
   alertTitle: { fontFamily: F.body, fontSize: 14, fontWeight: '600', color: C.navy },
   alertText: { fontFamily: F.body, fontSize: 13, color: C.text, marginTop: 2 },

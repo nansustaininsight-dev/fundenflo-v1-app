@@ -9,7 +9,7 @@ import { Icon } from '@/components/ui/icon';
 import { Screen } from '@/components/ui/screen';
 import { StepHeader } from '@/components/ui/step-header';
 import { Toggle } from '@/components/ui/toggle';
-import { C, F, R, S, shadow } from '@/constants/brand';
+import { C, F, R, S, pick, shadow } from '@/constants/brand';
 import { CONSENT_ITEMS, CONSENT_VERSION, type ConsentId } from '@/constants/consent';
 import { ApiError, delay } from '@/services/api';
 import { submitConsent } from '@/services/consent';
@@ -104,7 +104,7 @@ export default function ConsentScreen() {
           <Animated.View key={item.id} entering={FadeInDown.delay(80 + i * 60).duration(360)}>
             <Pressable
               onPress={() => toggle(item.id, !choices[item.id])}
-              style={({ pressed }) => [s.card, pressed && s.pressed]}
+              style={({ pressed }) => [s.card, pressed && pick.pressed]}
               accessible={false}>
               <View style={s.cardText}>
                 <Text style={s.cardTitle}>{item.title}</Text>
@@ -135,8 +135,7 @@ const s = StyleSheet.create({
   title: { fontFamily: F.heading, fontSize: 26, lineHeight: 34, letterSpacing: -0.3, color: C.navy },
   sub: { fontFamily: F.body, fontSize: 14, lineHeight: 22, color: C.muted, marginTop: 4 },
   list: { gap: 14, marginTop: S.lg },
-  card: { flexDirection: 'row', alignItems: 'center', gap: S.md, padding: S.md + 4, borderRadius: R.card, backgroundColor: C.card, ...shadow.card },
-  pressed: { transform: [{ scale: 0.99 }] },
+  card: { flexDirection: 'row', alignItems: 'center', gap: S.md, padding: S.md + 4, borderRadius: R.card, backgroundColor: C.card, cursor: 'pointer', ...shadow.card },
   cardText: { flex: 1 },
   cardTitle: { fontFamily: F.body, fontSize: 15, fontWeight: '600', color: C.text },
   cardSub: { fontFamily: F.body, fontSize: 12, lineHeight: 18, color: C.muted, marginTop: 2 },

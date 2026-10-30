@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import { Screen } from '@/components/ui/screen';
 import { StepHeader } from '@/components/ui/step-header';
-import { C, F, R, S, shadow } from '@/constants/brand';
+import { C, F, R, S, inset, shadow } from '@/constants/brand';
 import { useAppStore } from '@/store/app-store';
 
 export default function ImprovementScreen() {
@@ -65,14 +65,14 @@ function Block({ label, body, last }: { label: string; body: string; last?: bool
 const s = StyleSheet.create({
   title: { fontFamily: F.heading, fontSize: 26, lineHeight: 34, letterSpacing: -0.3, color: C.navy },
   sub: { fontFamily: F.body, fontSize: 14, lineHeight: 21, color: C.muted, marginTop: 8 },
-  card: { marginTop: S.lg, padding: S.md, paddingLeft: S.md + 4, borderRadius: R.card, backgroundColor: C.card, borderLeftWidth: 3, borderLeftColor: C.goldDeep, ...shadow.card },
+  card: { marginTop: S.lg, padding: S.md, paddingLeft: S.md + 4, borderRadius: R.card, backgroundColor: C.card, ...shadow.card, borderLeftColor: C.goldDeep },
   cardTitle: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4 },
   cardHeading: { flex: 1, fontFamily: F.heading, fontSize: 17, lineHeight: 24, color: C.navy },
   block: { paddingVertical: 12 },
   blockBorder: { borderBottomWidth: 1, borderBottomColor: C.subtle },
   blockLabel: { fontFamily: F.body, fontSize: 11, fontWeight: '600', letterSpacing: 0.6, textTransform: 'uppercase', color: C.muted },
   blockBody: { fontFamily: F.body, fontSize: 15, lineHeight: 22, color: C.text, marginTop: 4 },
-  note: { flexDirection: 'row', alignItems: 'flex-start', gap: 8, marginTop: S.md, padding: 14, borderRadius: R.field, backgroundColor: C.subtle },
+  note: { flexDirection: 'row', alignItems: 'flex-start', gap: 8, marginTop: S.md, padding: 14, borderRadius: R.field, backgroundColor: C.subtle, ...inset },
   noteText: { flex: 1, fontFamily: F.body, fontSize: 13, lineHeight: 19, color: C.muted },
   footer: { gap: 4 },
   link: { minHeight: 44, alignItems: 'center', justifyContent: 'center' },
