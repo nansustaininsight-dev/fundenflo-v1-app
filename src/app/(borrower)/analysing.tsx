@@ -7,7 +7,7 @@ import { JourneyFooter } from '@/components/journey/journey-footer';
 import { Icon } from '@/components/ui/icon';
 import { ProgressRing } from '@/components/ui/progress-ring';
 import { Screen } from '@/components/ui/screen';
-import { C, F, R, S, shadow } from '@/constants/brand';
+import { C, F, R, S, edge, shadow } from '@/constants/brand';
 import { ApiError } from '@/services/api';
 import { formatMobile } from '@/services/auth';
 import { getAnalysis, requestWhatsAppUpdate, startAnalysis, type AnalysisStatus } from '@/services/documents';
@@ -204,7 +204,7 @@ const s = StyleSheet.create({
   hero: { alignItems: 'center' },
   spinner: { width: 220, height: 220, alignItems: 'center', justifyContent: 'center' },
   glow: { position: 'absolute', width: 220, height: 220, borderRadius: 110, backgroundColor: C.goldSoft },
-  badge: { position: 'absolute', width: 100, height: 100, borderRadius: 50, backgroundColor: C.card, alignItems: 'center', justifyContent: 'center', ...shadow.card },
+  badge: { position: 'absolute', width: 100, height: 100, borderRadius: 50, backgroundColor: C.card, alignItems: 'center', justifyContent: 'center', ...shadow.card, borderLeftWidth: 1, borderRightWidth: 1, borderLeftColor: edge.line, borderRightColor: edge.line },
   title: { fontFamily: F.heading, fontSize: 24, lineHeight: 32, color: C.navy, textAlign: 'center', marginTop: S.md },
   sub: { fontFamily: F.body, fontSize: 14, lineHeight: 21, color: C.muted, textAlign: 'center', marginTop: 6 },
   errorText: { color: C.error },

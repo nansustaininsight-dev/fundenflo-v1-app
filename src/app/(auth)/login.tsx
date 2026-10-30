@@ -286,7 +286,7 @@ const s = StyleSheet.create({
   roleValue: { flex: 1, fontFamily: F.body, fontSize: 16, fontWeight: '600', color: C.text },
   soon: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 999, backgroundColor: C.goldSoft, marginRight: 8 },
   soonText: { fontFamily: F.body, fontSize: 10, fontWeight: '700', letterSpacing: 0.4, color: C.goldDeep },
-  menu: { marginTop: S.sm, borderRadius: R.card, backgroundColor: C.card, borderWidth: 1, borderColor: C.border, overflow: 'hidden', ...shadow.card },
+  menu: { marginTop: S.sm, borderRadius: R.card, backgroundColor: C.card, overflow: 'hidden', ...shadow.card, borderLeftWidth: 1, borderRightWidth: 1 },
   menuRow: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingVertical: 12 },
   menuOn: { backgroundColor: C.canvas },
   menuCopy: { flex: 1 },
