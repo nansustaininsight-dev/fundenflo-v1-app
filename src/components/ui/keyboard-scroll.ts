@@ -12,6 +12,17 @@ function measurable(value: HostInstance | null): Measurable | null {
   return null;
 }
 
+function focusedInput(): HostInstance | null {
+  const state = TextInput.State as {
+    currentlyFocusedInput?: () => HostInstance | null;
+    currentlyFocusedField?: () => HostInstance | null;
+  };
+  if (typeof state?.currentlyFocusedInput === 'function') return state.currentlyFocusedInput() ?? null;
+  if (typeof state?.currentlyFocusedField !== 'function') return null;
+  const node = state.currentlyFocusedField();
+  return node && typeof node === 'object' ? node : null;
+}
+
 export function useKeyboardHeight() {
   const [height, setHeight] = useState(0);
   const rest = useRef(Dimensions.get('window').height);
@@ -48,7 +59,7 @@ export function useRevealFocusedInput(scrollRef: RefObject<ScrollView | null>, k
   const reveal = useCallback(() => {
     const scroll = scrollRef.current;
     const frame = measurable(scroll ? scroll.getNativeScrollRef() : null);
-    const input = measurable(TextInput.State.currentlyFocusedInput());
+    const input = measurable(focusedInput());
     const keyboard = inset.current;
     if (!scroll || !frame || !input || keyboard <= 0) return;
     frame.measureInWindow((_x, sy, _w, sh) => {
@@ -83,7 +94,7 @@ export function useRevealFocusedInput(scrollRef: RefObject<ScrollView | null>, k
 
   const onTouchStart = useCallback(() => {
     setTimeout(() => {
-      const next = TextInput.State.currentlyFocusedInput();
+      const next = focusedInput();
       if (!next || next === focused.current) return;
       focused.current = next;
       reveal();
