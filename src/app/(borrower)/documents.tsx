@@ -9,7 +9,7 @@ import { Icon } from '@/components/ui/icon';
 import { ProgressRing } from '@/components/ui/progress-ring';
 import { Screen } from '@/components/ui/screen';
 import { StepHeader } from '@/components/ui/step-header';
-import { C, F, R, S, shadow } from '@/constants/brand';
+import { C, F, R, S, inset, shadow } from '@/constants/brand';
 import { CONSENT_VERSION } from '@/constants/consent';
 import { ACCEPTED_LABEL, documentsFor, type DocumentId, type DocumentSource, type DocumentSpec } from '@/constants/documents';
 import { ApiError } from '@/services/api';
@@ -214,7 +214,7 @@ const s = StyleSheet.create({
   list: { gap: 14, marginTop: S.lg },
   section: { fontFamily: F.body, fontSize: 12, fontWeight: '600', letterSpacing: 0.4, color: C.muted, marginTop: S.lg, marginBottom: -S.sm },
   formats: { fontFamily: F.body, fontSize: 12, color: C.muted, textAlign: 'center', marginTop: S.md },
-  why: { marginTop: S.lg, padding: S.md + 4, borderRadius: R.card, backgroundColor: C.subtle, gap: 8 },
+  why: { marginTop: S.lg, padding: S.md + 4, borderRadius: R.card, backgroundColor: C.subtle, gap: 8, ...inset },
   whyHead: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   whyTitle: { fontFamily: F.heading, fontSize: 17, color: C.navy },
   whyText: { fontFamily: F.body, fontSize: 14, lineHeight: 22, color: C.muted },

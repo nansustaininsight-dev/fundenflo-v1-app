@@ -11,7 +11,7 @@ import { Icon } from '@/components/ui/icon';
 import { Screen } from '@/components/ui/screen';
 import { Slider } from '@/components/ui/slider';
 import { StepHeader } from '@/components/ui/step-header';
-import { C, F, R, S, shadow } from '@/constants/brand';
+import { C, F, R, S, inset, shadow } from '@/constants/brand';
 import { CATEGORIES, clamp, estimateEmi, formatINR, formatShortINR, formatTenure, groupINR } from '@/constants/loan';
 import { useAppStore } from '@/store/app-store';
 
@@ -200,11 +200,11 @@ const s = StyleSheet.create({
   label: { fontFamily: F.body, fontSize: 11, fontWeight: '600', letterSpacing: 0.6, textTransform: 'uppercase', color: C.muted, marginTop: S.lg, marginBottom: S.sm },
   tenures: { flexDirection: 'row', gap: 8 },
   tenure: { flex: 1, paddingHorizontal: 4 },
-  location: { flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 56, paddingHorizontal: 14, borderRadius: R.field, backgroundColor: C.subtle },
+  location: { flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 56, paddingHorizontal: 14, borderRadius: R.field, backgroundColor: C.subtle, cursor: 'pointer', ...inset },
   locationPressed: { backgroundColor: '#E6EBF1' },
   locationText: { flex: 1, fontFamily: F.body, fontSize: 15, fontWeight: '500', color: C.text },
   placeholder: { color: C.slate, fontWeight: '400' },
-  emi: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, marginTop: S.md, padding: 14, borderRadius: R.field, backgroundColor: C.subtle, borderWidth: 1, borderColor: C.border },
+  emi: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, marginTop: S.md, padding: 14, borderRadius: R.field, backgroundColor: C.subtle, ...inset },
   emiBody: { flex: 1 },
   emiText: { fontFamily: F.body, fontSize: 13, lineHeight: 18, color: C.text },
   emiStrong: { fontWeight: '700', color: C.navy },

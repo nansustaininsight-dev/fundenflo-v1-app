@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Icon, type IconName } from '@/components/ui/icon';
 import { Screen } from '@/components/ui/screen';
 import { StepHeader } from '@/components/ui/step-header';
-import { C, F, R, S, shadow } from '@/constants/brand';
+import { C, F, R, S, edge, pick, shadow } from '@/constants/brand';
 import { useAppStore, type EntityType } from '@/store/app-store';
 
 const OPTIONS: { id: EntityType; title: string; sub: string; icon: IconName }[] = [
@@ -55,7 +55,7 @@ export default function EntityTypeScreen() {
                 accessibilityState={{ checked: on }}
                 accessibilityLabel={`${o.title}. ${o.sub}`}
                 onPress={() => setSelected(o.id)}
-                style={({ pressed }) => [s.card, on && s.cardOn, pressed && { transform: [{ scale: 0.99 }] }]}>
+                style={({ pressed }) => [s.card, on && s.cardOn, pressed && (on ? s.pressed : pick.pressed)]}>
                 <View style={[s.iconTile, on && s.iconTileOn]}>
                   <Icon name={o.icon} size={22} color={C.navy} />
                 </View>
@@ -89,9 +89,10 @@ const s = StyleSheet.create({
   title: { fontFamily: F.heading, fontSize: 24, lineHeight: 32, letterSpacing: -0.3, color: C.text },
   sub: { fontFamily: F.body, fontSize: 14, lineHeight: 22, color: C.muted, marginTop: S.sm },
   list: { gap: 12, marginTop: S.lg },
-  card: { flexDirection: 'row', alignItems: 'center', gap: 14, padding: 20, borderRadius: R.card, backgroundColor: C.card, borderWidth: 1.5, borderColor: 'transparent', ...shadow.card },
-  cardOn: { backgroundColor: C.subtle, borderColor: C.border },
-  iconTile: { width: 48, height: 48, borderRadius: 10, backgroundColor: C.subtle, alignItems: 'center', justifyContent: 'center' },
+  card: { flexDirection: 'row', alignItems: 'center', gap: 14, padding: 20, borderRadius: R.card, backgroundColor: C.card, cursor: 'pointer', ...shadow.card },
+  cardOn: pick.on,
+  pressed: { transform: [{ scale: 0.985 }] },
+  iconTile: { width: 48, height: 48, borderRadius: 10, backgroundColor: C.subtle, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: edge.line },
   iconTileOn: { backgroundColor: C.card },
   cardText: { flex: 1 },
   cardTitle: { fontFamily: F.heading, fontSize: 16, color: C.text },
