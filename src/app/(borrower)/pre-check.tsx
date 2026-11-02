@@ -9,7 +9,7 @@ import { JourneyFooter } from '@/components/journey/journey-footer';
 import { Icon } from '@/components/ui/icon';
 import { Screen } from '@/components/ui/screen';
 import { StepHeader } from '@/components/ui/step-header';
-import { C, F, R, S, shadow } from '@/constants/brand';
+import { C, F, R, S, inset, shadow } from '@/constants/brand';
 import { PRE_CHECK_QUESTIONS } from '@/constants/loan';
 import { ApiError } from '@/services/api';
 import { submitPreCheck } from '@/services/loan';
@@ -98,6 +98,6 @@ const s = StyleSheet.create({
   count: { fontFamily: F.body, fontSize: 12, fontWeight: '500', color: C.muted },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   cell: { flexBasis: '40%', flexGrow: 1 },
-  note: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, marginTop: S.lg, padding: S.md, borderRadius: R.field, backgroundColor: C.subtle },
+  note: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, marginTop: S.lg, padding: S.md, borderRadius: R.field, backgroundColor: C.subtle, ...inset },
   noteText: { flex: 1, fontFamily: F.body, fontSize: 13, lineHeight: 20, color: C.muted },
 });

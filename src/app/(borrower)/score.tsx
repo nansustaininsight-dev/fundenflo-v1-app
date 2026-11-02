@@ -8,7 +8,7 @@ import { Icon } from '@/components/ui/icon';
 import { ProgressRing } from '@/components/ui/progress-ring';
 import { Screen } from '@/components/ui/screen';
 import { StepHeader } from '@/components/ui/step-header';
-import { C, F, R, S, shadow } from '@/constants/brand';
+import { C, F, R, S, navyEdge, shadow } from '@/constants/brand';
 import { documentsFor } from '@/constants/documents';
 import { ApiError } from '@/services/api';
 import { assessedLabel, getAssessment, type HealthScore, type ImprovementItem, type ScoreFactor } from '@/services/score';
@@ -146,7 +146,7 @@ const s = StyleSheet.create({
   sub: { fontFamily: F.body, fontSize: 14, lineHeight: 20, color: C.muted, marginTop: 4 },
   loading: { marginTop: S.xl, minHeight: 220, alignItems: 'center', justifyContent: 'center' },
   error: { fontFamily: F.body, fontSize: 14, lineHeight: 20, color: C.error, marginTop: S.lg, textAlign: 'center' },
-  hero: { marginTop: S.lg, paddingVertical: S.lg, paddingHorizontal: S.md, borderRadius: R.card, backgroundColor: C.navy, alignItems: 'center' },
+  hero: { marginTop: S.lg, paddingVertical: S.lg, paddingHorizontal: S.md, borderRadius: R.card, backgroundColor: C.navy, alignItems: 'center', ...navyEdge },
   value: { fontFamily: F.heading, fontSize: 40, lineHeight: 48, color: C.white, fontVariant: ['tabular-nums'] },
   valueMax: { fontFamily: F.body, fontSize: 16, color: '#9AABC4' },
   band: { fontFamily: F.heading, fontSize: 18, lineHeight: 26, color: C.white, marginTop: S.md, textAlign: 'center' },
