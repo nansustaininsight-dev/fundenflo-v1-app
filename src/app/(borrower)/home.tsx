@@ -7,7 +7,7 @@ import { HomeTabs } from '@/components/journey/home-tabs';
 import { Icon } from '@/components/ui/icon';
 import { ProgressRing } from '@/components/ui/progress-ring';
 import { Screen } from '@/components/ui/screen';
-import { C, F, R, S, shadow } from '@/constants/brand';
+import { C, F, R, S, goldEdge, navyEdge, pick, shadow } from '@/constants/brand';
 import { formatINR } from '@/constants/loan';
 import { assessedLabel } from '@/services/score';
 import { useAppStore } from '@/store/app-store';
@@ -74,7 +74,7 @@ export default function HomeScreen() {
       )}
 
       {pending && (
-        <Pressable accessibilityRole="button" onPress={() => router.push('/documents')} style={s.task}>
+        <Pressable accessibilityRole="button" onPress={() => router.push('/documents')} style={({ pressed }) => [s.task, pressed && pick.pressed]}>
           <View style={s.taskIcon}><Icon name="error" size={18} color={C.goldDeep} /></View>
           <View style={s.taskBody}>
             <Text style={s.taskTitle}>1 Pending Task</Text>
@@ -84,7 +84,7 @@ export default function HomeScreen() {
         </Pressable>
       )}
 
-      <Pressable accessibilityRole="button" onPress={startNew} style={s.newApp}>
+      <Pressable accessibilityRole="button" onPress={startNew} style={({ pressed }) => [s.newApp, pressed && pick.pressed]}>
         <Icon name="add" size={20} color={C.navy} />
         <Text style={s.newAppText}>Start A New Application</Text>
       </Pressable>
@@ -93,7 +93,7 @@ export default function HomeScreen() {
 }
 
 const s = StyleSheet.create({
-  navy: { padding: S.md + 4, borderRadius: R.card, backgroundColor: C.navy },
+  navy: { padding: S.md + 4, borderRadius: R.card, backgroundColor: C.navy, ...navyEdge },
   navyTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 },
   kicker: { fontFamily: F.body, fontSize: 11, fontWeight: '600', letterSpacing: 0.8, textTransform: 'uppercase', color: C.gold },
   badge: { fontFamily: F.body, fontSize: 12, fontWeight: '600', color: C.gold, backgroundColor: 'rgba(253,185,1,0.16)', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 999, overflow: 'hidden' },
@@ -111,11 +111,11 @@ const s = StyleSheet.create({
   reassessText: { fontFamily: F.body, fontSize: 14, fontWeight: '600', color: C.goldDeep },
   scoreValue: { fontFamily: F.heading, fontSize: 16, color: C.navy, fontVariant: ['tabular-nums'] },
   scoreMax: { fontFamily: F.body, fontSize: 11, color: C.muted },
-  task: { flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: S.md, padding: 14, borderRadius: R.card, backgroundColor: C.goldSoft },
+  task: { flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: S.md, padding: 14, borderRadius: R.card, backgroundColor: C.goldSoft, cursor: 'pointer', ...goldEdge },
   taskIcon: { width: 36, height: 36, borderRadius: 10, backgroundColor: C.gold, alignItems: 'center', justifyContent: 'center' },
   taskBody: { flex: 1 },
   taskTitle: { fontFamily: F.body, fontSize: 14, fontWeight: '600', color: C.navy },
   taskText: { fontFamily: F.body, fontSize: 13, color: C.muted, marginTop: 2 },
-  newApp: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, minHeight: 52, marginTop: S.md, borderRadius: R.button, backgroundColor: C.card, borderWidth: 1, borderColor: C.border },
+  newApp: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, minHeight: 52, marginTop: S.md, borderRadius: R.button, backgroundColor: C.card, cursor: 'pointer', ...shadow.card },
   newAppText: { fontFamily: F.body, fontSize: 15, fontWeight: '600', color: C.navy },
 });

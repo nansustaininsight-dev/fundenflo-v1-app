@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import { Screen } from '@/components/ui/screen';
 import { StepHeader } from '@/components/ui/step-header';
-import { C, F, R, S, shadow } from '@/constants/brand';
+import { C, F, R, S, edge, pick, shadow } from '@/constants/brand';
 import { CATEGORIES, type LoanCategoryId } from '@/constants/loan';
 import { ApiError } from '@/services/api';
 import { getLoanCategories, type CategoryAvailability } from '@/services/loan';
@@ -83,7 +83,7 @@ export default function LoanCategoryScreen() {
                     aria-checked={on}
                     accessibilityLabel={cat.title}
                     onPress={() => select(item.id)}
-                    style={({ pressed }) => [s.tile, on && s.tileOn, pressed && s.pressed]}>
+                    style={({ pressed }) => [s.tile, on && s.tileOn, pressed && (on ? s.pressed : pick.pressed)]}>
                     <View style={s.tileTop}>
                       <View style={[s.iconBox, on && s.iconBoxOn]}>
                         <Icon name={cat.icon} size={18} color={on ? C.white : C.navy} />
@@ -139,11 +139,11 @@ const s = StyleSheet.create({
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12, marginTop: S.lg },
   cell: { flexBasis: '40%', flexGrow: 1 },
   tile: { minHeight: 118, padding: 14, borderRadius: R.card, backgroundColor: C.card, justifyContent: 'space-between', gap: 14, ...shadow.card },
-  tileOn: { backgroundColor: C.canvas, borderWidth: 1, borderColor: C.border, boxShadow: '0px 4px 14px -2px rgba(10, 25, 47, 0.12)' },
-  tileOff: { backgroundColor: C.subtle, boxShadow: 'none' },
+  tileOn: { ...pick.on, boxShadow: '0px 8px 18px -6px rgba(10, 25, 47, 0.16)' },
+  tileOff: { backgroundColor: C.subtle, boxShadow: 'none', borderLeftColor: edge.line, borderRightColor: edge.line },
   pressed: { transform: [{ scale: 0.98 }] },
   tileTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
-  iconBox: { width: 34, height: 34, borderRadius: 8, backgroundColor: C.subtle, alignItems: 'center', justifyContent: 'center' },
+  iconBox: { width: 34, height: 34, borderRadius: 8, backgroundColor: C.subtle, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: edge.line },
   iconBoxOn: { backgroundColor: C.navy },
   iconBoxOff: { backgroundColor: '#E6EBF1' },
   check: { width: 22, height: 22, borderRadius: 11, backgroundColor: C.gold, alignItems: 'center', justifyContent: 'center' },
@@ -152,7 +152,7 @@ const s = StyleSheet.create({
   tileTitleOff: { color: C.slate },
   reason: { fontFamily: F.body, fontSize: 11, lineHeight: 15, color: C.slate, marginTop: 2 },
   badge: { fontFamily: F.body, fontSize: 10, fontWeight: '600', color: C.muted, backgroundColor: '#E6EBF1', paddingHorizontal: 6, paddingVertical: 3, borderRadius: 4, overflow: 'hidden' },
-  skeleton: { backgroundColor: '#E9EEF4', boxShadow: 'none' },
+  skeleton: { backgroundColor: '#E9EEF4', boxShadow: 'none', borderWidth: 0 },
   errorCard: { marginTop: S.lg, padding: S.lg, borderRadius: R.card, backgroundColor: C.card, alignItems: 'center', gap: S.sm, ...shadow.card },
   errorText: { fontFamily: F.body, fontSize: 14, lineHeight: 20, color: C.text, textAlign: 'center' },
   retry: { marginTop: S.sm, alignSelf: 'stretch' },

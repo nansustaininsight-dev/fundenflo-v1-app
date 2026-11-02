@@ -8,7 +8,7 @@ import { JourneyFooter } from '@/components/journey/journey-footer';
 import { Icon } from '@/components/ui/icon';
 import { Screen } from '@/components/ui/screen';
 import { StepHeader } from '@/components/ui/step-header';
-import { C, F, R, S, shadow } from '@/constants/brand';
+import { C, F, R, S, inset, pick as picked, shadow } from '@/constants/brand';
 import { CATEGORIES, formatINR, formatTenure, PURPOSE_NOTE_MAX, PURPOSE_NOTE_MIN } from '@/constants/loan';
 import { ApiError } from '@/services/api';
 import { submitLoanRequirement } from '@/services/loan';
@@ -88,7 +88,7 @@ export default function LoanPurposeScreen() {
                 aria-checked={on}
                 accessibilityLabel={p.label}
                 onPress={() => pick(p.id)}
-                style={({ pressed }) => [s.row, on && s.rowOn, pressed && s.pressed]}>
+                style={({ pressed }) => [s.row, on && s.rowOn, pressed && (on ? s.pressed : picked.pressed)]}>
                 <Text style={[s.rowText, on && s.rowTextOn]}>{p.label}</Text>
                 {on ? (
                   <Animated.View entering={ZoomIn.duration(180)} style={s.radioOn}><Icon name="check" size={13} color={C.white} /></Animated.View>
@@ -130,16 +130,16 @@ export default function LoanPurposeScreen() {
 const s = StyleSheet.create({
   title: { fontFamily: F.heading, fontSize: 24, lineHeight: 32, letterSpacing: -0.3, color: C.text },
   sub: { fontFamily: F.body, fontSize: 14, lineHeight: 22, color: C.muted, marginTop: S.sm },
-  summary: { flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: S.md, padding: 14, borderRadius: R.field, backgroundColor: C.subtle, borderWidth: 1, borderColor: C.border },
+  summary: { flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: S.md, padding: 14, borderRadius: R.field, backgroundColor: C.subtle, ...inset },
   summaryBody: { flex: 1 },
   summaryTitle: { fontFamily: F.body, fontSize: 14, fontWeight: '600', color: C.navy },
   summaryMeta: { fontFamily: F.body, fontSize: 12, lineHeight: 18, color: C.muted, marginTop: 2 },
   edit: { flexDirection: 'row', alignItems: 'center', gap: 4, minHeight: 32 },
   editText: { fontFamily: F.body, fontSize: 12, fontWeight: '600', color: C.goldDeep },
   list: { gap: 10, marginTop: S.md },
-  row: { flexDirection: 'row', alignItems: 'center', gap: 12, minHeight: 54, paddingHorizontal: 16, borderRadius: R.field, backgroundColor: C.card, borderWidth: 1.5, borderColor: 'transparent', ...shadow.card },
-  rowOn: { backgroundColor: C.canvas, borderColor: C.navy },
-  pressed: { transform: [{ scale: 0.99 }] },
+  row: { flexDirection: 'row', alignItems: 'center', gap: 12, minHeight: 54, paddingHorizontal: 16, borderRadius: R.field, backgroundColor: C.card, cursor: 'pointer', ...shadow.card },
+  rowOn: { backgroundColor: C.canvas, borderColor: C.navy, borderLeftColor: C.navy, borderRightColor: C.navy },
+  pressed: { transform: [{ scale: 0.985 }] },
   rowText: { flex: 1, fontFamily: F.body, fontSize: 15, color: C.text },
   rowTextOn: { fontWeight: '600', color: C.navy },
   radio: { width: 22, height: 22, borderRadius: 11, borderWidth: 2.5, borderColor: C.border },
