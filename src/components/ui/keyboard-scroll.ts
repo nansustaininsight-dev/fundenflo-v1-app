@@ -13,7 +13,7 @@ function measurable(value: HostInstance | null): Measurable | null {
 }
 
 function focusedInput(): HostInstance | null {
-  const state = TextInput.State as {
+  const state = TextInput.State as unknown as {
     currentlyFocusedInput?: () => HostInstance | null;
     currentlyFocusedField?: () => HostInstance | null;
   };

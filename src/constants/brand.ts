@@ -38,8 +38,62 @@ export const S = { xs: 4, sm: 8, md: 16, lg: 18, xl: 32, margin: 20 } as const;
 /** Content column locks to 560px on tablets/web, per the design system. */
 export const MAX_WIDTH = 560;
 
+export const edge = {
+  line: '#D5DEE8',
+  side: '#C3D0DE',
+} as const;
+
 export const shadow = {
-  card: { boxShadow: '0px 4px 20px -2px rgba(10, 25, 47, 0.06)' },
+  card: {
+    boxShadow: '0px 10px 24px -12px rgba(10, 25, 47, 0.16), 0px 1px 2px rgba(10, 25, 47, 0.04)',
+    borderWidth: 1,
+    borderColor: edge.line,
+    borderLeftWidth: 3,
+    borderRightWidth: 3,
+    borderLeftColor: edge.side,
+    borderRightColor: edge.side,
+  },
   sheet: { boxShadow: '0px -12px 32px rgba(10, 25, 47, 0.08)' },
   button: { boxShadow: '0px 6px 14px rgba(10, 25, 47, 0.18)' },
+} as const;
+
+export const pick = {
+  on: {
+    backgroundColor: '#FFFCF4',
+    borderColor: '#E6C56A',
+    borderLeftColor: C.goldDeep,
+    borderRightColor: C.goldDeep,
+  },
+  pressed: {
+    transform: [{ scale: 0.985 }],
+    borderLeftColor: C.navy,
+    borderRightColor: C.navy,
+  },
+} as const;
+
+export const inset = {
+  borderWidth: 1,
+  borderColor: '#E4EAF1',
+  borderLeftWidth: 3,
+  borderRightWidth: 3,
+  borderLeftColor: '#D3DCE6',
+  borderRightColor: '#D3DCE6',
+} as const;
+
+export const goldEdge = {
+  borderWidth: 1,
+  borderColor: '#F0E0A8',
+  borderLeftWidth: 3,
+  borderRightWidth: 3,
+  borderLeftColor: C.goldDeep,
+  borderRightColor: C.goldDeep,
+} as const;
+
+export const navyEdge = {
+  borderWidth: 1,
+  borderColor: '#1C3558',
+  borderLeftWidth: 3,
+  borderRightWidth: 3,
+  borderLeftColor: C.gold,
+  borderRightColor: C.gold,
 } as const;

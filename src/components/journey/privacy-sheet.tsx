@@ -4,7 +4,7 @@ import * as WebBrowser from 'expo-web-browser';
 
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
-import { C, F, MAX_WIDTH, R, S } from '@/constants/brand';
+import { C, F, MAX_WIDTH, R, S, inset } from '@/constants/brand';
 import { CONSENT_ITEMS, PRIVACY_POLICY_URL } from '@/constants/consent';
 
 /** Plain-language summary of each consent, plus the full policy link when configured. */
@@ -67,7 +67,7 @@ const s = StyleSheet.create({
   badge: { fontFamily: F.body, fontSize: 10, fontWeight: '600', color: C.muted, backgroundColor: C.subtle, paddingHorizontal: 6, paddingVertical: 3, borderRadius: 4, overflow: 'hidden' },
   badgeRequired: { color: C.navy, backgroundColor: C.goldSoft },
   itemText: { fontFamily: F.body, fontSize: 13, lineHeight: 20, color: C.muted },
-  note: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, padding: 12, borderRadius: R.field, backgroundColor: C.subtle },
+  note: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, padding: 12, borderRadius: R.field, backgroundColor: C.subtle, ...inset },
   noteText: { flex: 1, fontFamily: F.body, fontSize: 12, lineHeight: 18, color: C.muted },
   cta: { marginTop: S.md },
 });

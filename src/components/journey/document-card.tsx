@@ -2,7 +2,7 @@ import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-nati
 import Animated, { FadeIn, LinearTransition } from 'react-native-reanimated';
 
 import { Icon, type IconName } from '@/components/ui/icon';
-import { C, F, R, S, shadow } from '@/constants/brand';
+import { C, F, R, S, edge, inset, shadow } from '@/constants/brand';
 import type { DocumentSource, DocumentSpec } from '@/constants/documents';
 import type { UploadedDocument } from '@/store/app-store';
 
@@ -130,7 +130,7 @@ function Badge({ slot, required }: { slot: Slot; required: boolean }) {
 const s = StyleSheet.create({
   card: { padding: S.md + 4, borderRadius: R.card, backgroundColor: C.card, gap: 14, ...shadow.card },
   row: { flexDirection: 'row', alignItems: 'flex-start', gap: 14 },
-  iconBox: { width: 48, height: 48, borderRadius: 12, backgroundColor: C.subtle, alignItems: 'center', justifyContent: 'center' },
+  iconBox: { width: 48, height: 48, borderRadius: 12, backgroundColor: C.subtle, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: edge.line },
   iconBoxDone: { backgroundColor: C.successSoft },
   text: { flex: 1, minWidth: 0, paddingTop: 2 },
   title: { fontFamily: F.heading, fontSize: 17, lineHeight: 24, color: C.text },
@@ -152,12 +152,12 @@ const s = StyleSheet.create({
   linkMuted: { fontFamily: F.body, fontSize: 12, fontWeight: '500', color: C.muted },
   fileRow: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingLeft: 62 },
   fileName: { flex: 1, fontFamily: F.body, fontSize: 12, color: C.muted },
-  error: { flexDirection: 'row', alignItems: 'center', gap: 6, padding: 10, borderRadius: R.chip, backgroundColor: '#FFF1EF' },
+  error: { flexDirection: 'row', alignItems: 'center', gap: 6, padding: 10, borderRadius: R.chip, backgroundColor: '#FFF1EF', borderWidth: 1, borderColor: '#F3C7C2', borderLeftWidth: 3, borderRightWidth: 3, borderLeftColor: C.error, borderRightColor: C.error },
   errorText: { flex: 1, fontFamily: F.body, fontSize: 12, lineHeight: 17, color: C.error },
   sources: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   source: {
     flexGrow: 1, flexBasis: 90, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6,
-    minHeight: 46, paddingHorizontal: 10, borderRadius: R.button, backgroundColor: C.subtle,
+    minHeight: 46, paddingHorizontal: 10, borderRadius: R.button, backgroundColor: C.subtle, cursor: 'pointer', ...inset,
   },
   sourcePressed: { backgroundColor: C.border },
   sourceSoon: { opacity: 0.7 },
