@@ -2,22 +2,33 @@ const { execFileSync, spawn } = require('child_process');
 const fs = require('fs');
 const http = require('http');
 const net = require('net');
+const os = require('os');
 const path = require('path');
 const zlib = require('zlib');
 
 const port = 8081;
+let metroHost = '127.0.0.1';
 const envFile = path.join(__dirname, '..', '.env.local');
 
 function interfaces() {
   try {
     const out = execFileSync('ip', ['-4', '-o', 'addr', 'show'], { encoding: 'utf8' });
-    return out.split('\n').map((line) => {
+    const rows = out.split('\n').map((line) => {
       const match = line.match(/^\d+:\s+(\S+)\s+inet\s+(\d+\.\d+\.\d+\.\d+)/);
       return match ? { iface: match[1], ip: match[2] } : null;
     }).filter(Boolean);
+    if (rows.length) return rows;
   } catch {
-    return [];
+    // Windows has no ip(8). Fall through to Node's interface list.
   }
+  const rows = [];
+  for (const [iface, addrs] of Object.entries(os.networkInterfaces())) {
+    for (const addr of addrs ?? []) {
+      const v4 = addr.family === 'IPv4' || addr.family === 4;
+      if (v4 && !addr.internal) rows.push({ iface, ip: addr.address });
+    }
+  }
+  return rows;
 }
 
 function defaultInterface() {
@@ -44,13 +55,25 @@ function remember(hostname) {
   fs.writeFileSync(envFile, updated.endsWith('\n') ? updated : `${updated}\n`);
 }
 
+function isWifi(name) {
+  return /^(wl|wlan|wi-?fi)/i.test(name);
+}
+
+function isVirtual(name) {
+  return /vethernet|virtual|vmware|hyper-v|wsl|loopback|bluetooth|npcap|tunnel/i.test(name);
+}
+
+function isPrivate(ip) {
+  return ip.startsWith('192.168.') || ip.startsWith('10.') || /^172\.(1[6-9]|2\d|3[0-1])\./.test(ip);
+}
+
 function chooseHostname() {
-  const rows = interfaces();
-  const wifi = rows.filter((row) => row.iface.startsWith('wl'));
-  const preferred = wifi.find((row) => row.iface === defaultInterface()) ?? wifi[0];
+  const rows = interfaces().filter((row) => isPrivate(row.ip) && !isVirtual(row.iface));
+  const wifi = rows.filter((row) => isWifi(row.iface));
+  const preferred = wifi.find((row) => row.iface === defaultInterface()) ?? wifi[0] ?? rows[0];
   if (preferred) return preferred.ip;
   const saved = savedAddress();
-  return rows.some((row) => row.ip === saved) ? saved : '';
+  return interfaces().some((row) => row.ip === saved) ? saved : '';
 }
 
 function canReach(host) {
@@ -67,23 +90,38 @@ function canReach(host) {
   });
 }
 
-function waitForLocalPort() {
+function probeHost(host) {
   return new Promise((resolve) => {
-    const wait = setInterval(() => {
-      const probe = net.connect({ host: '127.0.0.1', port }, () => {
-        probe.end();
-        clearInterval(wait);
-        resolve();
-      });
-      probe.on('error', () => probe.destroy());
-    }, 400);
+    const probe = net.connect({ host, port }, () => {
+      probe.end();
+      resolve(true);
+    });
+    probe.on('error', () => resolve(false));
+    probe.setTimeout(400, () => {
+      probe.destroy();
+      resolve(false);
+    });
   });
+}
+
+async function waitForLocalPort() {
+  for (;;) {
+    if (await probeHost('127.0.0.1')) {
+      metroHost = '127.0.0.1';
+      return;
+    }
+    if (await probeHost('::1')) {
+      metroHost = '::1';
+      return;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 400));
+  }
 }
 
 function waitUntilFree() {
   return new Promise((resolve) => {
     const wait = setInterval(() => {
-      const probe = net.connect({ host: '127.0.0.1', port }, () => {
+      const probe = net.connect({ host: metroHost, port }, () => {
         probe.end();
       });
       probe.on('error', () => {
@@ -105,7 +143,7 @@ function responseHeaders(headers) {
 function listenOn(hostname) {
   const server = http.createServer((req, res) => {
     const upstream = http.request({
-      host: '127.0.0.1',
+      host: metroHost,
       port,
       method: req.method,
       path: req.url,
@@ -135,7 +173,7 @@ function listenOn(hostname) {
   server.headersTimeout = 0;
   server.timeout = 0;
   server.on('upgrade', (req, socket, head) => {
-    const upstream = net.connect({ host: '127.0.0.1', port }, () => {
+    const upstream = net.connect({ host: metroHost, port }, () => {
       const headerLines = Object.entries(req.headers).map(([key, value]) => `${key}: ${value}`);
       upstream.write(`${req.method} ${req.url} HTTP/1.1\r\n${headerLines.join('\r\n')}\r\n\r\n`);
       if (head.length) upstream.write(head);
@@ -159,6 +197,7 @@ async function start(hostname) {
   remember(hostname);
   const expo = spawn('npx', ['expo', 'start', '--localhost', '--port', String(port)], {
     stdio: 'inherit',
+    shell: process.platform === 'win32',
     env: { ...process.env, REACT_NATIVE_PACKAGER_HOSTNAME: hostname, EXPO_NO_METRO_LAZY: '1' },
   });
   await waitForLocalPort();
