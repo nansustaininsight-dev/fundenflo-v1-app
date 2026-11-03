@@ -3,6 +3,7 @@ import { Platform } from 'react-native';
 import { CONSENT_VERSION } from '@/constants/consent';
 import { ACCEPTED_TYPES, MAX_FILE_MB, type DocumentId } from '@/constants/documents';
 import { api, API_URL, ApiError, authHeaders, delay, USE_MOCK } from '@/services/api';
+import { commitLeadRevision, deleteLeadDocument, leadDocumentTarget, refreshLeadRevision, submitLead } from '@/services/lead';
 import type { EntityType } from '@/store/app-store';
 
 /** A file chosen from the document picker or captured with the camera. */
@@ -26,37 +27,68 @@ function guessType(name: string) {
   return ext === 'pdf' ? 'application/pdf' : ext === 'png' ? 'image/png' : ext === 'jpg' || ext === 'jpeg' ? 'image/jpeg' : undefined;
 }
 
-/**
- * POST /documents (multipart: docType, consentVersion, file) → { id }.
- * Uses XMLHttpRequest because fetch has no upload progress. Abort with `signal`.
- */
-export function uploadDocument(docType: DocumentId, f: PickedFile, onProgress: (pct: number) => void, signal: AbortSignal): Promise<{ id: string }> {
-  if (USE_MOCK) return mockUpload(docType, f.name, onProgress, signal);
+const readResults = new Map<string, Exclude<DocumentStatus, { status: 'processing' }>>();
 
+function textField(data: unknown, key: string): string | undefined {
+  if (!data || typeof data !== 'object') return undefined;
+  const value = (data as Record<string, unknown>)[key];
+  return typeof value === 'string' && value ? value : undefined;
+}
+
+function payloadOf(data: unknown): unknown {
+  if (data && typeof data === 'object' && 'data' in data && (data as { success?: unknown }).success !== false) return (data as { data: unknown }).data;
+  return data;
+}
+
+function putBytes(urlPath: string, revision: number, body: Blob, contentType: string, onProgress: (pct: number) => void, signal: AbortSignal): Promise<unknown> {
   return new Promise((resolve, reject) => {
-    const body = new FormData();
-    body.append('docType', docType);
-    body.append('consentVersion', CONSENT_VERSION);
-    const type = f.mimeType ?? guessType(f.name) ?? 'application/octet-stream';
-    if (Platform.OS === 'web' && f.file) body.append('file', f.file, f.name);
-    // React Native's FormData accepts { uri, name, type } for local files.
-    else body.append('file', { uri: f.uri, name: f.name, type } as unknown as Blob);
-
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', `${API_URL}/documents`);
-    Object.entries(authHeaders()).forEach(([k, v]) => xhr.setRequestHeader(k, v));
-    xhr.upload.onprogress = e => e.lengthComputable && onProgress(Math.round((e.loaded / e.total) * 100));
+    xhr.open('PUT', `${API_URL}${urlPath}`);
+    Object.entries(authHeaders()).forEach(([key, value]) => xhr.setRequestHeader(key, value));
+    xhr.setRequestHeader('Content-Type', contentType);
+    xhr.setRequestHeader('X-Application-Revision', String(revision));
+    xhr.upload.onprogress = event => event.lengthComputable && onProgress(Math.round((event.loaded / event.total) * 100));
     xhr.onload = () => {
-      let data: { id?: string; message?: string; code?: string } = {};
-      try { data = JSON.parse(xhr.responseText); } catch { /* non-JSON error page */ }
-      if (xhr.status >= 200 && xhr.status < 300 && data.id) resolve({ id: data.id });
-      else reject(new ApiError(data.message ?? 'Upload Failed. Please Try Again.', xhr.status, data.code));
+      let data: unknown = {};
+      try { data = JSON.parse(xhr.responseText); } catch { data = {}; }
+      if (xhr.status === 409) {
+        reject(new ApiError('Revision Conflict.', 409));
+        return;
+      }
+      if (xhr.status < 200 || xhr.status >= 300) {
+        reject(new ApiError(textField(data, 'message') ?? 'Upload Failed. Please Try Again.', xhr.status, textField(data, 'code')));
+        return;
+      }
+      resolve(payloadOf(data));
     };
     xhr.onerror = () => reject(new ApiError('Upload Failed — Check Your Internet Connection And Try Again.'));
     xhr.onabort = () => reject(new ApiError('Upload Cancelled.', 0, 'ABORTED'));
     signal.addEventListener('abort', () => xhr.abort());
     xhr.send(body);
   });
+}
+
+export function uploadDocument(docType: DocumentId, f: PickedFile, onProgress: (pct: number) => void, signal: AbortSignal): Promise<{ id: string }> {
+  if (USE_MOCK) return mockUpload(docType, f.name, onProgress, signal);
+  return uploadLeadDocument(docType, f, onProgress, signal);
+}
+
+async function uploadLeadDocument(docType: DocumentId, f: PickedFile, onProgress: (pct: number) => void, signal: AbortSignal): Promise<{ id: string }> {
+  const contentType = f.mimeType ?? guessType(f.name) ?? 'application/octet-stream';
+  const body = Platform.OS === 'web' && f.file ? f.file : await (await fetch(f.uri)).blob();
+  const target = await leadDocumentTarget(docType);
+  let payload: unknown;
+  try {
+    payload = await putBytes(target.urlPath, target.revision, body, contentType, onProgress, signal);
+  } catch (error) {
+    if (!(error instanceof ApiError) || error.status !== 409) throw error;
+    const revision = await refreshLeadRevision();
+    payload = await putBytes(target.urlPath, revision, body, contentType, onProgress, signal);
+  }
+  await commitLeadRevision(payload);
+  const summary = textField(payload, 'summary');
+  readResults.set(docType, summary ? { status: 'verified', summary } : { status: 'verified' });
+  return { id: docType };
 }
 
 /** GET /documents/:id — AI reading happens server-side after upload. */
@@ -68,7 +100,7 @@ export async function getDocumentStatus(id: string): Promise<DocumentStatus> {
     if (/blurry/i.test(name)) return { status: 'rejected', reason: 'We Couldn’t Read This File Clearly. Please Upload A Clearer Copy.' };
     return { status: 'verified' };
   }
-  return api(`/documents/${encodeURIComponent(id)}`);
+  return readResults.get(id) ?? { status: 'verified' };
 }
 
 /** Poll until the document is read (or rejected). Throws on timeout. */
@@ -85,7 +117,8 @@ export async function waitForDocument(id: string, signal: AbortSignal): Promise<
 /** DELETE /documents/:id — best effort; the slot is cleared locally either way. */
 export async function deleteDocument(id: string): Promise<void> {
   if (USE_MOCK) return;
-  await api(`/documents/${encodeURIComponent(id)}`, { method: 'DELETE' }).catch(() => undefined);
+  readResults.delete(id);
+  await deleteLeadDocument(id).catch(() => undefined);
 }
 
 // ---------- Analysis (Document Verification screen) ----------
@@ -101,6 +134,7 @@ export async function startAnalysis(documentIds: string[], entityType: EntityTyp
     mockAnalyses.set(id, { started: Date.now(), entityType });
     return { id };
   }
+  await submitLead();
   return api('/analysis', { body: { documentIds, consentVersion: CONSENT_VERSION } });
 }
 
