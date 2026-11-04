@@ -22,8 +22,9 @@ function Cursor() {
 }
 
 export default function VerifyOtpScreen() {
-  const params = useLocalSearchParams<{ mobile: string; resendIn?: string }>();
+  const params = useLocalSearchParams<{ mobile: string; resendIn?: string; referral?: string }>();
   const mobile = params.mobile ?? '';
+  const referral = Array.isArray(params.referral) ? params.referral[0] : params.referral;
   const { signIn } = useAppStore();
   const [code, setCode] = useState('');
   const [focused, setFocused] = useState(true);
@@ -50,7 +51,7 @@ export default function VerifyOtpScreen() {
     setLoading(true);
     setError(null);
     try {
-      const session = await verifyOtp(mobile, value);
+      const session = await verifyOtp(mobile, value, referral);
       await signIn(session);
       router.dismissAll();
       router.replace('/entity-type');

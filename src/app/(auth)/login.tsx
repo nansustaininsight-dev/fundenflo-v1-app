@@ -69,7 +69,10 @@ export default function LoginScreen() {
     setError(null);
     try {
       const { resendIn } = await requestOtp(mobile, appliedReferral ?? undefined);
-      router.push({ pathname: '/verify-otp', params: { mobile, resendIn: String(resendIn) } });
+      router.push({
+        pathname: '/verify-otp',
+        params: { mobile, resendIn: String(resendIn), ...(appliedReferral ? { referral: appliedReferral } : {}) },
+      });
     } catch (e) {
       setError(e instanceof ApiError ? e.message : 'Could Not Send OTP. Please Try Again.');
     } finally {
