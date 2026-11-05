@@ -5,7 +5,8 @@ import type { ConsentId } from '@/constants/consent';
 import type { DocumentId } from '@/constants/documents';
 import type { LoanCategoryId } from '@/constants/loan';
 import { setAuthToken } from '@/services/api';
-import type { Session, User } from '@/services/auth';
+import { logoutBorrower, type Session, type User } from '@/services/auth';
+import { clearLeadDraft } from '@/services/lead';
 import type { LoanApplication } from '@/services/application';
 import type { LenderMatch } from '@/services/lenders';
 import type { HealthScore, ImprovementItem } from '@/services/score';
@@ -116,10 +117,13 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
     session: state.session,
     journey: state.journey,
     signIn: async session => {
+      await clearLeadDraft();
       setAuthToken(session.token);
       await commit(prev => ({ ...prev, session }));
     },
     signOut: async () => {
+      if (latest.current.session?.token) await logoutBorrower().catch(() => undefined);
+      await clearLeadDraft();
       setAuthToken(null);
       await commit(() => ({ session: null, journey: {} }));
     },

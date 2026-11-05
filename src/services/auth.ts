@@ -1,4 +1,4 @@
-import { api, ApiError, delay, USE_MOCK } from '@/services/api';
+import { api, ApiError, delay, setAuthToken, USE_MOCK } from '@/services/api';
 
 export type User = {
   id: string;
@@ -7,6 +7,7 @@ export type User = {
   fullName?: string;
   pan?: string;
   dob?: string;
+  referralCode?: string;
 };
 
 export type Session = { token: string; user: User };
@@ -68,20 +69,61 @@ export async function saveProfile(profile: Profile): Promise<Profile> {
   return api<Profile>('/auth/profile', { method: 'PATCH', body: { fullName, pan, dob: profile.dob } });
 }
 
-export async function requestOtp(mobile: string, referralCode?: string): Promise<{ resendIn: number }> {
+const challenges = new Map<string, string>();
+
+function textField(data: unknown, key: string): string | undefined {
+  if (!data || typeof data !== 'object') return undefined;
+  const value = (data as Record<string, unknown>)[key];
+  return typeof value === 'string' && value ? value : undefined;
+}
+
+export async function requestOtp(mobile: string, _referralCode?: string): Promise<{ resendIn: number }> {
   if (!isValidMobile(mobile)) throw new ApiError('Enter A Valid 10-Digit Mobile Number.');
   if (USE_MOCK) {
     await delay(800);
     return { resendIn: 30 };
   }
-  return api('/auth/otp/request', { body: { mobile, countryCode: '+91', referralCode } });
+  const data = await api<unknown>('/borrower/auth/request-otp', { body: { mobileNumber: mobile } });
+  const challengeId = textField(data, 'challengeId');
+  if (!challengeId) throw new ApiError('The Server Did Not Return A Challenge Id.');
+  challenges.set(mobile, challengeId);
+  return { resendIn: 30 };
 }
 
-export async function verifyOtp(mobile: string, otp: string): Promise<Session> {
+export async function verifyOtp(mobile: string, otp: string, referralCode?: string): Promise<Session> {
   if (USE_MOCK) {
     await delay(900);
     if (otp !== MOCK_OTP) throw new ApiError('Incorrect Code. Please Check And Try Again.', 401, 'OTP_INVALID');
     return { token: `mock-${Date.now()}`, user: { id: `u-${mobile}`, mobile } };
   }
-  return api('/auth/otp/verify', { body: { mobile, otp } });
+  const challengeId = challenges.get(mobile);
+  if (!challengeId) throw new ApiError('Request A New Code And Try Again.');
+  const data = await api<unknown>('/borrower/auth/verify-otp', {
+    body: { challengeId, otp, ...(referralCode ? { referralCode } : {}) },
+  });
+  const accessToken = textField(data, 'accessToken');
+  if (!accessToken) throw new ApiError('The Server Did Not Return An Access Token.');
+  setAuthToken(accessToken);
+  let id = textField(data, 'id') ?? mobile;
+  let resolvedMobile = mobile;
+  try {
+    const me = await api<unknown>('/borrower/auth/me');
+    const meId = textField(me, 'id');
+    const meMobile = textField(me, 'mobileNumber') ?? textField(me, 'mobile');
+    if (meId) id = meId;
+    if (meMobile) resolvedMobile = meMobile;
+  } catch {
+    id = textField(data, 'id') ?? mobile;
+  }
+  const returnedReferral = textField(data, 'referralCode');
+  return { token: accessToken, user: { id, mobile: resolvedMobile, ...(returnedReferral ? { referralCode: returnedReferral } : {}) } };
+}
+
+export async function logoutBorrower(): Promise<void> {
+  if (USE_MOCK) return;
+  try {
+    await api('/borrower/auth/logout', { method: 'POST' });
+  } finally {
+    challenges.clear();
+  }
 }
