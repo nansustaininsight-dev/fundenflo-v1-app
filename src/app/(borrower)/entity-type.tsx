@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeInDown, ZoomIn } from 'react-native-reanimated';
 
@@ -8,6 +8,8 @@ import { Icon, type IconName } from '@/components/ui/icon';
 import { Screen } from '@/components/ui/screen';
 import { StepHeader } from '@/components/ui/step-header';
 import { C, F, R, S, edge, pick, shadow } from '@/constants/brand';
+import { USE_MOCK } from '@/services/api';
+import { getBorrowerLoanTypes } from '@/services/loan';
 import { useAppStore, type EntityType } from '@/store/app-store';
 
 const OPTIONS: { id: EntityType; title: string; sub: string; icon: IconName }[] = [
@@ -15,9 +17,34 @@ const OPTIONS: { id: EntityType; title: string; sub: string; icon: IconName }[] 
   { id: 'individual', title: 'Individual', sub: 'Salaried Or Self-Employed', icon: 'person' },
 ];
 
+function asIcon(value: string | undefined, fallback: IconName): IconName {
+  if (value === 'business' || value === 'person' || value === 'store' || value === 'bank' || value === 'home') return value;
+  return fallback;
+}
+
 export default function EntityTypeScreen() {
   const { journey, updateJourney, signOut } = useAppStore();
   const [selected, setSelected] = useState<EntityType | undefined>(journey.entityType);
+  const [options, setOptions] = useState(OPTIONS);
+
+  useEffect(() => {
+    if (USE_MOCK) return;
+    let active = true;
+    getBorrowerLoanTypes().then(types => {
+      if (!active || !types.length) return;
+      setOptions(OPTIONS.map(option => {
+        const remote = types.find(type => type.code === (option.id === 'msme' ? 'BUSINESS' : 'INDIVIDUAL'));
+        if (!remote) return option;
+        return {
+          ...option,
+          title: remote.title || option.title,
+          sub: remote.subtitle || option.sub,
+          icon: asIcon(remote.icon, option.icon),
+        };
+      }));
+    }).catch(() => undefined);
+    return () => { active = false; };
+  }, []);
 
   async function next() {
     if (!selected) return;
@@ -46,7 +73,7 @@ export default function EntityTypeScreen() {
       </Animated.View>
 
       <View style={s.list} accessibilityRole="radiogroup">
-        {OPTIONS.map((o, i) => {
+        {options.map((o, i) => {
           const on = selected === o.id;
           return (
             <Animated.View key={o.id} entering={FadeInDown.delay(100 + i * 80).duration(400)}>
